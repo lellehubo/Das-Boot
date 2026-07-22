@@ -97,6 +97,9 @@
   .findme{display:inline-flex;align-items:center;gap:7px;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ink);background:linear-gradient(180deg,var(--ct),var(--cb));border:1px solid var(--bd);padding:7px 12px;border-radius:999px;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);}
   .findme svg{width:13px;height:13px;color:var(--red);flex-shrink:0;}
   .findme.loading{opacity:0.55;}
+  .findme.unconfirmed{border-color:var(--amber,#e0a44a);color:var(--amber,#e0a44a);animation:findmePulse 1.8s ease-in-out infinite;}
+  .findme.unconfirmed svg{color:var(--amber,#e0a44a);}
+  @keyframes findmePulse{0%,100%{box-shadow:inset 0 1px 0 rgba(255,255,255,0.05),0 0 0 0 rgba(224,164,74,0.0);}50%{box-shadow:inset 0 1px 0 rgba(255,255,255,0.05),0 0 0 3px rgba(224,164,74,0.18);}}
   .rail{position:relative;height:62px;margin:0 6px;cursor:pointer;}
   .rail-line{position:absolute;top:12px;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--bd),rgba(255,255,255,0.14),var(--bd));border-radius:2px;}
   .railpin{position:absolute;top:-4px;transform:translateX(-50%);transition:left .4s cubic-bezier(.32,.72,0,1);z-index:4;pointer-events:none;}
@@ -580,13 +583,25 @@
       btn.classList.remove("loading");
       lastPos = { la:pos.coords.latitude, lo:pos.coords.longitude, ts:Date.now() };
       const r = pickNearest(lastPos.la, lastPos.lo);
-      detectedStopId = (r.stop && r.dist < 2500) ? r.stop.id : null;
-      if(r.stop && r.dist < 2500) setActiveStop(r.stop);
+      const inRange = r.stop && r.dist < 2500;
+      detectedStopId = inRange ? r.stop.id : null;
+      if(inRange) setActiveStop(r.stop);
+      // Bekräftad position → ta bort "okänd"-markeringen. Utanför räckvidd → visa den.
+      btn.classList.toggle("unconfirmed", !inRange);
       renderWalk();
     }, function(){
       btn.classList.remove("loading");
+      // Positionen kunde inte hämtas (nekad/timeout). Markera synligt att bryggan inte är
+      // GPS-bekräftad så att man inte råkar läsa fel stations tider.
+      btn.classList.add("unconfirmed");
       if(!silent) flashFindme("Ingen position");
-    }, { enableHighAccuracy:true, timeout:8000, maximumAge:120000 });
+    }, { enableHighAccuracy:true, timeout:8000, maximumAge:30000 });
+  }
+  // Positionera om automatiskt när appen kommer i förgrunden (men inte oftare än var 12:e s).
+  function maybeRelocate(){
+    if(!navigator.geolocation) return;
+    if(lastPos && (Date.now()-lastPos.ts) < 12000) return;
+    locate(true);
   }
 
   // ---- State (full-tabell) ----
@@ -900,9 +915,12 @@
   setInterval(tick, 1000);
   fetchLive();
   setInterval(fetchLive, 30000);
-  document.addEventListener("visibilitychange", function(){ if(!document.hidden) fetchLive(); });
+  document.addEventListener("visibilitychange", function(){ if(!document.hidden){ fetchLive(); maybeRelocate(); } });
+  window.addEventListener("focus", maybeRelocate);
+  window.addEventListener("pageshow", function(e){ if(e.persisted) maybeRelocate(); });
   window.addEventListener("resize", function(){ renderRail(); });
-  // autopositionera vid start
+  // Autopositionera vid start OCH varje gång appen kommer i förgrunden,
+  // så att man alltid ser tiderna för bryggan man faktiskt står vid.
   locate(true);
 </script>
 </body>
