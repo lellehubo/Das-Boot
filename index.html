@@ -158,6 +158,8 @@
   .endpoint b{color:var(--ink);font-weight:600;}
   .ended{font-size:15px;line-height:1.5;color:var(--ink2);padding:4px 0 2px;}
   .ended .tmr{display:block;margin-top:6px;font-family:var(--serif);font-size:26px;font-weight:500;color:var(--ink);}
+  .p-day,.s-day{display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--amber);vertical-align:middle;margin-right:5px;}
+  .s-day{font-size:10px;margin-right:4px;}
   .live-tag{font-size:10px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--green);padding-top:3px;}
 
   /* ---- Full timetable (endast Saltsjöqvarn) ---- */
@@ -824,56 +826,71 @@
     document.getElementById("lDayText").textContent = helg?"Helg":"Vardag";
   }
 
+  // Kort dag-etikett för avgångar som inte är idag (off = antal dygn framåt).
+  function landetDayLabel(off,wd){ return off===0 ? "" : (off===1 ? "imorgon" : DAGNAMN[wd]); }
+
+  // Samla de `count` nästa avgångarna och rulla över dygnsgränsen: idag → imorgon → …
+  // depTime(t) ger avgångstiden ("HH:MM") för respektive riktning/påstigningsplats.
+  function nextLandet(bucket, depTime, se, count){
+    const out = [];
+    for(let off=0; off<8 && out.length<count; off++){
+      const wd = (se.wd+off)%7;
+      const list = bucket[landetDagtyp(wd)];
+      for(let i=0;i<list.length && out.length<count;i++){
+        const t = list[i], dMin = toMin(depTime(t));
+        if(off===0 && dMin <= se.min) continue; // redan avgått idag
+        out.push({ t:t, off:off, wd:wd, diff: off*1440 + dMin - se.min });
+      }
+    }
+    return out;
+  }
+
   function renderLandet(se){
-    const nowMin = se.min;
-    const dt = landetDagtyp(se.wd);
-    const nextWd = (se.wd+1)%7;
     let html = "";
 
-    // ---- UT till Blidö ----
+    // ---- UT till Blidö (nästa två avgångar, kan spänna över dygn) ----
     const utDep = function(t){ return fromStop==="strom" ? t.s : t.n; };
-    const utUp = LANDET.ut[dt].filter(function(t){ return toMin(utDep(t)) > nowMin; });
+    const utUp = nextLandet(LANDET.ut, utDep, se, 2);
     html += '<div class="card"><div class="c-head"><div class="c-dir">'+arrowSvg("ropsten")+'Ut till Blidö</div>';
     html += '<div class="c-to"><b>Norrsund</b><span>från '+(fromStop==="strom"?"Strömkajen":"Nacka strand")+'</span></div></div>';
     if(utUp.length===0){
-      const f = LANDET.ut[landetDagtyp(nextWd)][0];
-      html += '<div class="ended">Inga fler båtar ut idag.<span class="tmr">'+DAGNAMN[nextWd]+' '+utDep(f)+'</span></div>';
+      html += '<div class="ended">Inga avgångar i tidtabellen.</div>';
     } else {
-      const p = utUp[0], dep = utDep(p), diff = toMin(dep)-nowMin;
-      html += '<div class="p-row"><div><div class="p-time">'+dep+'</div><div class="p-dest">&rarr; Norrsund '+p.ank+' · '+restid(dep,p.ank)+'</div></div><div class="'+cdClass(diff)+'">'+fmtCountdown(diff)+'</div></div>';
-      if(fromStop==="nacka" && p.nb) html += '<div class="p-live"><span class="badge-delay">Beställ</span><span class="txt-delay">boka minst 1 h innan · 08-600 10 00</span></div>';
+      const p = utUp[0], dep = utDep(p.t), lbl = landetDayLabel(p.off,p.wd);
+      html += '<div class="p-row"><div><div class="p-time">'+(lbl?'<span class="p-day">'+lbl+'</span>':'')+dep+'</div><div class="p-dest">&rarr; Norrsund '+p.t.ank+' · '+restid(dep,p.t.ank)+'</div></div><div class="'+cdClass(p.diff)+'">'+fmtCountdown(p.diff)+'</div></div>';
+      if(fromStop==="nacka" && p.t.nb) html += '<div class="p-live"><span class="badge-delay">Beställ</span><span class="txt-delay">boka minst 1 h innan · 08-600 10 00</span></div>';
       const rest = utUp.slice(1);
       if(rest.length){
         html += '<div class="s-list">';
-        rest.forEach(function(t){ const d=utDep(t); html += '<div class="s-row"><div class="s-left"><span class="s-time">'+d+'</span><span class="s-dest">&rarr; Norrsund '+t.ank+'</span>'+((fromStop==="nacka"&&t.nb)?'<span class="s-chip">beställ</span>':'')+'</div><div class="s-cd">'+fmtCountdown(toMin(d)-nowMin)+'</div></div>'; });
+        rest.forEach(function(x){ const d=utDep(x.t), dl=landetDayLabel(x.off,x.wd); html += '<div class="s-row"><div class="s-left"><span class="s-time">'+(dl?'<span class="s-day">'+dl+'</span>':'')+d+'</span><span class="s-dest">&rarr; Norrsund '+x.t.ank+'</span>'+((fromStop==="nacka"&&x.t.nb)?'<span class="s-chip">beställ</span>':'')+'</div><div class="s-cd">'+fmtCountdown(x.diff)+'</div></div>'; });
         html += '</div>';
       }
     }
     html += '</div>';
 
-    // ---- HEM till stan ----
+    // ---- HEM till stan (nästa två avgångar, kan spänna över dygn) ----
     const ankAt = function(t){ return fromStop==="strom" ? t.s : t.n; };
     const ankNamn = fromStop==="strom" ? "Strömkajen" : "Nacka strand";
-    const hemUp = LANDET.hem[dt].filter(function(t){ return toMin(t.norr) > nowMin; });
+    const hemDep = function(t){ return t.norr; };
+    const hemUp = nextLandet(LANDET.hem, hemDep, se, 2);
     html += '<div class="card"><div class="c-head"><div class="c-dir">'+arrowSvg("nybroplan")+'Hem till stan</div>';
     html += '<div class="c-to"><b>'+ankNamn+'</b><span>från Norrsund</span></div></div>';
     if(hemUp.length===0){
-      const f = LANDET.hem[landetDagtyp(nextWd)][0];
-      html += '<div class="ended">Inga fler båtar hem idag.<span class="tmr">'+DAGNAMN[nextWd]+' '+f.norr+'</span></div>';
+      html += '<div class="ended">Inga avgångar i tidtabellen.</div>';
     } else {
-      const p = hemUp[0], diff = toMin(p.norr)-nowMin;
-      html += '<div class="p-row"><div><div class="p-time">'+p.norr+'</div><div class="p-dest">&rarr; '+ankNamn+' '+ankAt(p)+' · '+restid(p.norr,ankAt(p))+'</div></div><div class="'+cdClass(diff)+'">'+fmtCountdown(diff)+'</div></div>';
+      const p = hemUp[0], lbl = landetDayLabel(p.off,p.wd);
+      html += '<div class="p-row"><div><div class="p-time">'+(lbl?'<span class="p-day">'+lbl+'</span>':'')+p.t.norr+'</div><div class="p-dest">&rarr; '+ankNamn+' '+ankAt(p.t)+' · '+restid(p.t.norr,ankAt(p.t))+'</div></div><div class="'+cdClass(p.diff)+'">'+fmtCountdown(p.diff)+'</div></div>';
       const rest = hemUp.slice(1);
       if(rest.length){
         html += '<div class="s-list">';
-        rest.forEach(function(t){ html += '<div class="s-row"><div class="s-left"><span class="s-time">'+t.norr+'</span><span class="s-dest">&rarr; '+ankNamn+' '+ankAt(t)+'</span></div><div class="s-cd">'+fmtCountdown(toMin(t.norr)-nowMin)+'</div></div>'; });
+        rest.forEach(function(x){ const dl=landetDayLabel(x.off,x.wd); html += '<div class="s-row"><div class="s-left"><span class="s-time">'+(dl?'<span class="s-day">'+dl+'</span>':'')+x.t.norr+'</span><span class="s-dest">&rarr; '+ankNamn+' '+ankAt(x.t)+'</span></div><div class="s-cd">'+fmtCountdown(x.diff)+'</div></div>'; });
         html += '</div>';
       }
     }
     html += '</div>';
 
     document.getElementById("landetCards").innerHTML = html;
-    document.getElementById("landetNote").textContent = "Tabelltider ur Waxholmsbolagets sommartidtabell. Ingen realtid för skärgårdslinjen. Nacka strand är påstigning ut och avstigning hem. Kontrollera vid storhelg på waxholmsbolaget.se.";
+    document.getElementById("landetNote").textContent = "Visar de två nästa avgångarna – kan vara senare idag eller en annan dag. Tabelltider ur Waxholmsbolagets sommartidtabell. Ingen realtid för skärgårdslinjen. Nacka strand är påstigning ut och avstigning hem. Kontrollera vid storhelg på waxholmsbolaget.se.";
   }
 
   function setView(v){
