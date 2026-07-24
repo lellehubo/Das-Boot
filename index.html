@@ -197,6 +197,9 @@
   footer{margin-top:13px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 6px;}
   .valid-txt{font-size:11px;color:var(--ink3);line-height:1.5;letter-spacing:0.02em;}
   .info-btn{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--cb);border:1px solid var(--bd);color:var(--ink2);font-family:var(--serif);font-size:16px;font-style:italic;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .tt-btn{flex-shrink:0;margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:0.02em;color:var(--ink2);text-decoration:none;background:linear-gradient(180deg,var(--ct),var(--cb));border:1px solid var(--bd);padding:7px 13px;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);white-space:nowrap;}
+  .tt-btn svg{width:13px;height:13px;opacity:0.75;}
+  .tt-btn:active{transform:translateY(1px);}
 
   .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s;z-index:50;padding:16px;padding-bottom:calc(env(safe-area-inset-bottom) + 16px);}
   .modal-bg.show{opacity:1;pointer-events:auto;}
@@ -288,6 +291,7 @@
 
   <footer>
     <div class="valid-txt">PENDELBÅT LINJE 80 · STAN<br>Giltig 19 juni–16 augusti 2026</div>
+    <a class="tt-btn" href="https://sl.se/globalassets/linje-80.pdf" target="_blank" rel="noopener" aria-label="Öppna SL:s tidtabell för linje 80"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Tidtabell</a>
     <button class="info-btn" id="infoBtn" aria-label="Om appen">i</button>
   </footer>
   </div>
@@ -313,6 +317,7 @@
   <div class="landet-note" id="landetNote"></div>
   <footer>
     <div class="valid-txt">WAXHOLMSBOLAGET LINJE 27 · SKÄRGÅRD<br>Giltig 19 juni–16 augusti 2026 · tabelltider</div>
+    <a class="tt-btn" href="https://waxholmsbolaget.se/globalassets/tidtabeller/sommar/tabell-27-sommar2026.pdf" target="_blank" rel="noopener" aria-label="Öppna Waxholmsbolagets tidtabell för linje 27"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Tidtabell</a>
     <button class="info-btn" id="lInfoBtn" aria-label="Om Landet">i</button>
   </footer>
   </div>
@@ -848,9 +853,9 @@
   function renderLandet(se){
     let html = "";
 
-    // ---- UT till Blidö (nästa två avgångar, kan spänna över dygn) ----
+    // ---- UT till Blidö (nästa tre avgångar, kan spänna över dygn) ----
     const utDep = function(t){ return fromStop==="strom" ? t.s : t.n; };
-    const utUp = nextLandet(LANDET.ut, utDep, se, 2);
+    const utUp = nextLandet(LANDET.ut, utDep, se, 3);
     html += '<div class="card"><div class="c-head"><div class="c-dir">'+arrowSvg("ropsten")+'Ut till Blidö</div>';
     html += '<div class="c-to"><b>Norrsund</b><span>från '+(fromStop==="strom"?"Strömkajen":"Nacka strand")+'</span></div></div>';
     if(utUp.length===0){
@@ -868,11 +873,11 @@
     }
     html += '</div>';
 
-    // ---- HEM till stan (nästa två avgångar, kan spänna över dygn) ----
+    // ---- HEM till stan (nästa tre avgångar, kan spänna över dygn) ----
     const ankAt = function(t){ return fromStop==="strom" ? t.s : t.n; };
     const ankNamn = fromStop==="strom" ? "Strömkajen" : "Nacka strand";
     const hemDep = function(t){ return t.norr; };
-    const hemUp = nextLandet(LANDET.hem, hemDep, se, 2);
+    const hemUp = nextLandet(LANDET.hem, hemDep, se, 3);
     html += '<div class="card"><div class="c-head"><div class="c-dir">'+arrowSvg("nybroplan")+'Hem till stan</div>';
     html += '<div class="c-to"><b>'+ankNamn+'</b><span>från Norrsund</span></div></div>';
     if(hemUp.length===0){
@@ -890,7 +895,7 @@
     html += '</div>';
 
     document.getElementById("landetCards").innerHTML = html;
-    document.getElementById("landetNote").textContent = "Visar de två nästa avgångarna – kan vara senare idag eller en annan dag. Tabelltider ur Waxholmsbolagets sommartidtabell. Ingen realtid för skärgårdslinjen. Nacka strand är påstigning ut och avstigning hem. Kontrollera vid storhelg på waxholmsbolaget.se.";
+    document.getElementById("landetNote").textContent = "Visar de tre nästa avgångarna – kan vara senare idag eller en annan dag. Tabelltider ur Waxholmsbolagets sommartidtabell. Ingen realtid för skärgårdslinjen. Nacka strand är påstigning ut och avstigning hem. Kontrollera vid storhelg på waxholmsbolaget.se.";
   }
 
   function setView(v){
