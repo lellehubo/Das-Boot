@@ -174,7 +174,7 @@
   .seg{display:flex;background:var(--track);border:1px solid var(--bd);border-radius:13px;padding:3px;gap:3px;}
   .seg button{flex:1;font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--ink2);background:transparent;border:none;padding:10px 8px;border-radius:10px;cursor:pointer;transition:color 0.15s,background 0.15s;letter-spacing:-0.01em;}
   .seg button.active{background:var(--chi);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,0.3);}
-  .chips{display:flex;gap:8px;}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;}
   .chip{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--ink2);background:var(--track);border:1px solid var(--bd);padding:7px 13px;border-radius:999px;cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;}
   .chip.active{background:var(--reds);border-color:rgba(230,51,42,0.4);color:#ffd9d5;}
   .chip .today-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--green);background:rgba(130,189,158,0.16);padding:2px 5px;border-radius:5px;}
@@ -290,7 +290,7 @@
   <div class="away-note">Realtid för de närmaste avgångarna vid vald brygga. Hela tidtabellen och offline-läget finns för Saltsjöqvarn.</div>
 
   <footer>
-    <div class="valid-txt">PENDELBÅT LINJE 80 · STAN<br>Giltig 19 juni–16 augusti 2026</div>
+    <div class="valid-txt">PENDELBÅT LINJE 80 · STAN<br>Giltig 17 augusti–12 december 2026</div>
     <a class="tt-btn" href="https://sl.se/globalassets/linje-80.pdf" target="_blank" rel="noopener" aria-label="Öppna SL:s tidtabell för linje 80"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Tidtabell</a>
     <button class="info-btn" id="infoBtn" aria-label="Om appen">i</button>
   </footer>
@@ -339,21 +339,26 @@
 
 <script>
   // ---- Verifierade avgångar från Saltsjöqvarn (HH:MM) ----
+  // Utläst ur SL:s tryckta tidtabell med tools/extract-timetable.py och stickprovs-
+  // kontrollerad mot SL Journey Planner. Hösttabellen har tre dagtyper, inte två:
+  // fredag har egen trafik och är alltså inte samma sak som måndag–torsdag.
   const TT = {
     nybroplan: { // Mot stan
-      vardag: ["06:32","07:02","07:32","07:42","07:52","08:02","08:12","08:22","08:37","08:52","09:02","09:12","09:27","09:37","09:47","10:02","10:12","10:22","10:32","10:42","10:57","11:07","11:22","11:37","11:52","12:07","12:22","12:37","12:52","13:07","13:22","13:30","13:42","14:01","14:28","15:01","15:26","15:56","16:26","16:56","17:26","17:56","18:26","18:56","19:26","20:02","20:26","20:56","21:26","21:56","22:26","22:56","23:26"],
-      helg: ["07:36","08:36","09:01","09:31","09:47","10:02","10:12","10:22","10:32","10:42","10:57","11:07","11:22","11:37","11:52","12:07","12:22","12:37","12:52","13:07","13:22","13:32","13:42","13:58","14:28","14:58","15:28","15:58","16:28","16:58","17:28","17:58","18:28","18:58","19:28","19:58","20:03","20:33","20:55","21:25","22:00","22:25","22:55","23:25"]
+      mtor: ["05:56","06:26","07:02","07:27","07:37","07:52","08:02","08:12","08:22","08:32","08:47","09:02","09:12","09:22","09:32","09:47","10:02","10:17","10:32","10:47","11:02","11:17","11:32","12:02","12:32","13:02","13:32","14:02","14:32","15:02","15:32","16:02","16:32","17:02","17:32","18:02","18:32","19:02","19:32","20:02","20:32","21:01","21:31","22:01","22:31","23:01","23:31"],
+      fre: ["05:56","06:26","07:02","07:32","07:47","08:02","08:17","08:32","08:47","09:02","09:17","09:37","10:10","10:22","10:40","10:52","11:05","11:35","11:50","12:05","12:20","12:35","12:50","13:05","13:20","13:35","13:50","14:05","14:35","14:50","15:05","15:30","16:05","16:35","17:05","17:35","18:05","18:35","19:05","19:35","20:05","20:35","21:01","21:31","22:01","22:31","23:01","23:31"],
+      helg: ["07:26","08:36","09:02","09:37","09:47","10:02","10:12","10:22","10:32","10:42","10:57","11:07","11:22","11:37","11:52","12:07","12:22","12:37","12:52","13:07","13:22","13:32","13:42","14:02","14:32","14:57","15:32","16:02","16:32","17:02","17:27","17:57","18:27","18:57","19:27","19:57","20:02","20:32","21:01","21:31","22:01","22:31","23:01","23:31"]
     },
     ropsten: { // Mot Ropsten
-      vardag: ["06:16","06:46","07:16","07:46","08:16","08:46","09:16","09:46","10:16","10:46","11:16","11:46","12:16","12:46","13:16","13:31","13:46","13:56","14:09","14:16","14:26","14:41","14:51","15:06","15:16","15:26","15:36","15:44","16:01","16:16","16:26","16:36","16:46","16:56","17:11","17:26","17:36","17:46","18:03","18:11","18:21","18:36","18:46","19:01","19:16","19:26","19:36","19:46","20:01","20:16","20:31","20:46","21:01","21:16","21:31","21:46","22:16","22:46","23:16"],
-      helg: ["07:16","08:16","08:46","09:16","09:46","10:16","10:46","11:16","11:46","12:16","12:46","13:16","13:31","13:46","13:56","14:06","14:16","14:26","14:41","14:51","15:06","15:16","15:26","15:36","15:46","16:01","16:16","16:26","16:36","16:46","16:56","17:11","17:26","17:36","17:46","18:06","18:16","18:26","18:36","18:51","19:06","19:16","19:26","19:36","19:46","19:56","20:06","20:21","20:36","20:46","21:01","21:16","21:46","22:16","22:46","23:16"]
+      mtor: ["05:46","06:16","06:31","07:16","07:46","08:16","08:46","09:16","09:46","10:16","10:46","11:16","11:46","12:16","12:46","13:16","13:46","14:16","14:26","14:36","14:46","14:56","15:06","15:16","15:36","15:46","15:56","16:06","16:16","16:26","16:41","16:56","17:06","17:16","17:26","17:36","17:51","18:06","18:16","18:26","18:36","18:46","18:56","19:16","19:31","19:46","20:16","20:46","21:16","21:46","22:16","22:46","23:16"],
+      fre: ["05:46","06:16","06:31","07:16","07:46","08:26","08:56","09:16","09:31","09:46","10:01","10:16","10:46","11:01","11:16","11:31","11:46","12:01","12:16","12:31","12:46","13:01","13:16","13:46","14:01","14:16","14:26","14:36","14:46","15:01","15:16","15:36","15:46","15:56","16:06","16:16","16:26","16:46","16:56","17:06","17:16","17:26","17:36","17:46","18:06","18:16","18:26","18:46","19:01","19:16","19:46","20:16","20:46","21:16","21:46","22:16","22:46","23:16"],
+      helg: ["07:16","08:16","08:46","09:16","09:46","10:16","10:46","11:16","11:46","12:16","12:46","13:16","13:31","13:46","13:56","14:06","14:16","14:26","14:41","14:51","15:06","15:16","15:26","15:36","15:46","16:01","16:16","16:26","16:36","16:46","16:56","17:11","17:26","17:36","17:46","18:06","18:16","18:26","18:36","18:51","19:06","19:16","19:26","19:36","19:46","19:56","20:06","20:16","20:31","20:46","21:16","21:46","22:16","22:46","23:16"]
     }
   };
 
 
-  const HOLIDAYS = ["2026-06-19"]; // midsommarafton kör helg-schema
-  const VALID_FROM = "2026-06-19";
-  const VALID_TO = "2026-08-16";
+  const HOLIDAYS = []; // inga röda vardagar i perioden – alla helgons dag är en lördag
+  const VALID_FROM = "2026-08-17";
+  const VALID_TO = "2026-12-12";
 
   const WEEKDAYS = ["söndag","måndag","tisdag","onsdag","torsdag","fredag","lördag"];
   const MONTHS = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
@@ -382,12 +387,16 @@
     const iso = y+"-"+String(mo).padStart(2,"0")+"-"+String(da).padStart(2,"0");
     return { h:h, mi:mi, s:s, y:y, mo:mo, d:da, wd:WDMAP[SE_W.format(d)], iso:iso, min:h*60+mi+s/60 };
   }
-  function isHelgSE(se){ return se.wd===0 || se.wd===6 || HOLIDAYS.includes(se.iso); }
+  // Tidtabellen har tre dagtyper: måndag–torsdag, fredag och lördag/söndag/helgdag.
+  function dayTypeFor(wd, iso){
+    if(wd===0 || wd===6 || HOLIDAYS.includes(iso)) return "helg";
+    return wd===5 ? "fre" : "mtor";
+  }
+  function dayType(se){ return dayTypeFor(se.wd, se.iso); }
+  const DAY_LABEL = { mtor:"Mån–tors", fre:"Fredag", helg:"Helg" };
   function tomorrowType(se){
     const t = new Date(Date.UTC(se.y, se.mo-1, se.d) + 86400000);
-    const iso = t.toISOString().slice(0,10);
-    const wd = t.getUTCDay();
-    return (wd===0 || wd===6 || HOLIDAYS.includes(iso)) ? "helg" : "vardag";
+    return dayTypeFor(t.getUTCDay(), t.toISOString().slice(0,10));
   }
   function fmtCountdown(diff){
     const sec = Math.round(diff*60);
@@ -620,9 +629,9 @@
     document.getElementById("dateLine").textContent = WEEKDAYS[se.wd]+" "+se.d+" "+MONTHS[se.mo-1];
     const hh=String(se.h).padStart(2,"0"), mm=String(se.mi).padStart(2,"0"), ss=String(se.s).padStart(2,"0");
     document.getElementById("clock").innerHTML = hh+":"+mm+'<span class="sec">:'+ss+'</span>';
-    const helg = isHelgSE(se);
-    document.getElementById("dayBadge").classList.toggle("helg", helg);
-    document.getElementById("dayText").textContent = helg ? "Helg" : "Vardag";
+    const dt = dayType(se);
+    document.getElementById("dayBadge").classList.toggle("helg", dt==="helg");
+    document.getElementById("dayText").textContent = DAY_LABEL[dt];
   }
 
   // ---- Riktningskort (enhetligt: hemma från tabell, borta från live) ----
@@ -668,7 +677,7 @@
   function renderCards(se){
     const nowMin = se.min;
     const home = activeStop.home;
-    const dt = isHelgSE(se) ? "helg" : "vardag";
+    const dt = dayType(se);
     let html = "";
 
     DIRS.forEach(function(dir){
@@ -721,9 +730,9 @@
     dirSeg.innerHTML = DIRS.map(function(d){ return '<button data-dir="'+d.key+'"'+(d.key===selDir?' class="active"':'')+'>'+dirLabel(d.key)+'</button>'; }).join("");
     dirSeg.querySelectorAll("button").forEach(function(b){ b.addEventListener("click", function(){ selDir=b.dataset.dir; buildControls(); renderTimes(); }); });
     const se = nowSE();
-    const todayType = isHelgSE(se)?"helg":"vardag";
+    const todayType = dayType(se);
     const chips = document.getElementById("schedChips");
-    const opts = [ {key:"vardag",label:"Vardag"}, {key:"helg",label:"Helg"} ];
+    const opts = [ {key:"mtor",label:"Mån–tors"}, {key:"fre",label:"Fredag"}, {key:"helg",label:"Helg"} ];
     chips.innerHTML = opts.map(function(o){
       const isActive = (selSched==="today" && o.key===todayType) || selSched===o.key;
       const tag = (o.key===todayType) ? '<span class="today-tag">idag</span>' : '';
@@ -735,7 +744,7 @@
   function renderTimes(){
     const se = nowSE();
     const nowMin = se.min;
-    const todayType = isHelgSE(se)?"helg":"vardag";
+    const todayType = dayType(se);
     const schedType = (selSched==="today") ? todayType : selSched;
     const isToday = (schedType===todayType);
     const list = TT[selDir][schedType];
@@ -754,7 +763,8 @@
       }
       return '<div class="'+cls+'" data-idx="'+i+'">'+t+sup+'</div>';
     }).join("");
-    document.getElementById("schedNote").textContent = isToday ? "Visar dagens schema" : ("Visar "+(schedType==="helg"?"helgschema":"vardagsschema"));
+    const SCHED_NOTE = { mtor:"schemat för måndag–torsdag", fre:"fredagsschemat", helg:"helgschemat" };
+    document.getElementById("schedNote").textContent = isToday ? "Visar dagens schema" : ("Visar "+SCHED_NOTE[schedType]);
     if(isToday && nextIdx>=0 && document.getElementById("full").classList.contains("open")){
       requestAnimationFrame(function(){
         const el = grid.querySelector('[data-idx="'+nextIdx+'"]');
@@ -766,7 +776,7 @@
 
   function checkValidity(se){
     const warn = document.getElementById("validWarn");
-    if(se.iso < VALID_FROM || se.iso > VALID_TO){ warn.classList.add("show"); warn.textContent="Obs: den här tidtabellen gäller 19 juni–16 augusti 2026. Dagens datum ligger utanför perioden, så tiderna kan ha ändrats."; }
+    if(se.iso < VALID_FROM || se.iso > VALID_TO){ warn.classList.add("show"); warn.textContent="Obs: den här tidtabellen gäller 17 augusti–12 december 2026. Dagens datum ligger utanför perioden, så tiderna kan ha ändrats."; }
     else warn.classList.remove("show");
   }
 
@@ -826,9 +836,9 @@
     document.getElementById("lDate").textContent = WEEKDAYS[se.wd]+" "+se.d+" "+MONTHS[se.mo-1];
     const hh=String(se.h).padStart(2,"0"),mm=String(se.mi).padStart(2,"0"),ss=String(se.s).padStart(2,"0");
     document.getElementById("lClock").innerHTML = hh+":"+mm+'<span class="sec">:'+ss+'</span>';
-    const helg = isHelgSE(se);
-    document.getElementById("lDayBadge").classList.toggle("helg",helg);
-    document.getElementById("lDayText").textContent = helg?"Helg":"Vardag";
+    const dt = dayType(se);
+    document.getElementById("lDayBadge").classList.toggle("helg", dt==="helg");
+    document.getElementById("lDayText").textContent = DAY_LABEL[dt];
   }
 
   // Kort dag-etikett för avgångar som inte är idag (off = antal dygn framåt).
