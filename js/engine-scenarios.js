@@ -158,15 +158,18 @@ export function planScenario(scenario, destination, ctx) {
     if (result.error) return broken(scenario, result.error, result.reason);
 
     const pick = result.candidates[0];
+    // Time between arriving at the stop and the service leaving. At the first
+    // stop this is not waiting: the leave-home time is derived from this
+    // departure, so you leave later instead of standing on the pier.
     const wait = pick.departs - clock;
-    waiting += wait;
+    if (transfers > 0) waiting += wait;
     legs.push({
       type: "transit",
       from,
       to,
       mode: leg.mode,
       line: leg.line,
-      wait,
+      wait: transfers > 0 ? wait : 0,
       start: pick.departs,
       end: pick.arrives,
       minutes: pick.arrives - pick.departs,

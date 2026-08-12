@@ -156,6 +156,28 @@ test("bytesmarginal respekteras vid byte men inte vid första påstigning", () =
   assert.equal(toClock(plan.legs[3].start), "07:50", "ska välja spårvagnen efter marginalen");
 });
 
+test("väntan räknas bara vid byten, inte på första bryggan", () => {
+  // Båt 07:27 -> Allmänna gränd 07:36, 2 min promenad = 07:38, spårvagn 07:42.
+  // Enda äkta väntan är de 4 minuterna vid Liljevalchs. Tiden fram till båten
+  // är ingen väntan: gå hemifrån-tiden är härledd ur den avgången.
+  const ctx = ctxAt("07:00", {
+    sites: {
+      1442: [{ line: "80", mode: "SHIP", scheduled: "07:27", destination: "Nybroplan" }],
+      1406: [{ line: "7", mode: "TRAM", scheduled: "07:42" }],
+    },
+  });
+  const plan = planScenario(byId("boat_tram_strandvagen"), TEGEL, ctx);
+  assert.equal(plan.waiting, 4);
+  assert.equal(plan.legs[1].wait, 0, "första båten ska inte räknas som väntan");
+  assert.equal(toClock(plan.leaveHome), "07:24");
+});
+
+test("restid mäts dörr till dörr från gå hemifrån", () => {
+  const plan = planScenario(byId("boat_direct_frihamnen"), TEGEL, ctxAt("07:00"));
+  assert.equal(plan.travelMinutes, plan.arrive - plan.leaveHome);
+  assert.equal(plan.travelMinutes, 67, "07:13 till 08:20");
+});
+
 test("scenario som inte betjänar destinationen ger null", () => {
   const hangovagen = data.scenarios.destinations.find((d) => d.id === "hangovagen_office");
   const vartan = byId("boat_direct_vartahamnen");
