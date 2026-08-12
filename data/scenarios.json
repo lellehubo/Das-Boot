@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+
+  "destinations": [
+    {
+      "id": "tegeluddsvagen_3",
+      "label": "Tegeluddsvägen 3",
+      "node": "tegeluddsvagen_3",
+      "valid_from": null,
+      "valid_to": "2026-09-30"
+    },
+    {
+      "id": "hangovagen_office",
+      "label": "Hangövägen",
+      "node": "hangovagen_office",
+      "valid_from": "2026-10-01",
+      "valid_to": null
+    }
+  ],
+
+  "note": "Destinationen väljs automatiskt på dagens datum. Överlappar två destinationer ska användaren kunna växla manuellt. Riktningen home_to_work vänds spegelvänt för hemresan, med samma ben i omvänd ordning.",
+
+  "scenarios": [
+    {
+      "id": "boat_bike_djurgarden",
+      "label": "Båten till Allmänna gränd, cykel därifrån",
+      "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
+      "requires_bike": true,
+      "legs": [
+        { "type": "walk", "from": "home", "to": "saltsjoqvarn" },
+        { "type": "transit", "mode": "SHIP", "line": "80", "from": "saltsjoqvarn", "to": "allmanna_grand" },
+        { "type": "bike", "from": "allmanna_grand", "to": "$destination" }
+      ]
+    },
+
+    {
+      "id": "boat_tram_strandvagen",
+      "label": "Båten och spårvagnen, promenad Strandvägen till Gärdet",
+      "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
+      "requires_bike": false,
+      "legs": [
+        { "type": "walk", "from": "home", "to": "saltsjoqvarn" },
+        { "type": "transit", "mode": "SHIP", "line": "80", "from": "saltsjoqvarn", "to": "allmanna_grand" },
+        { "type": "walk", "from": "allmanna_grand", "to": "liljevalchs" },
+        { "type": "transit", "mode": "TRAM", "line": "7", "from": "liljevalchs", "to": "djurgardsbron" },
+        { "type": "walk", "from": "djurgardsbron", "to": "$destination" }
+      ]
+    },
+
+    {
+      "id": "boat_bus67_karlaplan",
+      "label": "Båten och buss 67 till Karlaplan, gå därifrån",
+      "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
+      "requires_bike": false,
+      "legs": [
+        { "type": "walk", "from": "home", "to": "saltsjoqvarn" },
+        { "type": "transit", "mode": "SHIP", "line": "80", "from": "saltsjoqvarn", "to": "allmanna_grand" },
+        { "type": "walk", "from": "allmanna_grand", "to": "liljevalchs" },
+        { "type": "transit", "mode": "BUS", "line": "67", "from": "liljevalchs", "to": "karlaplan" },
+        { "type": "walk", "from": "karlaplan", "to": "$destination" }
+      ]
+    },
+
+    {
+      "id": "boat_direct_frihamnen",
+      "label": "Båten hela vägen till Frihamnen",
+      "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
+      "requires_bike": false,
+      "status": "untested",
+      "legs": [
+        { "type": "walk", "from": "home", "to": "saltsjoqvarn" },
+        { "type": "transit", "mode": "SHIP", "line": "80", "from": "saltsjoqvarn", "to": "frihamnen_pier" },
+        { "type": "walk", "from": "frihamnen_pier", "to": "$destination" }
+      ],
+      "note": "Noll byten. Turen är verifierad att finnas i hösttabellen: 06:31 kommer fram 07:07, 07:16 kommer fram 07:54, 07:46 kommer fram 08:26 (36-40 min på vattnet). Föreslaget av analysen, inte av användaren — status untested gäller tills han kvitterat att han gillar den, inte att den existerar."
+    },
+
+    {
+      "id": "boat_direct_frihamnen_bike",
+      "label": "Båten till Frihamnen, cykel sista biten",
+      "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
+      "requires_bike": true,
+      "status": "untested",
+      "legs": [
+        { "type": "walk", "from": "home", "to": "saltsjoqvarn" },
+        { "type": "transit", "mode": "SHIP", "line": "80", "from": "saltsjoqvarn", "to": "frihamnen_pier" },
+        { "type": "bike", "from": "frihamnen_pier", "to": "$destination" }
+      ]
+    },
+
+    {
+      "id": "boat_direct_vartahamnen",
+      "label": "Båten till Värtahamnen",
+      "destinations": ["hangovagen_office"],
+      "requires_bike": false,
+      "status": "dormant",
+      "valid_from": "2027-04-01",
+      "requires_node": "vartahamnen_pier",
+      "legs": [
+        { "type": "walk", "from": "home", "to": "saltsjoqvarn" },
+        { "type": "transit", "mode": "SHIP", "line": "80", "from": "saltsjoqvarn", "to": "vartahamnen_pier" },
+        { "type": "walk", "from": "vartahamnen_pier", "to": "$destination" }
+      ],
+      "note": "Aktiveras först när vartahamnen_pier fått ett site_id i stops.json. Aktivera aldrig automatiskt."
+    }
+  ]
+}

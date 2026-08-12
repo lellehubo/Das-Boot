@@ -1,11 +1,20 @@
 #!/usr/bin/env python3
-"""Extract Saltsjoqvarn departure times for boat line 80 from an SL timetable PDF.
+"""Extract boat line 80 times for Saltsjoqvarn from an SL timetable PDF.
 
 SL publishes line 80 as a printable PDF (e.g. kund.printhuset-sthlm.se/sl/h80.pdf).
-This script reads the Saltsjoqvarn row and emits the TT object used by index.html.
 
 Usage:
-    python tools/extract-timetable.py h80.pdf > tt.json
+    python tools/extract-timetable.py h80.pdf            > tt.json
+    python tools/extract-timetable.py h80.pdf --legs     > boat-legs.json
+
+Default output is the TT object used by index.html: departure times per direction
+and day type.
+
+--legs pairs each departure with its arrival at the stops the "Jobbet" scenarios
+need. SL Transport's /departures caps at roughly six departures per stop, so for a
+38-minute leg the origin and destination windows barely overlap and journey ids
+cannot be matched across them. Arrival therefore comes from the table; realtime
+only adjusts the departure.
 
 Requires pymupdf.
 
@@ -140,28 +149,109 @@ def check(times, label, warnings):
         warnings.append(f"{label}: contains duplicates")
 
 
+# Stops the "Jobbet" scenarios board or leave the boat at, by table name.
+LEG_TARGETS = {
+    "ropsten": {"Frihamnen": "frihamnen_pier"},
+    "nybroplan": {"Allmänna": "allmanna_grand"},
+}
+
+COLUMN_TOLERANCE = 6  # points; a column's cells share an x within this
+
+
+def row_cells(words, row_y):
+    """Printed times on one row, keyed by column x. Compressed cells are skipped:
+    a sample column carries no hour, so it cannot be paired with an arrival."""
+    return {
+        round(x0): text.replace(".", ":")
+        for x0, y0, _x1, _y1, text, *_ in words
+        if abs(y0 - row_y) < ROW_TOLERANCE and FULL.match(text)
+    }
+
+
+def rows_for(words, stop_name):
+    return sorted(
+        y0
+        for x0, y0, _x1, _y1, text, *_ in words
+        if text == stop_name and x0 < NAME_COLUMN_MAX_X
+    )
+
+
+def extract_legs(document, pages, targets, warnings):
+    """Map each printed departure to its arrival at each target stop."""
+    result = {"mtor": {}, "fre": {}, "helg": {}}
+    carried = None
+
+    for index in pages:
+        words = document[index].get_text("words")
+        headings = sorted(
+            (y0, DAY_HEADINGS[text])
+            for _x0, y0, _x1, _y1, text, *_ in words
+            if text in DAY_HEADINGS
+        )
+        origin_rows = rows_for(words, ORIGIN)
+        target_rows = {name: rows_for(words, name) for name in targets}
+
+        for block, origin_y in enumerate(origin_rows):
+            above = [key for heading_y, key in headings if heading_y < origin_y]
+            day_type = above[-1] if above else carried
+            if day_type is None:
+                continue
+            carried = day_type
+
+            departures = row_cells(words, origin_y)
+            for name, node in targets.items():
+                if block >= len(target_rows[name]):
+                    warnings.append(f"page {index + 1}: no {name} row for block {block}")
+                    continue
+                arrivals = row_cells(words, target_rows[name][block])
+                for x, departure in departures.items():
+                    match = [
+                        arrivals[ax] for ax in arrivals if abs(ax - x) < COLUMN_TOLERANCE
+                    ]
+                    if not match:
+                        continue
+                    # A negative difference means the boat called at the target
+                    # before Saltsjoqvarn, i.e. this run goes the other way.
+                    if (to_minutes(match[0]) - to_minutes(departure)) % 1440 > 720:
+                        continue
+                    result[day_type].setdefault(departure, {})[node] = match[0]
+
+        if headings:
+            carried = headings[-1][1]
+
+    return result
+
+
 def main():
-    if len(sys.argv) != 2:
+    if len(sys.argv) < 2:
         sys.exit(__doc__)
+    legs_mode = "--legs" in sys.argv[2:]
 
     document = fitz.open(sys.argv[1])
     warnings = []
 
     # Pages 1-4 are Nybroplan->Ropsten (eastbound), 5-8 Ropsten->Nybroplan.
     # Page 9 is the Ropsten-Storholmen shuttle and is not part of this app.
-    timetable = {
-        "ropsten": extract(document, range(0, 4), warnings),
-        "nybroplan": extract(document, range(4, 8), warnings),
-    }
+    PAGES = {"ropsten": range(0, 4), "nybroplan": range(4, 8)}
 
-    for direction, day_types in timetable.items():
-        for day_type, times in day_types.items():
-            check(times, f"{direction}/{day_type}", warnings)
+    if legs_mode:
+        output = {
+            direction: extract_legs(document, pages, LEG_TARGETS[direction], warnings)
+            for direction, pages in PAGES.items()
+        }
+    else:
+        output = {
+            direction: extract(document, pages, warnings)
+            for direction, pages in PAGES.items()
+        }
+        for direction, day_types in output.items():
+            for day_type, times in day_types.items():
+                check(times, f"{direction}/{day_type}", warnings)
 
     for warning in warnings:
         print(f"warning: {warning}", file=sys.stderr)
 
-    json.dump(timetable, sys.stdout, ensure_ascii=False, indent=1)
+    json.dump(output, sys.stdout, ensure_ascii=False, indent=1)
     print(file=sys.stdout)
 
 

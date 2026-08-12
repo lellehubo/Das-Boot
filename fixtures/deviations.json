@@ -1,0 +1,44 @@
+[
+  {
+    "version": 7,
+    "created": "2026-08-04T06:01:06.23+02:00",
+    "deviation_case_id": 10252554,
+    "publish": {
+      "from": "2026-08-04T06:01:06.227+02:00",
+      "upto": "2026-10-01T18:00:00.000+02:00"
+    },
+    "priority": {
+      "importance_level": 5,
+      "influence_level": 3,
+      "urgency_level": 1
+    },
+    "message_variants": [
+      {
+        "header": "Skylt ur funktion vid Djurgårdsbron",
+        "details": "Den elektroniska skylten vid Djurgårdsbron för Spårväg City 7 mot Waldemarsudde är ur funktion sedan 2025-10-20 på grund av tekniskt fel. Skylten är av en äldre, utgången modell, och skall monteras ned och ersättas av en ny skylt.\n\nFör information om avgångstider och eventuella störningar, vänligen se tidtabell på hållplatsen och Trafikläget på sl.se, samt sök din resa på sl.se eller i SL-appen.\n\nPrognos saknas för när en ny skylt kan vara installerad på hållplatsen.",
+        "scope_alias": "Spårväg City 7",
+        "language": "sv"
+      }
+    ],
+    "scope": {
+      "stop_areas": [
+        {
+          "id": 4309,
+          "name": "Djurgårdsbron",
+          "type": "TRAMSTN",
+          "transport_authority": 1
+        }
+      ],
+      "lines": [
+        {
+          "id": 7,
+          "transport_authority": 1,
+          "designation": "7",
+          "transport_mode": "TRAM",
+          "name": "Spårväg city",
+          "group_of_lines": "Spårväg City"
+        }
+      ]
+    }
+  }
+]

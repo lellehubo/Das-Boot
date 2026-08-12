@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "unit": "minutes",
+  "note": "Alla värden med calibrated: false är uppskattningar från fågelvägsavstånd plus omvägsfaktor. De ska mätas upp och skrivas över. Appen visar en diskret markering på scenarier som innehåller okalibrerade ben.",
+
+  "defaults": {
+    "walk_kmh": 5.0,
+    "bike_kmh": 16.0,
+    "detour_factor": 1.25
+  },
+
+  "transit_note": "Restid ombord för icke-båtben. Båtbenens tider ligger i boat-legs.json, per avgång, eftersom de varierar 36-43 minuter över dagen. Spårvagn och buss är stabila nog för ett enda värde. Hämtade från SL Journey Planner 2026-08-12.",
+
+  "legs": [
+    { "from": "home", "to": "saltsjoqvarn", "walk": 3, "calibrated": false },
+
+    { "from": "liljevalchs", "to": "djurgardsbron", "transit": 3, "calibrated": true,
+      "note": "Spårväg City 7, en hållplats." },
+    { "from": "liljevalchs", "to": "karlaplan", "transit": 6, "calibrated": true,
+      "note": "Buss 67." },
+
+    { "from": "allmanna_grand", "to": "liljevalchs", "walk": 2, "calibrated": false },
+    { "from": "allmanna_grand", "to": "tegeluddsvagen_3", "bike": 17, "walk": 48, "calibrated": false,
+      "note": "Via Djurgårdsbron och Narvavägen." },
+    { "from": "allmanna_grand", "to": "hangovagen_office", "bike": 21, "walk": 57, "calibrated": false },
+
+    { "from": "djurgardsbron", "to": "tegeluddsvagen_3", "walk": 29, "bike": 10, "calibrated": false,
+      "note": "Sträckan Strandvägen, Narvavägen, Gärdet. Detta är en av favoritpromenaderna." },
+    { "from": "djurgardsbron", "to": "hangovagen_office", "walk": 36, "bike": 13, "calibrated": false },
+
+    { "from": "nybroplan", "to": "tegeluddsvagen_3", "walk": 34, "bike": 12, "calibrated": false },
+    { "from": "nybroplan", "to": "hangovagen_office", "walk": 41, "bike": 15, "calibrated": false },
+
+    { "from": "karlaplan", "to": "tegeluddsvagen_3", "walk": 21, "bike": 8, "calibrated": false },
+    { "from": "karlaplan", "to": "hangovagen_office", "walk": 26, "bike": 9, "calibrated": false },
+
+    { "from": "gardet", "to": "tegeluddsvagen_3", "walk": 5, "bike": 2, "calibrated": false },
+    { "from": "gardet", "to": "hangovagen_office", "walk": 11, "bike": 4, "calibrated": false },
+
+    { "from": "frihamnen_pier", "to": "tegeluddsvagen_3", "walk": 26, "bike": 9, "calibrated": false,
+      "note": "Genom hamnområdet. Verklig sträcka kan vara längre än fågelvägen antyder." },
+    { "from": "frihamnen_pier", "to": "hangovagen_office", "walk": 17, "bike": 6, "calibrated": false },
+
+    { "from": "malmvagen", "to": "hangovagen_office", "walk": 3, "calibrated": false },
+    { "from": "frihamnen_bus", "to": "hangovagen_office", "walk": 12, "bike": 4, "calibrated": false },
+
+    { "from": "vartahamnen_pier", "to": "hangovagen_office", "walk": 7, "bike": 3, "calibrated": false,
+      "note": "Uppskattad mot ungefärlig bryggposition. Måste mätas om när bryggan finns." }
+  ]
+}
