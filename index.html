@@ -337,7 +337,7 @@
   <div class="away-note">Realtid för de närmaste avgångarna vid vald brygga. Hela tidtabellen och offline-läget finns för Saltsjöqvarn.</div>
 
   <footer>
-    <div class="valid-txt">PENDELBÅT LINJE 80 · STAN<br>Giltig 17 augusti–12 december 2026</div>
+    <div class="valid-txt" id="validTxt">PENDELBÅT LINJE 80 · STAN</div>
     <a class="tt-btn" href="https://sl.se/globalassets/linje-80.pdf" target="_blank" rel="noopener" aria-label="Öppna SL:s tidtabell för linje 80"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Tidtabell</a>
     <button class="info-btn" id="infoBtn" aria-label="Om appen">i</button>
   </footer>
@@ -406,29 +406,51 @@
 </div>
 
 <script>
+  const APP_VERSION = "2026-08-12c"; // bumpa vid ändring i js/ för att bryta modulcachen
+
   // ---- Verifierade avgångar från Saltsjöqvarn (HH:MM) ----
-  // Utläst ur SL:s tryckta tidtabell med tools/extract-timetable.py och stickprovs-
-  // kontrollerad mot SL Journey Planner. Hösttabellen har tre dagtyper, inte två:
-  // fredag har egen trafik och är alltså inte samma sak som måndag–torsdag.
-  const TT = {
-    nybroplan: { // Mot stan
-      mtor: ["05:56","06:26","07:02","07:27","07:37","07:52","08:02","08:12","08:22","08:32","08:47","09:02","09:12","09:22","09:32","09:47","10:02","10:17","10:32","10:47","11:02","11:17","11:32","12:02","12:32","13:02","13:32","14:02","14:32","15:02","15:32","16:02","16:32","17:02","17:32","18:02","18:32","19:02","19:32","20:02","20:32","21:01","21:31","22:01","22:31","23:01","23:31"],
-      fre: ["05:56","06:26","07:02","07:32","07:47","08:02","08:17","08:32","08:47","09:02","09:17","09:37","10:10","10:22","10:40","10:52","11:05","11:35","11:50","12:05","12:20","12:35","12:50","13:05","13:20","13:35","13:50","14:05","14:35","14:50","15:05","15:30","16:05","16:35","17:05","17:35","18:05","18:35","19:05","19:35","20:05","20:35","21:01","21:31","22:01","22:31","23:01","23:31"],
-      helg: ["07:26","08:36","09:02","09:37","09:47","10:02","10:12","10:22","10:32","10:42","10:57","11:07","11:22","11:37","11:52","12:07","12:22","12:37","12:52","13:07","13:22","13:32","13:42","14:02","14:32","14:57","15:32","16:02","16:32","17:02","17:27","17:57","18:27","18:57","19:27","19:57","20:02","20:32","21:01","21:31","22:01","22:31","23:01","23:31"]
+  // Utlästa ur SL:s tryckta tidtabeller med tools/extract-timetable.py och
+  // stickprovskontrollerade mot SL Journey Planner. Appen väljer tabell på dagens
+  // datum, så hösttabellen börjar gälla av sig själv den 17 augusti.
+  //
+  // Dagtyperna skiljer sig mellan utgåvorna: sommaren kör måndag–fredag som en
+  // enda typ, hösten bryter ut fredagen. Därför bär varje tabell sina egna.
+  const TIMETABLES = [
+    {
+      from: "2026-06-19", to: "2026-08-16",
+      valid: "19 juni–16 augusti 2026",
+      holidays: ["2026-06-19"], // midsommarafton kör helgschema
+      types: [{ key:"vardag", label:"Vardag" }, { key:"helg", label:"Helg" }],
+      pick: function(wd, helg){ return helg ? "helg" : "vardag"; },
+      tt: {
+        nybroplan: { vardag: ["06:32","07:02","07:32","07:42","07:52","08:02","08:12","08:22","08:37","08:52","09:02","09:12","09:27","09:37","09:47","10:02","10:12","10:22","10:32","10:42","10:57","11:07","11:22","11:37","11:52","12:07","12:22","12:37","12:52","13:07","13:22","13:30","13:42","14:01","14:28","15:01","15:26","15:56","16:26","16:56","17:26","17:56","18:26","18:56","19:26","20:02","20:26","20:56","21:26","21:56","22:26","22:56","23:26"], helg: ["07:36","08:36","09:01","09:31","09:47","10:02","10:12","10:22","10:32","10:42","10:57","11:07","11:22","11:37","11:52","12:07","12:22","12:37","12:52","13:07","13:22","13:32","13:42","13:58","14:28","14:58","15:28","15:58","16:28","16:58","17:28","17:58","18:28","18:58","19:28","19:58","20:03","20:33","20:55","21:25","22:00","22:25","22:55","23:25"] },
+        ropsten:   { vardag: ["06:16","06:46","07:16","07:46","08:16","08:46","09:16","09:46","10:16","10:46","11:16","11:46","12:16","12:46","13:16","13:31","13:46","13:56","14:09","14:16","14:26","14:41","14:51","15:06","15:16","15:26","15:36","15:44","16:01","16:16","16:26","16:36","16:46","16:56","17:11","17:26","17:36","17:46","18:03","18:11","18:21","18:36","18:46","19:01","19:16","19:26","19:36","19:46","20:01","20:16","20:31","20:46","21:01","21:16","21:31","21:46","22:16","22:46","23:16"], helg: ["07:16","08:16","08:46","09:16","09:46","10:16","10:46","11:16","11:46","12:16","12:46","13:16","13:31","13:46","13:56","14:06","14:16","14:26","14:41","14:51","15:06","15:16","15:26","15:36","15:46","16:01","16:16","16:26","16:36","16:46","16:56","17:11","17:26","17:36","17:46","18:06","18:16","18:26","18:36","18:51","19:06","19:16","19:26","19:36","19:46","19:56","20:06","20:21","20:36","20:46","21:01","21:16","21:46","22:16","22:46","23:16"] }
+      }
     },
-    ropsten: { // Mot Ropsten
-      mtor: ["05:46","06:16","06:31","07:16","07:46","08:16","08:46","09:16","09:46","10:16","10:46","11:16","11:46","12:16","12:46","13:16","13:46","14:16","14:26","14:36","14:46","14:56","15:06","15:16","15:36","15:46","15:56","16:06","16:16","16:26","16:41","16:56","17:06","17:16","17:26","17:36","17:51","18:06","18:16","18:26","18:36","18:46","18:56","19:16","19:31","19:46","20:16","20:46","21:16","21:46","22:16","22:46","23:16"],
-      fre: ["05:46","06:16","06:31","07:16","07:46","08:26","08:56","09:16","09:31","09:46","10:01","10:16","10:46","11:01","11:16","11:31","11:46","12:01","12:16","12:31","12:46","13:01","13:16","13:46","14:01","14:16","14:26","14:36","14:46","15:01","15:16","15:36","15:46","15:56","16:06","16:16","16:26","16:46","16:56","17:06","17:16","17:26","17:36","17:46","18:06","18:16","18:26","18:46","19:01","19:16","19:46","20:16","20:46","21:16","21:46","22:16","22:46","23:16"],
-      helg: ["07:16","08:16","08:46","09:16","09:46","10:16","10:46","11:16","11:46","12:16","12:46","13:16","13:31","13:46","13:56","14:06","14:16","14:26","14:41","14:51","15:06","15:16","15:26","15:36","15:46","16:01","16:16","16:26","16:36","16:46","16:56","17:11","17:26","17:36","17:46","18:06","18:16","18:26","18:36","18:51","19:06","19:16","19:26","19:36","19:46","19:56","20:06","20:16","20:31","20:46","21:16","21:46","22:16","22:46","23:16"]
+    {
+      from: "2026-08-17", to: "2026-12-12",
+      valid: "17 augusti–12 december 2026",
+      holidays: [], // inga röda vardagar i perioden – alla helgons dag är en lördag
+      types: [{ key:"mtor", label:"Mån–tors" }, { key:"fre", label:"Fredag" }, { key:"helg", label:"Helg" }],
+      pick: function(wd, helg){ return helg ? "helg" : (wd === 5 ? "fre" : "mtor"); },
+      tt: {
+        nybroplan: { mtor: ["05:56","06:26","07:02","07:27","07:37","07:52","08:02","08:12","08:22","08:32","08:47","09:02","09:12","09:22","09:32","09:47","10:02","10:17","10:32","10:47","11:02","11:17","11:32","12:02","12:32","13:02","13:32","14:02","14:32","15:02","15:32","16:02","16:32","17:02","17:32","18:02","18:32","19:02","19:32","20:02","20:32","21:01","21:31","22:01","22:31","23:01","23:31"], fre: ["05:56","06:26","07:02","07:32","07:47","08:02","08:17","08:32","08:47","09:02","09:17","09:37","10:10","10:22","10:40","10:52","11:05","11:35","11:50","12:05","12:20","12:35","12:50","13:05","13:20","13:35","13:50","14:05","14:35","14:50","15:05","15:30","16:05","16:35","17:05","17:35","18:05","18:35","19:05","19:35","20:05","20:35","21:01","21:31","22:01","22:31","23:01","23:31"], helg: ["07:26","08:36","09:02","09:37","09:47","10:02","10:12","10:22","10:32","10:42","10:57","11:07","11:22","11:37","11:52","12:07","12:22","12:37","12:52","13:07","13:22","13:32","13:42","14:02","14:32","14:57","15:32","16:02","16:32","17:02","17:27","17:57","18:27","18:57","19:27","19:57","20:02","20:32","21:01","21:31","22:01","22:31","23:01","23:31"] },
+        ropsten:   { mtor: ["05:46","06:16","06:31","07:16","07:46","08:16","08:46","09:16","09:46","10:16","10:46","11:16","11:46","12:16","12:46","13:16","13:46","14:16","14:26","14:36","14:46","14:56","15:06","15:16","15:36","15:46","15:56","16:06","16:16","16:26","16:41","16:56","17:06","17:16","17:26","17:36","17:51","18:06","18:16","18:26","18:36","18:46","18:56","19:16","19:31","19:46","20:16","20:46","21:16","21:46","22:16","22:46","23:16"], fre: ["05:46","06:16","06:31","07:16","07:46","08:26","08:56","09:16","09:31","09:46","10:01","10:16","10:46","11:01","11:16","11:31","11:46","12:01","12:16","12:31","12:46","13:01","13:16","13:46","14:01","14:16","14:26","14:36","14:46","15:01","15:16","15:36","15:46","15:56","16:06","16:16","16:26","16:46","16:56","17:06","17:16","17:26","17:36","17:46","18:06","18:16","18:26","18:46","19:01","19:16","19:46","20:16","20:46","21:16","21:46","22:16","22:46","23:16"], helg: ["07:16","08:16","08:46","09:16","09:46","10:16","10:46","11:16","11:46","12:16","12:46","13:16","13:31","13:46","13:56","14:06","14:16","14:26","14:41","14:51","15:06","15:16","15:26","15:36","15:46","16:01","16:16","16:26","16:36","16:46","16:56","17:11","17:26","17:36","17:46","18:06","18:16","18:26","18:36","18:51","19:06","19:16","19:26","19:36","19:46","19:56","20:06","20:16","20:31","20:46","21:16","21:46","22:16","22:46","23:16"] }
+      }
     }
-  };
+  ];
 
-
-  const APP_VERSION = "2026-08-12b"; // bumpa vid ändring i js/ för att bryta modulcachen
-
-  const HOLIDAYS = []; // inga röda vardagar i perioden – alla helgons dag är en lördag
-  const VALID_FROM = "2026-08-17";
-  const VALID_TO = "2026-12-12";
+  // Vilken tabell som gäller ett visst datum. Utanför alla perioder används den
+  // sista, tillsammans med varningsrutan om att tiderna kan ha ändrats.
+  function tableFor(iso){
+    for(let i=0;i<TIMETABLES.length;i++){
+      const t = TIMETABLES[i];
+      if(t.from <= iso && iso <= t.to) return t;
+    }
+    return TIMETABLES[TIMETABLES.length-1];
+  }
+  const VALID_FROM = TIMETABLES[0].from;
+  const VALID_TO = TIMETABLES[TIMETABLES.length-1].to;
 
   const WEEKDAYS = ["söndag","måndag","tisdag","onsdag","torsdag","fredag","lördag"];
   const MONTHS = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
@@ -457,16 +479,23 @@
     const iso = y+"-"+String(mo).padStart(2,"0")+"-"+String(da).padStart(2,"0");
     return { h:h, mi:mi, s:s, y:y, mo:mo, d:da, wd:WDMAP[SE_W.format(d)], iso:iso, min:h*60+mi+s/60 };
   }
-  // Tidtabellen har tre dagtyper: måndag–torsdag, fredag och lördag/söndag/helgdag.
+  // Dagtypen beror på vilken tabell som gäller: sommaren har vardag/helg,
+  // hösten mtor/fre/helg. Tabellen avgör alltså, inte veckodagen ensam.
   function dayTypeFor(wd, iso){
-    if(wd===0 || wd===6 || HOLIDAYS.includes(iso)) return "helg";
-    return wd===5 ? "fre" : "mtor";
+    const t = tableFor(iso);
+    return t.pick(wd, wd === 0 || wd === 6 || t.holidays.includes(iso));
   }
   function dayType(se){ return dayTypeFor(se.wd, se.iso); }
-  const DAY_LABEL = { mtor:"Mån–tors", fre:"Fredag", helg:"Helg" };
-  function tomorrowType(se){
-    const t = new Date(Date.UTC(se.y, se.mo-1, se.d) + 86400000);
-    return dayTypeFor(t.getUTCDay(), t.toISOString().slice(0,10));
+  function dayLabel(se){
+    const t = tableFor(se.iso), key = dayType(se);
+    const found = t.types.find(function(x){ return x.key === key; });
+    return found ? found.label : key;
+  }
+  // Imorgon kan tillhöra en annan tabell – natten mellan 16 och 17 augusti gör det.
+  function tomorrowInfo(se){
+    const d = new Date(Date.UTC(se.y, se.mo-1, se.d) + 86400000);
+    const iso = d.toISOString().slice(0,10);
+    return { table: tableFor(iso), type: dayTypeFor(d.getUTCDay(), iso) };
   }
   function fmtCountdown(diff){
     const sec = Math.round(diff*60);
@@ -701,7 +730,7 @@
     document.getElementById("clock").innerHTML = hh+":"+mm+'<span class="sec">:'+ss+'</span>';
     const dt = dayType(se);
     document.getElementById("dayBadge").classList.toggle("helg", dt==="helg");
-    document.getElementById("dayText").textContent = DAY_LABEL[dt];
+    document.getElementById("dayText").textContent = dayLabel(se);
   }
 
   // ---- Riktningskort (enhetligt: hemma från tabell, borta från live) ----
@@ -712,7 +741,8 @@
     html += '</div>';
 
     if(state==="ended"){
-      html += '<div class="ended">Sista båten har gått.<span class="tmr">Imorgon '+TT[dirKey][tomorrowType(se)][0]+'</span></div></div>';
+      const tm = tomorrowInfo(se);
+      html += '<div class="ended">Sista båten har gått.<span class="tmr">Imorgon '+tm.table.tt[dirKey][tm.type][0]+'</span></div></div>';
       return html;
     }
     if(state==="nolive"){ html += '<div class="ended">Realtidsdata krävs för den här bryggan.<span class="tmr" style="font-size:15px">Anslut till nätet</span></div></div>'; return html; }
@@ -762,7 +792,7 @@
       let deps = [], state = "ok";
 
       if(home){
-        const list = TT[dir.key][dt];
+        const list = tableFor(se.iso).tt[dir.key][dt];
         const upcoming = list.filter(function(t){ return toMin(t) > nowMin; });
         if(upcoming.length===0){ state="ended"; }
         else {
@@ -802,7 +832,9 @@
     const se = nowSE();
     const todayType = dayType(se);
     const chips = document.getElementById("schedChips");
-    const opts = [ {key:"mtor",label:"Mån–tors"}, {key:"fre",label:"Fredag"}, {key:"helg",label:"Helg"} ];
+    const opts = tableFor(se.iso).types;
+    // Ett valt schema från förra tabellen finns inte i den nya – fall tillbaka på idag.
+    if(selSched !== "today" && !opts.some(function(o){ return o.key === selSched; })) selSched = "today";
     chips.innerHTML = opts.map(function(o){
       const isActive = (selSched==="today" && o.key===todayType) || selSched===o.key;
       const tag = (o.key===todayType) ? '<span class="today-tag">idag</span>' : '';
@@ -814,10 +846,11 @@
   function renderTimes(){
     const se = nowSE();
     const nowMin = se.min;
+    const table = tableFor(se.iso);
     const todayType = dayType(se);
-    const schedType = (selSched==="today") ? todayType : selSched;
+    const schedType = (selSched==="today" || !table.tt[selDir][selSched]) ? todayType : selSched;
     const isToday = (schedType===todayType);
-    const list = TT[selDir][schedType];
+    const list = table.tt[selDir][schedType];
     const grid = document.getElementById("timesGrid");
     let nextIdx = -1;
     if(isToday){ for(let i=0;i<list.length;i++){ if(toMin(list[i])>nowMin){ nextIdx=i; break; } } }
@@ -833,8 +866,9 @@
       }
       return '<div class="'+cls+'" data-idx="'+i+'">'+t+sup+'</div>';
     }).join("");
-    const SCHED_NOTE = { mtor:"schemat för måndag–torsdag", fre:"fredagsschemat", helg:"helgschemat" };
-    document.getElementById("schedNote").textContent = isToday ? "Visar dagens schema" : ("Visar "+SCHED_NOTE[schedType]);
+    const chosen = table.types.find(function(x){ return x.key === schedType; });
+    document.getElementById("schedNote").textContent =
+      isToday ? "Visar dagens schema" : ("Visar schemat för " + (chosen ? chosen.label.toLowerCase() : schedType));
     if(isToday && nextIdx>=0 && document.getElementById("full").classList.contains("open")){
       requestAnimationFrame(function(){
         const el = grid.querySelector('[data-idx="'+nextIdx+'"]');
@@ -846,12 +880,25 @@
 
   function checkValidity(se){
     const warn = document.getElementById("validWarn");
-    if(se.iso < VALID_FROM || se.iso > VALID_TO){ warn.classList.add("show"); warn.textContent="Obs: den här tidtabellen gäller 17 augusti–12 december 2026. Dagens datum ligger utanför perioden, så tiderna kan ha ändrats."; }
+    const table = tableFor(se.iso);
+    document.getElementById("validTxt").innerHTML = "PENDELBÅT LINJE 80 · STAN<br>Giltig " + table.valid;
+    if(se.iso < VALID_FROM || se.iso > VALID_TO){
+      warn.classList.add("show");
+      warn.textContent = "Obs: den senaste tidtabellen gäller "+table.valid+". Dagens datum ligger utanför perioden, så tiderna kan ha ändrats.";
+    }
     else warn.classList.remove("show");
   }
 
+  let lastIso = null;
   function tick(){
     const se = nowSE();
+    // Vid dygnsskiftet kan en ny tidtabell ha börjat gälla. Appen kan stå öppen
+    // över natten, så giltighet och kontroller byggs om när datumet ändras.
+    if(se.iso !== lastIso){
+      lastIso = se.iso;
+      checkValidity(se);
+      if(document.getElementById("full").classList.contains("open")) buildControls();
+    }
     if(currentView==="landet"){ renderLandetHeader(se); renderLandet(se); return; }
     if(currentView==="jobbet"){ if(window.jobbet) window.jobbet.render(se); return; }
     renderHeader(se);
@@ -909,7 +956,7 @@
     document.getElementById("lClock").innerHTML = hh+":"+mm+'<span class="sec">:'+ss+'</span>';
     const dt = dayType(se);
     document.getElementById("lDayBadge").classList.toggle("helg", dt==="helg");
-    document.getElementById("lDayText").textContent = DAY_LABEL[dt];
+    document.getElementById("lDayText").textContent = dayLabel(se);
   }
 
   // Kort dag-etikett för avgångar som inte är idag (off = antal dygn framåt).

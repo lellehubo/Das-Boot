@@ -1,591 +1,1053 @@
 {
- "ropsten": {
-  "mtor": {
-   "06:16": {
-    "frihamnen_pier": "06:54"
-   },
-   "05:46": {
-    "frihamnen_pier": "06:24"
-   },
-   "06:31": {
-    "frihamnen_pier": "07:07"
-   },
-   "07:16": {
-    "frihamnen_pier": "07:54"
-   },
-   "07:46": {
-    "frihamnen_pier": "08:26"
-   },
-   "08:16": {
-    "frihamnen_pier": "08:56"
-   },
-   "08:46": {
-    "frihamnen_pier": "09:26"
-   },
-   "09:16": {
-    "frihamnen_pier": "09:56"
-   },
-   "09:46": {
-    "frihamnen_pier": "10:26"
-   },
-   "10:16": {
-    "frihamnen_pier": "10:56"
-   },
-   "10:46": {
-    "frihamnen_pier": "11:26"
-   },
-   "14:16": {
-    "frihamnen_pier": "14:56"
-   },
-   "14:46": {
-    "frihamnen_pier": "15:29"
-   },
-   "15:16": {
-    "frihamnen_pier": "15:59"
-   },
-   "15:46": {
-    "frihamnen_pier": "16:29"
-   },
-   "16:16": {
-    "frihamnen_pier": "16:59"
-   },
-   "16:41": {
-    "frihamnen_pier": "17:24"
-   },
-   "17:16": {
-    "frihamnen_pier": "17:59"
-   },
-   "17:51": {
-    "frihamnen_pier": "18:34"
-   },
-   "18:16": {
-    "frihamnen_pier": "18:59"
-   },
-   "18:46": {
-    "frihamnen_pier": "19:29"
-   },
-   "19:16": {
-    "frihamnen_pier": "19:55"
-   },
-   "19:46": {
-    "frihamnen_pier": "20:25"
-   },
-   "20:16": {
-    "frihamnen_pier": "20:55"
-   },
-   "20:46": {
-    "frihamnen_pier": "21:24"
-   },
-   "21:16": {
-    "frihamnen_pier": "21:54"
-   },
-   "21:46": {
-    "frihamnen_pier": "22:24"
-   },
-   "22:16": {
-    "frihamnen_pier": "22:54"
-   },
-   "22:46": {
-    "frihamnen_pier": "23:24"
-   },
-   "23:16": {
-    "frihamnen_pier": "23:54"
+ "schema_version": 1,
+ "note": "Avgång -> ankomst för de bryggor scenarierna använder, per tidtabellsperiod. Genererad med tools/extract-timetable.py --legs. Ankomsterna kommer ur tabellen eftersom SL:s /departures kapar vid ~6 avgångar per hållplats, vilket gör att ett 38-minutersben inte går att para ihop via journey-id.",
+ "tables": [
+  {
+   "from": "2026-06-19",
+   "to": "2026-08-16",
+   "valid": "19 juni–16 augusti 2026",
+   "legs": {
+    "ropsten": {
+     "vardag": {
+      "06:46": {
+       "frihamnen_pier": "07:24"
+      },
+      "06:16": {
+       "frihamnen_pier": "06:54"
+      },
+      "07:16": {
+       "frihamnen_pier": "07:54"
+      },
+      "07:46": {
+       "frihamnen_pier": "08:24"
+      },
+      "08:16": {
+       "frihamnen_pier": "08:54"
+      },
+      "08:46": {
+       "frihamnen_pier": "09:24"
+      },
+      "09:16": {
+       "frihamnen_pier": "09:54"
+      },
+      "09:46": {
+       "frihamnen_pier": "10:24"
+      },
+      "10:16": {
+       "frihamnen_pier": "10:54"
+      },
+      "10:46": {
+       "frihamnen_pier": "11:24"
+      },
+      "11:16": {
+       "frihamnen_pier": "11:54"
+      },
+      "11:46": {
+       "frihamnen_pier": "12:24"
+      },
+      "12:16": {
+       "frihamnen_pier": "12:54"
+      },
+      "12:46": {
+       "frihamnen_pier": "13:24"
+      },
+      "13:16": {
+       "frihamnen_pier": "13:59"
+      },
+      "13:46": {
+       "frihamnen_pier": "14:29"
+      },
+      "14:16": {
+       "frihamnen_pier": "14:59"
+      },
+      "14:41": {
+       "frihamnen_pier": "15:24"
+      },
+      "15:16": {
+       "frihamnen_pier": "15:59"
+      },
+      "15:44": {
+       "frihamnen_pier": "16:27"
+      },
+      "16:16": {
+       "frihamnen_pier": "16:59"
+      },
+      "16:46": {
+       "frihamnen_pier": "17:29"
+      },
+      "17:11": {
+       "frihamnen_pier": "17:54"
+      },
+      "17:46": {
+       "frihamnen_pier": "18:29"
+      },
+      "18:21": {
+       "frihamnen_pier": "19:04"
+      },
+      "18:46": {
+       "frihamnen_pier": "19:29"
+      },
+      "19:16": {
+       "frihamnen_pier": "19:55"
+      },
+      "19:46": {
+       "frihamnen_pier": "20:25"
+      },
+      "20:16": {
+       "frihamnen_pier": "20:55"
+      },
+      "20:46": {
+       "frihamnen_pier": "21:25"
+      },
+      "21:16": {
+       "frihamnen_pier": "21:55"
+      },
+      "21:46": {
+       "frihamnen_pier": "22:25"
+      },
+      "22:16": {
+       "frihamnen_pier": "22:55"
+      },
+      "23:16": {
+       "frihamnen_pier": "23:55"
+      },
+      "22:46": {
+       "frihamnen_pier": "23:25"
+      }
+     },
+     "helg": {
+      "08:16": {
+       "frihamnen_pier": "08:54"
+      },
+      "07:16": {
+       "frihamnen_pier": "07:54"
+      },
+      "08:46": {
+       "frihamnen_pier": "09:24"
+      },
+      "09:16": {
+       "frihamnen_pier": "09:54"
+      },
+      "09:46": {
+       "frihamnen_pier": "10:25"
+      },
+      "10:16": {
+       "frihamnen_pier": "10:55"
+      },
+      "10:46": {
+       "frihamnen_pier": "11:25"
+      },
+      "11:16": {
+       "frihamnen_pier": "11:55"
+      },
+      "11:46": {
+       "frihamnen_pier": "12:25"
+      },
+      "12:16": {
+       "frihamnen_pier": "12:55"
+      },
+      "12:46": {
+       "frihamnen_pier": "13:25"
+      },
+      "13:16": {
+       "frihamnen_pier": "13:59"
+      },
+      "13:46": {
+       "frihamnen_pier": "14:29"
+      },
+      "14:16": {
+       "frihamnen_pier": "14:59"
+      },
+      "14:41": {
+       "frihamnen_pier": "15:24"
+      },
+      "15:16": {
+       "frihamnen_pier": "15:59"
+      },
+      "15:46": {
+       "frihamnen_pier": "16:29"
+      },
+      "16:16": {
+       "frihamnen_pier": "16:59"
+      },
+      "16:46": {
+       "frihamnen_pier": "17:29"
+      },
+      "17:11": {
+       "frihamnen_pier": "17:54"
+      },
+      "17:46": {
+       "frihamnen_pier": "18:29"
+      },
+      "18:16": {
+       "frihamnen_pier": "18:59"
+      },
+      "18:51": {
+       "frihamnen_pier": "19:30"
+      },
+      "19:16": {
+       "frihamnen_pier": "19:55"
+      },
+      "19:46": {
+       "frihamnen_pier": "20:25"
+      },
+      "20:21": {
+       "frihamnen_pier": "21:00"
+      },
+      "20:46": {
+       "frihamnen_pier": "21:25"
+      },
+      "21:16": {
+       "frihamnen_pier": "21:55"
+      },
+      "21:46": {
+       "frihamnen_pier": "22:25"
+      },
+      "22:16": {
+       "frihamnen_pier": "22:55"
+      },
+      "22:46": {
+       "frihamnen_pier": "23:25"
+      },
+      "23:16": {
+       "frihamnen_pier": "23:55"
+      }
+     }
+    },
+    "nybroplan": {
+     "vardag": {
+      "07:02": {
+       "allmanna_grand": "07:11"
+      },
+      "06:32": {
+       "allmanna_grand": "06:41"
+      },
+      "07:32": {
+       "allmanna_grand": "07:41"
+      },
+      "07:42": {
+       "allmanna_grand": "07:51"
+      },
+      "07:52": {
+       "allmanna_grand": "08:01"
+      },
+      "08:02": {
+       "allmanna_grand": "08:11"
+      },
+      "08:12": {
+       "allmanna_grand": "08:21"
+      },
+      "08:22": {
+       "allmanna_grand": "08:31"
+      },
+      "08:37": {
+       "allmanna_grand": "08:46"
+      },
+      "08:52": {
+       "allmanna_grand": "09:01"
+      },
+      "09:02": {
+       "allmanna_grand": "09:11"
+      },
+      "09:12": {
+       "allmanna_grand": "09:21"
+      },
+      "09:27": {
+       "allmanna_grand": "09:36"
+      },
+      "09:37": {
+       "allmanna_grand": "09:46"
+      },
+      "09:47": {
+       "allmanna_grand": "09:56"
+      },
+      "10:02": {
+       "allmanna_grand": "10:11"
+      },
+      "10:12": {
+       "allmanna_grand": "10:21"
+      },
+      "10:22": {
+       "allmanna_grand": "10:31"
+      },
+      "10:32": {
+       "allmanna_grand": "10:41"
+      },
+      "10:42": {
+       "allmanna_grand": "10:51"
+      },
+      "10:57": {
+       "allmanna_grand": "11:06"
+      },
+      "11:07": {
+       "allmanna_grand": "11:16"
+      },
+      "11:22": {
+       "allmanna_grand": "11:31"
+      },
+      "13:30": {
+       "allmanna_grand": "13:39"
+      },
+      "13:42": {
+       "allmanna_grand": "13:51"
+      },
+      "14:01": {
+       "allmanna_grand": "14:09"
+      },
+      "14:28": {
+       "allmanna_grand": "14:36"
+      },
+      "15:01": {
+       "allmanna_grand": "15:09"
+      },
+      "15:26": {
+       "allmanna_grand": "15:34"
+      },
+      "15:56": {
+       "allmanna_grand": "16:04"
+      },
+      "16:26": {
+       "allmanna_grand": "16:34"
+      },
+      "16:56": {
+       "allmanna_grand": "17:04"
+      },
+      "17:26": {
+       "allmanna_grand": "17:34"
+      },
+      "17:56": {
+       "allmanna_grand": "18:04"
+      },
+      "18:26": {
+       "allmanna_grand": "18:34"
+      },
+      "18:56": {
+       "allmanna_grand": "19:04"
+      },
+      "19:26": {
+       "allmanna_grand": "19:34"
+      },
+      "20:02": {
+       "allmanna_grand": "20:09"
+      },
+      "20:26": {
+       "allmanna_grand": "20:34"
+      },
+      "20:56": {
+       "allmanna_grand": "21:04"
+      },
+      "21:26": {
+       "allmanna_grand": "21:34"
+      },
+      "21:56": {
+       "allmanna_grand": "22:04"
+      },
+      "22:26": {
+       "allmanna_grand": "22:34"
+      },
+      "22:56": {
+       "allmanna_grand": "23:04"
+      },
+      "23:26": {
+       "allmanna_grand": "23:34"
+      }
+     },
+     "helg": {
+      "08:36": {
+       "allmanna_grand": "08:44"
+      },
+      "07:36": {
+       "allmanna_grand": "07:44"
+      },
+      "09:01": {
+       "allmanna_grand": "09:09"
+      },
+      "09:31": {
+       "allmanna_grand": "09:39"
+      },
+      "09:47": {
+       "allmanna_grand": "09:56"
+      },
+      "10:02": {
+       "allmanna_grand": "10:11"
+      },
+      "10:12": {
+       "allmanna_grand": "10:21"
+      },
+      "10:22": {
+       "allmanna_grand": "10:31"
+      },
+      "10:32": {
+       "allmanna_grand": "10:41"
+      },
+      "10:42": {
+       "allmanna_grand": "10:51"
+      },
+      "10:57": {
+       "allmanna_grand": "11:06"
+      },
+      "11:07": {
+       "allmanna_grand": "11:16"
+      },
+      "11:22": {
+       "allmanna_grand": "11:31"
+      },
+      "13:22": {
+       "allmanna_grand": "13:31"
+      },
+      "13:32": {
+       "allmanna_grand": "13:41"
+      },
+      "13:42": {
+       "allmanna_grand": "13:51"
+      },
+      "13:58": {
+       "allmanna_grand": "14:06"
+      },
+      "14:28": {
+       "allmanna_grand": "14:36"
+      },
+      "14:58": {
+       "allmanna_grand": "15:06"
+      },
+      "15:28": {
+       "allmanna_grand": "15:36"
+      },
+      "15:58": {
+       "allmanna_grand": "16:06"
+      },
+      "16:28": {
+       "allmanna_grand": "16:36"
+      },
+      "16:58": {
+       "allmanna_grand": "17:06"
+      },
+      "17:28": {
+       "allmanna_grand": "17:36"
+      },
+      "20:03": {
+       "allmanna_grand": "20:11"
+      },
+      "20:33": {
+       "allmanna_grand": "20:41"
+      },
+      "20:55": {
+       "allmanna_grand": "21:03"
+      },
+      "21:25": {
+       "allmanna_grand": "21:33"
+      },
+      "22:00": {
+       "allmanna_grand": "22:08"
+      },
+      "22:25": {
+       "allmanna_grand": "22:33"
+      },
+      "22:55": {
+       "allmanna_grand": "23:03"
+      },
+      "23:25": {
+       "allmanna_grand": "23:33"
+      }
+     }
+    }
    }
   },
-  "fre": {
-   "06:16": {
-    "frihamnen_pier": "06:54"
-   },
-   "05:46": {
-    "frihamnen_pier": "06:24"
-   },
-   "06:31": {
-    "frihamnen_pier": "07:07"
-   },
-   "07:16": {
-    "frihamnen_pier": "07:54"
-   },
-   "07:46": {
-    "frihamnen_pier": "08:28"
-   },
-   "08:26": {
-    "frihamnen_pier": "09:08"
-   },
-   "08:56": {
-    "frihamnen_pier": "09:38"
-   },
-   "09:16": {
-    "frihamnen_pier": "09:58"
-   },
-   "09:46": {
-    "frihamnen_pier": "10:28"
-   },
-   "10:16": {
-    "frihamnen_pier": "10:58"
-   },
-   "10:46": {
-    "frihamnen_pier": "11:28"
-   },
-   "13:16": {
-    "frihamnen_pier": "13:58"
-   },
-   "13:46": {
-    "frihamnen_pier": "14:28"
-   },
-   "14:16": {
-    "frihamnen_pier": "14:58"
-   },
-   "14:46": {
-    "frihamnen_pier": "15:28"
-   },
-   "15:16": {
-    "frihamnen_pier": "15:58"
-   },
-   "15:46": {
-    "frihamnen_pier": "16:28"
-   },
-   "16:16": {
-    "frihamnen_pier": "16:58"
-   },
-   "16:46": {
-    "frihamnen_pier": "17:28"
-   },
-   "17:16": {
-    "frihamnen_pier": "17:58"
-   },
-   "17:46": {
-    "frihamnen_pier": "18:28"
-   },
-   "18:16": {
-    "frihamnen_pier": "18:58"
-   },
-   "18:46": {
-    "frihamnen_pier": "19:28"
-   },
-   "19:16": {
-    "frihamnen_pier": "19:56"
-   },
-   "19:46": {
-    "frihamnen_pier": "20:26"
-   },
-   "20:16": {
-    "frihamnen_pier": "20:56"
-   },
-   "20:46": {
-    "frihamnen_pier": "21:24"
-   },
-   "23:16": {
-    "frihamnen_pier": "23:54"
-   }
-  },
-  "helg": {
-   "08:16": {
-    "frihamnen_pier": "08:56"
-   },
-   "07:16": {
-    "frihamnen_pier": "07:54"
-   },
-   "08:46": {
-    "frihamnen_pier": "09:26"
-   },
-   "09:16": {
-    "frihamnen_pier": "09:56"
-   },
-   "09:46": {
-    "frihamnen_pier": "10:26"
-   },
-   "10:16": {
-    "frihamnen_pier": "10:56"
-   },
-   "10:46": {
-    "frihamnen_pier": "11:26"
-   },
-   "13:16": {
-    "frihamnen_pier": "13:58"
-   },
-   "13:46": {
-    "frihamnen_pier": "14:28"
-   },
-   "14:16": {
-    "frihamnen_pier": "14:58"
-   },
-   "14:41": {
-    "frihamnen_pier": "15:23"
-   },
-   "15:16": {
-    "frihamnen_pier": "15:58"
-   },
-   "15:46": {
-    "frihamnen_pier": "16:28"
-   },
-   "16:16": {
-    "frihamnen_pier": "16:58"
-   },
-   "16:46": {
-    "frihamnen_pier": "17:28"
-   },
-   "17:11": {
-    "frihamnen_pier": "17:53"
-   },
-   "17:46": {
-    "frihamnen_pier": "18:28"
-   },
-   "18:16": {
-    "frihamnen_pier": "18:58"
-   },
-   "18:51": {
-    "frihamnen_pier": "19:33"
-   },
-   "19:16": {
-    "frihamnen_pier": "19:58"
-   },
-   "19:46": {
-    "frihamnen_pier": "20:28"
-   },
-   "20:16": {
-    "frihamnen_pier": "20:56"
-   },
-   "21:46": {
-    "frihamnen_pier": "22:24"
-   },
-   "23:16": {
-    "frihamnen_pier": "23:54"
-   },
-   "20:46": {
-    "frihamnen_pier": "21:26"
-   },
-   "22:16": {
-    "frihamnen_pier": "22:54"
-   },
-   "21:16": {
-    "frihamnen_pier": "21:54"
-   },
-   "22:46": {
-    "frihamnen_pier": "23:24"
+  {
+   "from": "2026-08-17",
+   "to": "2026-12-12",
+   "valid": "17 augusti–12 december 2026",
+   "legs": {
+    "ropsten": {
+     "mtor": {
+      "06:16": {
+       "frihamnen_pier": "06:54"
+      },
+      "05:46": {
+       "frihamnen_pier": "06:24"
+      },
+      "06:31": {
+       "frihamnen_pier": "07:07"
+      },
+      "07:16": {
+       "frihamnen_pier": "07:54"
+      },
+      "07:46": {
+       "frihamnen_pier": "08:26"
+      },
+      "08:16": {
+       "frihamnen_pier": "08:56"
+      },
+      "08:46": {
+       "frihamnen_pier": "09:26"
+      },
+      "09:16": {
+       "frihamnen_pier": "09:56"
+      },
+      "09:46": {
+       "frihamnen_pier": "10:26"
+      },
+      "10:16": {
+       "frihamnen_pier": "10:56"
+      },
+      "10:46": {
+       "frihamnen_pier": "11:26"
+      },
+      "14:16": {
+       "frihamnen_pier": "14:56"
+      },
+      "14:46": {
+       "frihamnen_pier": "15:29"
+      },
+      "15:16": {
+       "frihamnen_pier": "15:59"
+      },
+      "15:46": {
+       "frihamnen_pier": "16:29"
+      },
+      "16:16": {
+       "frihamnen_pier": "16:59"
+      },
+      "16:41": {
+       "frihamnen_pier": "17:24"
+      },
+      "17:16": {
+       "frihamnen_pier": "17:59"
+      },
+      "17:51": {
+       "frihamnen_pier": "18:34"
+      },
+      "18:16": {
+       "frihamnen_pier": "18:59"
+      },
+      "18:46": {
+       "frihamnen_pier": "19:29"
+      },
+      "19:16": {
+       "frihamnen_pier": "19:55"
+      },
+      "19:46": {
+       "frihamnen_pier": "20:25"
+      },
+      "20:16": {
+       "frihamnen_pier": "20:55"
+      },
+      "20:46": {
+       "frihamnen_pier": "21:24"
+      },
+      "21:16": {
+       "frihamnen_pier": "21:54"
+      },
+      "21:46": {
+       "frihamnen_pier": "22:24"
+      },
+      "22:16": {
+       "frihamnen_pier": "22:54"
+      },
+      "22:46": {
+       "frihamnen_pier": "23:24"
+      },
+      "23:16": {
+       "frihamnen_pier": "23:54"
+      }
+     },
+     "fre": {
+      "06:16": {
+       "frihamnen_pier": "06:54"
+      },
+      "05:46": {
+       "frihamnen_pier": "06:24"
+      },
+      "06:31": {
+       "frihamnen_pier": "07:07"
+      },
+      "07:16": {
+       "frihamnen_pier": "07:54"
+      },
+      "07:46": {
+       "frihamnen_pier": "08:28"
+      },
+      "08:26": {
+       "frihamnen_pier": "09:08"
+      },
+      "08:56": {
+       "frihamnen_pier": "09:38"
+      },
+      "09:16": {
+       "frihamnen_pier": "09:58"
+      },
+      "09:46": {
+       "frihamnen_pier": "10:28"
+      },
+      "10:16": {
+       "frihamnen_pier": "10:58"
+      },
+      "10:46": {
+       "frihamnen_pier": "11:28"
+      },
+      "13:16": {
+       "frihamnen_pier": "13:58"
+      },
+      "13:46": {
+       "frihamnen_pier": "14:28"
+      },
+      "14:16": {
+       "frihamnen_pier": "14:58"
+      },
+      "14:46": {
+       "frihamnen_pier": "15:28"
+      },
+      "15:16": {
+       "frihamnen_pier": "15:58"
+      },
+      "15:46": {
+       "frihamnen_pier": "16:28"
+      },
+      "16:16": {
+       "frihamnen_pier": "16:58"
+      },
+      "16:46": {
+       "frihamnen_pier": "17:28"
+      },
+      "17:16": {
+       "frihamnen_pier": "17:58"
+      },
+      "17:46": {
+       "frihamnen_pier": "18:28"
+      },
+      "18:16": {
+       "frihamnen_pier": "18:58"
+      },
+      "18:46": {
+       "frihamnen_pier": "19:28"
+      },
+      "19:16": {
+       "frihamnen_pier": "19:56"
+      },
+      "19:46": {
+       "frihamnen_pier": "20:26"
+      },
+      "20:16": {
+       "frihamnen_pier": "20:56"
+      },
+      "20:46": {
+       "frihamnen_pier": "21:24"
+      },
+      "23:16": {
+       "frihamnen_pier": "23:54"
+      }
+     },
+     "helg": {
+      "08:16": {
+       "frihamnen_pier": "08:56"
+      },
+      "07:16": {
+       "frihamnen_pier": "07:54"
+      },
+      "08:46": {
+       "frihamnen_pier": "09:26"
+      },
+      "09:16": {
+       "frihamnen_pier": "09:56"
+      },
+      "09:46": {
+       "frihamnen_pier": "10:26"
+      },
+      "10:16": {
+       "frihamnen_pier": "10:56"
+      },
+      "10:46": {
+       "frihamnen_pier": "11:26"
+      },
+      "13:16": {
+       "frihamnen_pier": "13:58"
+      },
+      "13:46": {
+       "frihamnen_pier": "14:28"
+      },
+      "14:16": {
+       "frihamnen_pier": "14:58"
+      },
+      "14:41": {
+       "frihamnen_pier": "15:23"
+      },
+      "15:16": {
+       "frihamnen_pier": "15:58"
+      },
+      "15:46": {
+       "frihamnen_pier": "16:28"
+      },
+      "16:16": {
+       "frihamnen_pier": "16:58"
+      },
+      "16:46": {
+       "frihamnen_pier": "17:28"
+      },
+      "17:11": {
+       "frihamnen_pier": "17:53"
+      },
+      "17:46": {
+       "frihamnen_pier": "18:28"
+      },
+      "18:16": {
+       "frihamnen_pier": "18:58"
+      },
+      "18:51": {
+       "frihamnen_pier": "19:33"
+      },
+      "19:16": {
+       "frihamnen_pier": "19:58"
+      },
+      "19:46": {
+       "frihamnen_pier": "20:28"
+      },
+      "20:16": {
+       "frihamnen_pier": "20:56"
+      },
+      "21:46": {
+       "frihamnen_pier": "22:24"
+      },
+      "23:16": {
+       "frihamnen_pier": "23:54"
+      },
+      "20:46": {
+       "frihamnen_pier": "21:26"
+      },
+      "22:16": {
+       "frihamnen_pier": "22:54"
+      },
+      "21:16": {
+       "frihamnen_pier": "21:54"
+      },
+      "22:46": {
+       "frihamnen_pier": "23:24"
+      }
+     }
+    },
+    "nybroplan": {
+     "mtor": {
+      "06:26": {
+       "allmanna_grand": "06:34"
+      },
+      "05:56": {
+       "allmanna_grand": "06:04"
+      },
+      "07:02": {
+       "allmanna_grand": "07:11"
+      },
+      "07:27": {
+       "allmanna_grand": "07:36"
+      },
+      "07:37": {
+       "allmanna_grand": "07:46"
+      },
+      "07:52": {
+       "allmanna_grand": "08:01"
+      },
+      "08:02": {
+       "allmanna_grand": "08:11"
+      },
+      "08:12": {
+       "allmanna_grand": "08:21"
+      },
+      "08:22": {
+       "allmanna_grand": "08:31"
+      },
+      "08:32": {
+       "allmanna_grand": "08:41"
+      },
+      "08:47": {
+       "allmanna_grand": "08:56"
+      },
+      "09:02": {
+       "allmanna_grand": "09:11"
+      },
+      "09:12": {
+       "allmanna_grand": "09:21"
+      },
+      "09:22": {
+       "allmanna_grand": "09:31"
+      },
+      "09:32": {
+       "allmanna_grand": "09:41"
+      },
+      "09:47": {
+       "allmanna_grand": "09:56"
+      },
+      "10:02": {
+       "allmanna_grand": "10:11"
+      },
+      "10:17": {
+       "allmanna_grand": "10:26"
+      },
+      "10:32": {
+       "allmanna_grand": "10:41"
+      },
+      "10:47": {
+       "allmanna_grand": "10:56"
+      },
+      "11:02": {
+       "allmanna_grand": "11:11"
+      },
+      "11:17": {
+       "allmanna_grand": "11:26"
+      },
+      "11:32": {
+       "allmanna_grand": "11:41"
+      },
+      "12:02": {
+       "allmanna_grand": "12:11"
+      },
+      "12:32": {
+       "allmanna_grand": "12:41"
+      },
+      "13:02": {
+       "allmanna_grand": "13:11"
+      },
+      "14:32": {
+       "allmanna_grand": "14:41"
+      },
+      "15:02": {
+       "allmanna_grand": "15:11"
+      },
+      "15:32": {
+       "allmanna_grand": "15:41"
+      },
+      "16:02": {
+       "allmanna_grand": "16:11"
+      },
+      "16:32": {
+       "allmanna_grand": "16:41"
+      },
+      "17:02": {
+       "allmanna_grand": "17:11"
+      },
+      "17:32": {
+       "allmanna_grand": "17:41"
+      },
+      "18:02": {
+       "allmanna_grand": "18:11"
+      },
+      "18:32": {
+       "allmanna_grand": "18:41"
+      },
+      "19:02": {
+       "allmanna_grand": "19:11"
+      },
+      "19:32": {
+       "allmanna_grand": "19:41"
+      },
+      "20:02": {
+       "allmanna_grand": "20:11"
+      },
+      "20:32": {
+       "allmanna_grand": "20:41"
+      },
+      "21:01": {
+       "allmanna_grand": "21:09"
+      },
+      "23:31": {
+       "allmanna_grand": "23:39"
+      }
+     },
+     "fre": {
+      "06:26": {
+       "allmanna_grand": "06:34"
+      },
+      "05:56": {
+       "allmanna_grand": "06:04"
+      },
+      "07:02": {
+       "allmanna_grand": "07:11"
+      },
+      "07:32": {
+       "allmanna_grand": "07:41"
+      },
+      "07:47": {
+       "allmanna_grand": "07:56"
+      },
+      "08:02": {
+       "allmanna_grand": "08:11"
+      },
+      "08:17": {
+       "allmanna_grand": "08:26"
+      },
+      "08:32": {
+       "allmanna_grand": "08:41"
+      },
+      "08:47": {
+       "allmanna_grand": "08:56"
+      },
+      "09:02": {
+       "allmanna_grand": "09:11"
+      },
+      "09:17": {
+       "allmanna_grand": "09:26"
+      },
+      "09:37": {
+       "allmanna_grand": "09:46"
+      },
+      "10:10": {
+       "allmanna_grand": "10:19"
+      },
+      "10:22": {
+       "allmanna_grand": "10:31"
+      },
+      "10:40": {
+       "allmanna_grand": "10:49"
+      },
+      "10:52": {
+       "allmanna_grand": "11:01"
+      },
+      "11:05": {
+       "allmanna_grand": "11:14"
+      },
+      "11:35": {
+       "allmanna_grand": "11:44"
+      },
+      "11:50": {
+       "allmanna_grand": "11:59"
+      },
+      "14:05": {
+       "allmanna_grand": "14:14"
+      },
+      "14:35": {
+       "allmanna_grand": "14:44"
+      },
+      "14:50": {
+       "allmanna_grand": "14:59"
+      },
+      "15:05": {
+       "allmanna_grand": "15:14"
+      },
+      "15:30": {
+       "allmanna_grand": "15:39"
+      },
+      "16:05": {
+       "allmanna_grand": "16:14"
+      },
+      "16:35": {
+       "allmanna_grand": "16:44"
+      },
+      "17:05": {
+       "allmanna_grand": "17:14"
+      },
+      "17:35": {
+       "allmanna_grand": "17:44"
+      },
+      "18:05": {
+       "allmanna_grand": "18:14"
+      },
+      "18:35": {
+       "allmanna_grand": "18:44"
+      },
+      "19:05": {
+       "allmanna_grand": "19:14"
+      },
+      "19:35": {
+       "allmanna_grand": "19:44"
+      },
+      "20:05": {
+       "allmanna_grand": "20:14"
+      },
+      "20:35": {
+       "allmanna_grand": "20:44"
+      },
+      "21:01": {
+       "allmanna_grand": "21:09"
+      },
+      "23:31": {
+       "allmanna_grand": "23:39"
+      }
+     },
+     "helg": {
+      "08:36": {
+       "allmanna_grand": "08:44"
+      },
+      "07:26": {
+       "allmanna_grand": "07:34"
+      },
+      "09:02": {
+       "allmanna_grand": "09:11"
+      },
+      "09:37": {
+       "allmanna_grand": "09:46"
+      },
+      "09:47": {
+       "allmanna_grand": "09:56"
+      },
+      "10:02": {
+       "allmanna_grand": "10:11"
+      },
+      "10:12": {
+       "allmanna_grand": "10:21"
+      },
+      "10:22": {
+       "allmanna_grand": "10:31"
+      },
+      "10:32": {
+       "allmanna_grand": "10:41"
+      },
+      "10:42": {
+       "allmanna_grand": "10:51"
+      },
+      "10:57": {
+       "allmanna_grand": "11:06"
+      },
+      "11:07": {
+       "allmanna_grand": "11:16"
+      },
+      "11:22": {
+       "allmanna_grand": "11:31"
+      },
+      "13:22": {
+       "allmanna_grand": "13:31"
+      },
+      "13:32": {
+       "allmanna_grand": "13:41"
+      },
+      "13:42": {
+       "allmanna_grand": "13:51"
+      },
+      "14:02": {
+       "allmanna_grand": "14:11"
+      },
+      "14:32": {
+       "allmanna_grand": "14:41"
+      },
+      "14:57": {
+       "allmanna_grand": "15:06"
+      },
+      "15:32": {
+       "allmanna_grand": "15:41"
+      },
+      "16:02": {
+       "allmanna_grand": "16:11"
+      },
+      "16:32": {
+       "allmanna_grand": "16:41"
+      },
+      "17:02": {
+       "allmanna_grand": "17:11"
+      },
+      "17:27": {
+       "allmanna_grand": "17:36"
+      },
+      "20:02": {
+       "allmanna_grand": "20:11"
+      },
+      "20:32": {
+       "allmanna_grand": "20:41"
+      },
+      "21:01": {
+       "allmanna_grand": "21:09"
+      },
+      "23:31": {
+       "allmanna_grand": "23:39"
+      }
+     }
+    }
    }
   }
- },
- "nybroplan": {
-  "mtor": {
-   "06:26": {
-    "allmanna_grand": "06:34"
-   },
-   "05:56": {
-    "allmanna_grand": "06:04"
-   },
-   "07:02": {
-    "allmanna_grand": "07:11"
-   },
-   "07:27": {
-    "allmanna_grand": "07:36"
-   },
-   "07:37": {
-    "allmanna_grand": "07:46"
-   },
-   "07:52": {
-    "allmanna_grand": "08:01"
-   },
-   "08:02": {
-    "allmanna_grand": "08:11"
-   },
-   "08:12": {
-    "allmanna_grand": "08:21"
-   },
-   "08:22": {
-    "allmanna_grand": "08:31"
-   },
-   "08:32": {
-    "allmanna_grand": "08:41"
-   },
-   "08:47": {
-    "allmanna_grand": "08:56"
-   },
-   "09:02": {
-    "allmanna_grand": "09:11"
-   },
-   "09:12": {
-    "allmanna_grand": "09:21"
-   },
-   "09:22": {
-    "allmanna_grand": "09:31"
-   },
-   "09:32": {
-    "allmanna_grand": "09:41"
-   },
-   "09:47": {
-    "allmanna_grand": "09:56"
-   },
-   "10:02": {
-    "allmanna_grand": "10:11"
-   },
-   "10:17": {
-    "allmanna_grand": "10:26"
-   },
-   "10:32": {
-    "allmanna_grand": "10:41"
-   },
-   "10:47": {
-    "allmanna_grand": "10:56"
-   },
-   "11:02": {
-    "allmanna_grand": "11:11"
-   },
-   "11:17": {
-    "allmanna_grand": "11:26"
-   },
-   "11:32": {
-    "allmanna_grand": "11:41"
-   },
-   "12:02": {
-    "allmanna_grand": "12:11"
-   },
-   "12:32": {
-    "allmanna_grand": "12:41"
-   },
-   "13:02": {
-    "allmanna_grand": "13:11"
-   },
-   "14:32": {
-    "allmanna_grand": "14:41"
-   },
-   "15:02": {
-    "allmanna_grand": "15:11"
-   },
-   "15:32": {
-    "allmanna_grand": "15:41"
-   },
-   "16:02": {
-    "allmanna_grand": "16:11"
-   },
-   "16:32": {
-    "allmanna_grand": "16:41"
-   },
-   "17:02": {
-    "allmanna_grand": "17:11"
-   },
-   "17:32": {
-    "allmanna_grand": "17:41"
-   },
-   "18:02": {
-    "allmanna_grand": "18:11"
-   },
-   "18:32": {
-    "allmanna_grand": "18:41"
-   },
-   "19:02": {
-    "allmanna_grand": "19:11"
-   },
-   "19:32": {
-    "allmanna_grand": "19:41"
-   },
-   "20:02": {
-    "allmanna_grand": "20:11"
-   },
-   "20:32": {
-    "allmanna_grand": "20:41"
-   },
-   "21:01": {
-    "allmanna_grand": "21:09"
-   },
-   "23:31": {
-    "allmanna_grand": "23:39"
-   }
-  },
-  "fre": {
-   "06:26": {
-    "allmanna_grand": "06:34"
-   },
-   "05:56": {
-    "allmanna_grand": "06:04"
-   },
-   "07:02": {
-    "allmanna_grand": "07:11"
-   },
-   "07:32": {
-    "allmanna_grand": "07:41"
-   },
-   "07:47": {
-    "allmanna_grand": "07:56"
-   },
-   "08:02": {
-    "allmanna_grand": "08:11"
-   },
-   "08:17": {
-    "allmanna_grand": "08:26"
-   },
-   "08:32": {
-    "allmanna_grand": "08:41"
-   },
-   "08:47": {
-    "allmanna_grand": "08:56"
-   },
-   "09:02": {
-    "allmanna_grand": "09:11"
-   },
-   "09:17": {
-    "allmanna_grand": "09:26"
-   },
-   "09:37": {
-    "allmanna_grand": "09:46"
-   },
-   "10:10": {
-    "allmanna_grand": "10:19"
-   },
-   "10:22": {
-    "allmanna_grand": "10:31"
-   },
-   "10:40": {
-    "allmanna_grand": "10:49"
-   },
-   "10:52": {
-    "allmanna_grand": "11:01"
-   },
-   "11:05": {
-    "allmanna_grand": "11:14"
-   },
-   "11:35": {
-    "allmanna_grand": "11:44"
-   },
-   "11:50": {
-    "allmanna_grand": "11:59"
-   },
-   "14:05": {
-    "allmanna_grand": "14:14"
-   },
-   "14:35": {
-    "allmanna_grand": "14:44"
-   },
-   "14:50": {
-    "allmanna_grand": "14:59"
-   },
-   "15:05": {
-    "allmanna_grand": "15:14"
-   },
-   "15:30": {
-    "allmanna_grand": "15:39"
-   },
-   "16:05": {
-    "allmanna_grand": "16:14"
-   },
-   "16:35": {
-    "allmanna_grand": "16:44"
-   },
-   "17:05": {
-    "allmanna_grand": "17:14"
-   },
-   "17:35": {
-    "allmanna_grand": "17:44"
-   },
-   "18:05": {
-    "allmanna_grand": "18:14"
-   },
-   "18:35": {
-    "allmanna_grand": "18:44"
-   },
-   "19:05": {
-    "allmanna_grand": "19:14"
-   },
-   "19:35": {
-    "allmanna_grand": "19:44"
-   },
-   "20:05": {
-    "allmanna_grand": "20:14"
-   },
-   "20:35": {
-    "allmanna_grand": "20:44"
-   },
-   "21:01": {
-    "allmanna_grand": "21:09"
-   },
-   "23:31": {
-    "allmanna_grand": "23:39"
-   }
-  },
-  "helg": {
-   "08:36": {
-    "allmanna_grand": "08:44"
-   },
-   "07:26": {
-    "allmanna_grand": "07:34"
-   },
-   "09:02": {
-    "allmanna_grand": "09:11"
-   },
-   "09:37": {
-    "allmanna_grand": "09:46"
-   },
-   "09:47": {
-    "allmanna_grand": "09:56"
-   },
-   "10:02": {
-    "allmanna_grand": "10:11"
-   },
-   "10:12": {
-    "allmanna_grand": "10:21"
-   },
-   "10:22": {
-    "allmanna_grand": "10:31"
-   },
-   "10:32": {
-    "allmanna_grand": "10:41"
-   },
-   "10:42": {
-    "allmanna_grand": "10:51"
-   },
-   "10:57": {
-    "allmanna_grand": "11:06"
-   },
-   "11:07": {
-    "allmanna_grand": "11:16"
-   },
-   "11:22": {
-    "allmanna_grand": "11:31"
-   },
-   "13:22": {
-    "allmanna_grand": "13:31"
-   },
-   "13:32": {
-    "allmanna_grand": "13:41"
-   },
-   "13:42": {
-    "allmanna_grand": "13:51"
-   },
-   "14:02": {
-    "allmanna_grand": "14:11"
-   },
-   "14:32": {
-    "allmanna_grand": "14:41"
-   },
-   "14:57": {
-    "allmanna_grand": "15:06"
-   },
-   "15:32": {
-    "allmanna_grand": "15:41"
-   },
-   "16:02": {
-    "allmanna_grand": "16:11"
-   },
-   "16:32": {
-    "allmanna_grand": "16:41"
-   },
-   "17:02": {
-    "allmanna_grand": "17:11"
-   },
-   "17:27": {
-    "allmanna_grand": "17:36"
-   },
-   "20:02": {
-    "allmanna_grand": "20:11"
-   },
-   "20:32": {
-    "allmanna_grand": "20:41"
-   },
-   "21:01": {
-    "allmanna_grand": "21:09"
-   },
-   "23:31": {
-    "allmanna_grand": "23:39"
-   }
-  }
- }
+ ]
 }

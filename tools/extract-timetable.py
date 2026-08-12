@@ -41,7 +41,16 @@ FULL = re.compile(r"^([01]\d|2[0-3])\.([0-5]\d)$")
 FRAGMENT = re.compile(r"^([0-5]\d)$")
 
 # Day-type headings. "Lordag," is the first word of "Lordag, sondag och helgdag".
-DAY_HEADINGS = {"Måndag–torsdag": "mtor", "Fredag": "fre", "Lördag,": "helg"}
+# The summer table runs Monday-Friday as one type; the autumn table splits Friday
+# out, so the set of day types differs between editions.
+DAY_HEADINGS = {
+    "Måndag–fredag": "vardag",
+    "Måndag–torsdag": "mtor",
+    "Fredag": "fre",
+    "Lördag,": "helg",
+}
+
+DIRECTION_HEADINGS = {"Nybroplan–Ropsten": "ropsten", "Ropsten–Nybroplan": "nybroplan"}
 
 ORIGIN = "Saltsjöqvarn"
 NAME_COLUMN_MAX_X = 100  # stop names sit at x=54; timetable columns start at x>120
@@ -105,13 +114,26 @@ def read_row(words, row_y, warnings):
     return times
 
 
+def page_directions(document):
+    """Group pages by direction. Editions differ in page count (summer 7, autumn 9)
+    and the Ropsten-Storholmen shuttle at the end is not part of this app."""
+    groups = {}
+    for index in range(document.page_count):
+        text = document[index].get_text()
+        for heading, key in DIRECTION_HEADINGS.items():
+            if heading in text:
+                groups.setdefault(key, []).append(index)
+                break
+    return groups
+
+
 def extract(document, pages, warnings):
     """Collect Saltsjoqvarn departures per day type across a run of pages.
 
     A heading applies downwards until the next one. A block with no heading above
     it continues the previous page ("Fortsattning fran foregande sida").
     """
-    result = {"mtor": [], "fre": [], "helg": []}
+    result = {}
     carried = None
 
     for index in pages:
@@ -134,7 +156,7 @@ def extract(document, pages, warnings):
                 warnings.append(f"page {index + 1}: row at y={row_y:.0f} has no day type")
                 continue
             carried = day_type
-            result[day_type] += read_row(words, row_y, warnings)
+            result.setdefault(day_type, []).extend(read_row(words, row_y, warnings))
 
         if headings:
             carried = headings[-1][1]
@@ -178,7 +200,7 @@ def rows_for(words, stop_name):
 
 def extract_legs(document, pages, targets, warnings):
     """Map each printed departure to its arrival at each target stop."""
-    result = {"mtor": {}, "fre": {}, "helg": {}}
+    result = {}
     carried = None
 
     for index in pages:
@@ -214,7 +236,7 @@ def extract_legs(document, pages, targets, warnings):
                     # before Saltsjoqvarn, i.e. this run goes the other way.
                     if (to_minutes(match[0]) - to_minutes(departure)) % 1440 > 720:
                         continue
-                    result[day_type].setdefault(departure, {})[node] = match[0]
+                    result.setdefault(day_type, {}).setdefault(departure, {})[node] = match[0]
 
         if headings:
             carried = headings[-1][1]
@@ -230,9 +252,10 @@ def main():
     document = fitz.open(sys.argv[1])
     warnings = []
 
-    # Pages 1-4 are Nybroplan->Ropsten (eastbound), 5-8 Ropsten->Nybroplan.
-    # Page 9 is the Ropsten-Storholmen shuttle and is not part of this app.
-    PAGES = {"ropsten": range(0, 4), "nybroplan": range(4, 8)}
+    PAGES = page_directions(document)
+    for direction in ("ropsten", "nybroplan"):
+        if direction not in PAGES:
+            sys.exit(f"no pages found for direction {direction}")
 
     if legs_mode:
         output = {

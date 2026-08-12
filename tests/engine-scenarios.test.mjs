@@ -22,8 +22,13 @@ globalThis.fetch = async (url) => ({
 });
 
 const data = await loadData();
-const boatLegs = read("data/boat-legs.json");
 const weights = data.weights;
+
+// Tabellen som gäller från 17 augusti 2026, med dagtyperna mtor/fre/helg.
+const AUTUMN = "2026-08-18";
+const boatTables = read("data/boat-legs.json").tables;
+const tableFor = (iso) => boatTables.find((t) => t.from <= iso && iso <= t.to);
+const boatLegs = tableFor(AUTUMN).legs;
 
 const TEGEL = data.scenarios.destinations.find((d) => d.id === "tegeluddsvagen_3");
 
@@ -193,6 +198,35 @@ test("planAll sorterar på ankomst och lägger brutna sist", () => {
     assert.ok(working[i - 1].arrive <= working[i].arrive, "ankomst ska vara stigande");
   if (broken.length)
     assert.ok(plans.indexOf(broken[0]) > plans.indexOf(working.at(-1)), "brutna sist");
+});
+
+test("tidtabellen växlar på datum, med olika dagtyper per utgåva", () => {
+  const summer = tableFor("2026-08-12");
+  const autumn = tableFor("2026-08-18");
+  assert.notEqual(summer, autumn, "12 och 18 augusti ska ge olika tabeller");
+  assert.deepEqual(Object.keys(summer.legs.ropsten).sort(), ["helg", "vardag"]);
+  assert.deepEqual(Object.keys(autumn.legs.ropsten).sort(), ["fre", "helg", "mtor"]);
+  // Skarven: 16 augusti är sista sommardagen, 17 augusti första höstdagen.
+  assert.equal(tableFor("2026-08-16"), summer);
+  assert.equal(tableFor("2026-08-17"), autumn);
+});
+
+test("sommartabellen planerar med sina egna dagtyper", () => {
+  // Onsdag 12 augusti är "vardag" i sommartabellen; båt 07:32 mot Nybroplan.
+  const ctx = {
+    data,
+    weights,
+    boatLegs: tableFor("2026-08-12").legs,
+    dayType: "vardag",
+    now: toMinutes("07:00"),
+    departures: feed({
+      1442: [{ line: "80", mode: "SHIP", scheduled: "07:32", destination: "Nybroplan" }],
+      1406: [{ line: "7", mode: "TRAM", scheduled: "07:50" }],
+    }),
+  };
+  const plan = planScenario(byId("boat_bike_djurgarden"), TEGEL, ctx);
+  assert.ok(!plan.broken, `skulle planeras, men: ${plan.broken?.reason}`);
+  assert.equal(toClock(plan.leaveHome), "07:29");
 });
 
 test("oprövat scenario är markerat", () => {

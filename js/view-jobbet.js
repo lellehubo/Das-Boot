@@ -237,11 +237,15 @@ function render(se) {
     return;
   }
 
+  // Tidtabellen byter på datum, och dagtyperna skiljer sig mellan utgåvorna.
+  const table =
+    boatLegs.tables.find((t) => t.from <= se.iso && se.iso <= t.to) || boatLegs.tables.at(-1);
+
   const plans = planAll(destination, {
     data,
     weights: data.weights,
-    boatLegs,
-    dayType: window.dayType ? window.dayType(se) : "mtor",
+    boatLegs: table.legs,
+    dayType: window.dayType(se),
     now: se.min,
     departures: feeds,
   });
@@ -270,6 +274,8 @@ async function boot() {
     ]);
     data = loaded;
     boatLegs = legs;
+    if (!Array.isArray(boatLegs.tables) || !boatLegs.tables.length)
+      throw new Error("boat-legs.json: saknar tables");
   } catch (e) {
     loadError = e instanceof DataError ? e.message : `Kunde inte läsa datafilerna:\n${e.message}`;
     console.error(e);

@@ -38,6 +38,7 @@ function forward(from, to) {
  */
 function boatRuns(ctx, direction, target) {
   const table = ctx.boatLegs?.[direction]?.[ctx.dayType] || {};
+  if (!Object.keys(table).length) return () => null;
   return (scheduled) => {
     const arrival = table[scheduled]?.[target];
     return arrival ? toMinutes(arrival) : null;
