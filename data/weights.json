@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "note": "Alla värden i minuter eller som faktor på minuter. Lägst totalpoäng vinner. Startvärden är gissningar och ska kalibreras under de första veckorna.",
+
+  "hard_constraints": {
+    "blocked_modes": ["METRO", "TRAIN"],
+
+    "blocked_leg_rules": [
+      {
+        "id": "no_bus_to_slussen",
+        "description": "Buss till eller från Slussen är blockerad. Slussen som plats är inte blockerad, båt 82 dit är tillåten.",
+        "mode": "BUS",
+        "involves_node": "slussen"
+      }
+    ],
+
+    "allowed_bus_lines": ["67"],
+    "candidate_bus_lines": ["1", "72", "76"],
+    "candidate_note": "Buss 1 och 72 går Karlaplan till Frihamnen. Buss 76 går Nybroplan till Frihamnen på 13 minuter och passerar Hangövägen-området. Ingen av dem är bekräftad av användaren. Flytta upp till allowed_bus_lines först efter att han sagt att han gillar dem.",
+
+    "allowed_tram_lines": ["7"],
+    "allowed_ship_lines": ["80", "82"],
+
+    "max_total_minutes": 95,
+    "min_transfer_buffer_minutes": 4,
+    "max_transfers": 2
+  },
+
+  "score": {
+    "mode_factor": {
+      "SHIP": 0.6,
+      "TRAM": 0.8,
+      "BUS": 1.0,
+      "bike": 0.9,
+      "walk": 1.0
+    },
+    "wait_penalty": 2.0,
+    "wait_penalty_note": "Den enda ratt som behöver justeras ofta. 2.0 betyder att 15 minuters väntan kostar som 30 minuters promenad.",
+
+    "transfer_cost_minutes": 5,
+
+    "corridor_bonus_per_10min": {
+      "saltsjoqvarn": -1,
+      "djurgarden": -3,
+      "strandvagen": -3,
+      "narvavagen": -2,
+      "gardet": -2
+    },
+    "corridor_bonus_note": "Ges per påbörjad tiominutersperiod som ett ben tillbringar i korridoren. Negativa tal sänker poängen.",
+
+    "uncalibrated_leg_penalty": 0,
+    "untested_scenario_penalty": 3
+  },
+
+  "weather": {
+    "source": "SMHI Open Data snow1g v1",
+    "endpoint": "https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/{lon}/lat/{lat}/data.json",
+    "endpoint_note": "Den gamla pmp3g-version-2 stängdes 31 mars 2026 och ger 404. snow1g skickar Access-Control-Allow-Origin: * — ingen proxy behövs. Strukturen är platt: timeSeries[].data{} i stället för parameters-array, och time i stället för validTime.",
+
+    "read_window": "departure_window",
+    "read_window_note": "Läs prognosen för den timme benet startar och timmen därefter. Aldrig för klockan nu.",
+
+    "parameters": {
+      "precipitation": "precipitation_amount_mean",
+      "wind": "wind_speed",
+      "gust": "wind_speed_of_gust",
+      "temperature": "air_temperature",
+      "symbol": "symbol_code"
+    },
+
+    "warn": {
+      "precipitation_mm_h": 0.3,
+      "wind_ms": 8,
+      "gust_ms": 13,
+      "temp_c_below": -5,
+      "penalty_minutes_per_10min_exposed": 4
+    },
+
+    "block": {
+      "precipitation_mm_h": 2.0,
+      "wind_ms": 14,
+      "gust_ms": 20,
+      "temp_c_below": -12
+    },
+
+    "exposed_leg_types": ["bike", "walk"],
+    "exposed_leg_note": "Båtben räknas inte som exponerade. Man kan sitta inne.",
+    "min_exposed_minutes_to_apply": 8
+  }
+}

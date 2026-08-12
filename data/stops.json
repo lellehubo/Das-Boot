@@ -1,0 +1,300 @@
+{
+  "schema_version": 1,
+  "verified": "2026-08-12",
+  "source": "transport.integration.sl.se/v1/sites and journeyplanner.integration.sl.se/v2/trips",
+  "note": "site_id is used by SL Transport. gid is used by SL Journey Planner v2. They are not interchangeable.",
+
+  "nodes": {
+    "home": {
+      "label": "Hemma, Saltsjöqvarn",
+      "type": "place",
+      "lat": 59.3143,
+      "lon": 18.1111,
+      "corridor": "saltsjoqvarn"
+    },
+
+    "saltsjoqvarn": {
+      "label": "Saltsjöqvarn",
+      "type": "stop",
+      "site_id": 1442,
+      "gid": "9091001000001442",
+      "lat": 59.31432,
+      "lon": 18.11114,
+      "modes": ["SHIP", "BUS"],
+      "lines": ["80", "55"],
+      "corridor": "saltsjoqvarn",
+      "is_origin": true
+    },
+
+    "allmanna_grand": {
+      "label": "Allmänna gränd",
+      "type": "stop",
+      "site_id": 312,
+      "gid": "9091001000000312",
+      "lat": 59.32408,
+      "lon": 18.09462,
+      "modes": ["SHIP"],
+      "lines": ["80", "82"],
+      "corridor": "djurgarden"
+    },
+
+    "liljevalchs": {
+      "label": "Liljevalchs/Gröna Lund",
+      "type": "stop",
+      "site_id": 1406,
+      "gid": "9091001000001406",
+      "lat": 59.32524,
+      "lon": 18.09714,
+      "modes": ["TRAM", "BUS"],
+      "lines": ["7", "67"],
+      "corridor": "djurgarden",
+      "note": "Spårvagns- och bussnoden vid Allmänna gränd, cirka 130 meter från bryggan. Site 1406 returnerar även SHIP 80/82 — bryggan och landnoden delar stop area."
+    },
+
+    "djurgardsbron": {
+      "label": "Djurgårdsbron",
+      "type": "stop",
+      "site_id": 1100,
+      "gid": "9091001000001100",
+      "lat": 59.33205,
+      "lon": 18.09259,
+      "modes": ["TRAM", "BUS"],
+      "lines": ["7", "67", "69", "76"],
+      "corridor": "strandvagen"
+    },
+
+    "nybroplan": {
+      "label": "Nybroplan",
+      "type": "stop",
+      "site_id": 1105,
+      "gid": "9091001000001105",
+      "lat": 59.33278,
+      "lon": 18.07680,
+      "modes": ["SHIP", "TRAM", "BUS"],
+      "lines": ["80", "7", "57", "69", "76"],
+      "corridor": "strandvagen"
+    },
+
+    "karlaplan": {
+      "label": "Karlaplan",
+      "type": "stop",
+      "site_id": 9222,
+      "gid": "9091001000009222",
+      "lat": 59.33907,
+      "lon": 18.09209,
+      "modes": ["BUS", "METRO"],
+      "lines": ["67", "1", "4", "72"],
+      "corridor": "narvavagen",
+      "note": "Tunnelbanan här är blockerad. Endast bussbenen får användas."
+    },
+
+    "gardet": {
+      "label": "Gärdet",
+      "type": "stop",
+      "site_id": 9221,
+      "gid": "9091001000009221",
+      "lat": 59.34808,
+      "lon": 18.10228,
+      "modes": ["BUS", "METRO"],
+      "lines": ["1"],
+      "corridor": "gardet",
+      "note": "Tunnelbanan här är blockerad. Endast bussbenen får användas."
+    },
+
+    "frihamnen_pier": {
+      "label": "Frihamnen, brygga",
+      "type": "stop",
+      "site_id": 1001,
+      "gid": "9091001000001001",
+      "lat": 59.34602,
+      "lon": 18.13066,
+      "modes": ["SHIP"],
+      "lines": ["80"],
+      "corridor": "gardet",
+      "note": "Detta är båtläget. Verifierat via ankomstkoordinat på ett båtben, 59.345562/18.131461."
+    },
+
+    "frihamnen_bus": {
+      "label": "Frihamnen, buss",
+      "type": "stop",
+      "site_id": 1170,
+      "gid": "9091001000001170",
+      "lat": 59.34150,
+      "lon": 18.11799,
+      "modes": ["BUS"],
+      "lines": ["1", "76"],
+      "corridor": "gardet",
+      "note": "Busshållplatsen, cirka 800 meter från bryggan. Site 1170 returnerar även SHIP 80."
+    },
+
+    "malmvagen": {
+      "label": "Malmvägen",
+      "type": "stop",
+      "site_id": 1176,
+      "gid": "9091001000001176",
+      "lat": 59.34756,
+      "lon": 18.11359,
+      "modes": ["BUS"],
+      "lines": ["76"],
+      "corridor": "gardet",
+      "note": "Närmaste hållplats med faktisk trafik vid Hangövägen."
+    },
+
+    "tegeluddsvagen_3": {
+      "label": "Tegeluddsvägen 3",
+      "type": "place",
+      "lat": 59.35045,
+      "lon": 18.10130,
+      "corridor": "gardet"
+    },
+
+    "hangovagen_office": {
+      "label": "Hangövägen, nya kontoret",
+      "type": "place",
+      "lat": 59.34870,
+      "lon": 18.11150,
+      "corridor": "gardet"
+    },
+
+    "vartahamnen_pier": {
+      "label": "Värtahamnen, brygga",
+      "type": "stop",
+      "site_id": null,
+      "gid": null,
+      "lat": 59.34917,
+      "lon": 18.10659,
+      "modes": ["SHIP"],
+      "lines": ["80"],
+      "corridor": "gardet",
+      "status": "planned",
+      "expected_open": "2027-04",
+      "note": "Finns inte i SL-datan än. Koordinaten är ungefärlig, satt till Värtahamnens färjeterminal (site 1154) tills bryggan dyker upp."
+    },
+
+    "slussen": {
+      "label": "Slussen",
+      "type": "stop",
+      "site_id": 9192,
+      "gid": "9091001000009192",
+      "lat": 59.32032,
+      "lon": 18.07245,
+      "modes": ["BUS", "METRO", "TRAIN", "SHIP"],
+      "corridor": null,
+      "blocked_for_modes": ["BUS"],
+      "note": "Inte blockerad som plats. Endast bussben hit eller härifrån är blockerade. Båt 82 hit är tillåten."
+    },
+
+    "finnboda": {
+      "label": "Finnboda hamn",
+      "type": "stop",
+      "site_id": 1451,
+      "gid": "9091001000001451",
+      "lat": 59.31321,
+      "lon": 18.12069,
+      "modes": ["SHIP"],
+      "lines": ["80"],
+      "corridor": null
+    },
+
+    "kvarnholmen": {
+      "label": "Kvarnholmen",
+      "type": "stop",
+      "site_id": 1455,
+      "gid": "9091001000001455",
+      "lat": 59.31585,
+      "lon": 18.13970,
+      "modes": ["SHIP"],
+      "lines": ["80"],
+      "corridor": null
+    },
+
+    "blockhusudden": {
+      "label": "Blockhusudden",
+      "type": "stop",
+      "site_id": 1420,
+      "gid": "9091001000001420",
+      "lat": 59.32133,
+      "lon": 18.15436,
+      "modes": ["SHIP"],
+      "lines": ["80"],
+      "corridor": "djurgarden"
+    },
+
+    "nacka_strand": {
+      "label": "Nacka strand",
+      "type": "stop",
+      "site_id": 4031,
+      "gid": "9091001000004031",
+      "lat": 59.31641,
+      "lon": 18.16029,
+      "modes": ["SHIP"],
+      "lines": ["80"],
+      "corridor": null
+    },
+
+    "dalenum": {
+      "label": "Lidingö/Dalénum",
+      "type": "stop",
+      "site_id": 9255,
+      "gid": "9091001000009255",
+      "lat": 59.34326,
+      "lon": 18.15247,
+      "modes": ["SHIP"],
+      "lines": ["80"],
+      "corridor": null
+    },
+
+    "ropsten": {
+      "label": "Ropsten",
+      "type": "stop",
+      "site_id": 9220,
+      "gid": "9091001000009220",
+      "lat": 59.35800,
+      "lon": 18.10343,
+      "modes": ["SHIP", "METRO", "BUS"],
+      "lines": ["80"],
+      "corridor": null
+    }
+  },
+
+  "corridors": {
+    "saltsjoqvarn": { "label": "Saltsjöqvarn", "liked": true },
+    "djurgarden": { "label": "Djurgården", "liked": true },
+    "strandvagen": { "label": "Strandvägen", "liked": true },
+    "narvavagen": { "label": "Narvavägen", "liked": true },
+    "gardet": { "label": "Gärdet", "liked": true }
+  },
+
+  "line_sequences": {
+    "80": {
+      "note": "Bryggorna i ordning västerut till österut. Behovs for att avgora om en tur nar mal-bryggan: en avgang mot Ropsten som vander vid Nacka Strand passerar aldrig Frihamnen. Riktningen ensam racker inte.",
+      "stops": [
+        "nybroplan",
+        "allmanna_grand",
+        "saltsjoqvarn",
+        "finnboda",
+        "kvarnholmen",
+        "blockhusudden",
+        "nacka_strand",
+        "dalenum",
+        "frihamnen_pier",
+        "ropsten"
+      ]
+    }
+  },
+
+  "destination_aliases": {
+    "note": "SL:s destination-strang mappad till nod-id. Skiljer sig i skrivsatt fran tidtabellen (Nacka Strand med stort S).",
+    "Nybroplan": "nybroplan",
+    "Ropsten": "ropsten",
+    "Nacka Strand": "nacka_strand",
+    "Nacka strand": "nacka_strand",
+    "Frihamnen": "frihamnen_pier",
+    "Allmänna gränd": "allmanna_grand",
+    "Lidingö/Dalénum": "dalenum",
+    "Kvarnholmen": "kvarnholmen",
+    "Blockhusudden": "blockhusudden",
+    "Finnboda hamn": "finnboda",
+    "Saltsjöqvarn": "saltsjoqvarn"
+  }
+}

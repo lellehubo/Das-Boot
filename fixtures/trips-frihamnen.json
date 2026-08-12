@@ -1,0 +1,3203 @@
+{
+  "systemMessages": [
+    
+  ],
+  "journeys": [
+    {
+      "tripDuration": 2280,
+      "tripRtDuration": 2280,
+      "rating": 0,
+      "isAdditional": false,
+      "interchanges": 0,
+      "legs": [
+        {
+          "infos": [
+            
+          ],
+          "duration": 2280,
+          "origin": {
+            "isGlobalId": true,
+            "id": "9025001000008001",
+            "name": "Saltsjöqvarn, Stockholm",
+            "disassembledName": "Saltsjöqvarn",
+            "type": "platform",
+            "coord": [
+              59.315228,
+              18.111051
+            ],
+            "niveau": 0,
+            "parent": {
+              "isGlobalId": true,
+              "id": "9021001008001000",
+              "name": "Saltsjöqvarn, Stockholm",
+              "disassembledName": "Saltsjöqvarn",
+              "type": "stop",
+              "parent": {
+                "id": "placeID:33001082:1",
+                "name": "Nacka",
+                "type": "locality"
+              },
+              "properties": {
+                "stopId": "18008001"
+              },
+              "coord": [
+                59.315228,
+                18.111051
+              ],
+              "niveau": 0
+            },
+            "productClasses": [
+              9
+            ],
+            "departureTimeBaseTimetable": "2026-08-13T04:46:00Z",
+            "departureTimePlanned": "2026-08-13T04:46:00Z",
+            "departureTimeEstimated": "2026-08-13T04:46:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "0",
+              "area": "1",
+              "platform": "1",
+              "callType": [
+                "ONDEMAND"
+              ]
+            }
+          },
+          "destination": {
+            "isGlobalId": true,
+            "id": "9025001000008007",
+            "name": "Frihamnen, Stockholm",
+            "disassembledName": "Frihamnen",
+            "type": "platform",
+            "coord": [
+              59.345562,
+              18.131461
+            ],
+            "niveau": 0,
+            "parent": {
+              "isGlobalId": true,
+              "id": "9021001008007000",
+              "name": "Frihamnen, Stockholm",
+              "disassembledName": "Frihamnen",
+              "type": "stop",
+              "parent": {
+                "id": "placeID:33001080:1",
+                "name": "Stockholm",
+                "type": "locality"
+              },
+              "properties": {
+                "stopId": "18008007"
+              },
+              "coord": [
+                59.345558,
+                18.131524
+              ],
+              "niveau": 0
+            },
+            "productClasses": [
+              9
+            ],
+            "arrivalTimeBaseTimetable": "2026-08-13T05:24:00Z",
+            "arrivalTimePlanned": "2026-08-13T05:24:00Z",
+            "arrivalTimeEstimated": "2026-08-13T05:24:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "0",
+              "area": "1",
+              "platform": "1",
+              "callType": [
+                "ONDEMAND"
+              ]
+            }
+          },
+          "transportation": {
+            "id": "tfs:06080: :H:y01",
+            "name": "Båt Pendelbåt 80",
+            "number": "Pendelbåt 80",
+            "product": {
+              "id": 10,
+              "class": 9,
+              "name": "Båt",
+              "iconId": 10
+            },
+            "operator": {
+              "id": "1",
+              "name": "Storstockholms Lokaltrafik"
+            },
+            "destination": {
+              "id": "18008041",
+              "name": "Ropsten via Nacka Strand",
+              "type": "stop"
+            },
+            "properties": {
+              "trainNumber": "8007",
+              "tripCode": 293,
+              "timetablePeriod": "Current",
+              "lineDisplay": "LINE",
+              "globalId": "9011001008000000",
+              "RealtimeTripId": "9015001008008003"
+            },
+            "vesselInformation": {
+              "name": "Pendelbåt SL"
+            },
+            "isSamtrafik": false,
+            "disassembledName": "80"
+          },
+          "stopSequence": [
+            {
+              "isGlobalId": true,
+              "id": "9025001000008001",
+              "name": "Saltsjöqvarn, Stockholm",
+              "disassembledName": "Saltsjöqvarn",
+              "type": "platform",
+              "coord": [
+                59.315228,
+                18.111051
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008001000",
+                "name": "Saltsjöqvarn, Stockholm",
+                "disassembledName": "Saltsjöqvarn",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001082:1",
+                  "name": "Nacka",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008001"
+                },
+                "coord": [
+                  59.315228,
+                  18.111051
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "platform": "1",
+                "zone": "tfs:32"
+              },
+              "departureTimePlanned": "2026-08-13T04:46:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000008002",
+              "name": "Finnboda hamn, Stockholm",
+              "disassembledName": "Finnboda hamn",
+              "type": "platform",
+              "coord": [
+                59.31609,
+                18.124472
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008002000",
+                "name": "Finnboda hamn, Stockholm",
+                "disassembledName": "Finnboda hamn",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001082:1",
+                  "name": "Nacka",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008002"
+                },
+                "coord": [
+                  59.31609,
+                  18.124472
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "platform": "1",
+                "zone": "tfs:32"
+              },
+              "departureTimePlanned": "2026-08-13T04:51:00Z",
+              "arrivalTimePlanned": "2026-08-13T04:51:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000008008",
+              "name": "Kvarnholmen, Nacka",
+              "disassembledName": "Kvarnholmen",
+              "type": "platform",
+              "coord": [
+                59.317639,
+                18.137066
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008008000",
+                "name": "Kvarnholmen, Nacka",
+                "disassembledName": "Kvarnholmen",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001082:1",
+                  "name": "Nacka",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008008"
+                },
+                "coord": [
+                  59.317685,
+                  18.137031
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "occupancy": "MANY_SEATS",
+                "platform": "1",
+                "zone": "tfs:32"
+              },
+              "departureTimePlanned": "2026-08-13T04:56:00Z",
+              "arrivalTimePlanned": "2026-08-13T04:56:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000008006",
+              "name": "Blockhusudden, Stockholm",
+              "disassembledName": "Blockhusudden",
+              "type": "platform",
+              "coord": [
+                59.320917,
+                18.151395
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008006000",
+                "name": "Blockhusudden, Stockholm",
+                "disassembledName": "Blockhusudden",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008006"
+                },
+                "coord": [
+                  59.320917,
+                  18.151395
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "platform": "1",
+                "zone": "tfs:33"
+              },
+              "departureTimePlanned": "2026-08-13T05:00:00Z",
+              "arrivalTimePlanned": "2026-08-13T05:00:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000008003",
+              "name": "Nacka strand, Nacka",
+              "disassembledName": "Nacka strand",
+              "type": "platform",
+              "coord": [
+                59.318368,
+                18.160054
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008003000",
+                "name": "Nacka strand, Nacka",
+                "disassembledName": "Nacka strand",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001082:1",
+                  "name": "Nacka",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008003"
+                },
+                "coord": [
+                  59.318396,
+                  18.160036
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "occupancy": "MANY_SEATS",
+                "platform": "1",
+                "zone": "tfs:32"
+              },
+              "departureTimePlanned": "2026-08-13T05:06:00Z",
+              "arrivalTimePlanned": "2026-08-13T05:06:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000008005",
+              "name": "Lidingö/Dalénum, Lidingö",
+              "disassembledName": "Lidingö/Dalénum",
+              "type": "platform",
+              "coord": [
+                59.343185,
+                18.15241
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008005000",
+                "name": "Lidingö/Dalénum, Lidingö",
+                "disassembledName": "Lidingö/Dalénum",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001086:1",
+                  "name": "Lidingö",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008005"
+                },
+                "coord": [
+                  59.343185,
+                  18.15241
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "occupancy": "MANY_SEATS",
+                "platform": "1",
+                "zone": "tfs:34"
+              },
+              "departureTimePlanned": "2026-08-13T05:19:00Z",
+              "arrivalTimePlanned": "2026-08-13T05:19:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000008007",
+              "name": "Frihamnen, Stockholm",
+              "disassembledName": "Frihamnen",
+              "type": "platform",
+              "coord": [
+                59.345562,
+                18.131461
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008007000",
+                "name": "Frihamnen, Stockholm",
+                "disassembledName": "Frihamnen",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008007"
+                },
+                "coord": [
+                  59.345558,
+                  18.131524
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "platform": "1",
+                "zone": "tfs:33"
+              },
+              "arrivalTimePlanned": "2026-08-13T05:24:00Z"
+            }
+          ],
+          "coords": [
+            [
+              59.315152,
+              18.110981
+            ],
+            [
+              59.316284,
+              18.112615
+            ],
+            [
+              59.317661,
+              18.123181
+            ],
+            [
+              59.31736,
+              18.124629
+            ],
+            [
+              59.316083,
+              18.124446
+            ],
+            [
+              59.316085,
+              18.124458
+            ],
+            [
+              59.317087,
+              18.126684
+            ],
+            [
+              59.317717,
+              18.133566
+            ],
+            [
+              59.317513,
+              18.13704
+            ],
+            [
+              59.317506,
+              18.137016
+            ],
+            [
+              59.318646,
+              18.138255
+            ],
+            [
+              59.319928,
+              18.150552
+            ],
+            [
+              59.320898,
+              18.151404
+            ],
+            [
+              59.32091,
+              18.151404
+            ],
+            [
+              59.320273,
+              18.151622
+            ],
+            [
+              59.318584,
+              18.158097
+            ],
+            [
+              59.318329,
+              18.158907
+            ],
+            [
+              59.318266,
+              18.158892
+            ],
+            [
+              59.33327,
+              18.159048
+            ],
+            [
+              59.338788,
+              18.155765
+            ],
+            [
+              59.342224,
+              18.152288
+            ],
+            [
+              59.343169,
+              18.152417
+            ],
+            [
+              59.343152,
+              18.152422
+            ],
+            [
+              59.345514,
+              18.13147
+            ]
+          ]
+        }
+      ],
+      "daysOfService": {
+        "rvb": "0000000033E000007CF9F3E700003E7C00000000000000000000000000000000"
+      }
+    },
+    {
+      "tripDuration": 3060,
+      "tripRtDuration": 3060,
+      "rating": 0,
+      "isAdditional": false,
+      "interchanges": 1,
+      "legs": [
+        {
+          "infos": [
+            
+          ],
+          "duration": 1080,
+          "origin": {
+            "isGlobalId": true,
+            "id": "9025001000008001",
+            "name": "Saltsjöqvarn, Stockholm",
+            "disassembledName": "Saltsjöqvarn",
+            "type": "platform",
+            "coord": [
+              59.315228,
+              18.111051
+            ],
+            "niveau": 0,
+            "parent": {
+              "isGlobalId": true,
+              "id": "9021001008001000",
+              "name": "Saltsjöqvarn, Stockholm",
+              "disassembledName": "Saltsjöqvarn",
+              "type": "stop",
+              "parent": {
+                "id": "placeID:33001082:1",
+                "name": "Nacka",
+                "type": "locality"
+              },
+              "properties": {
+                "stopId": "18008001"
+              },
+              "coord": [
+                59.315228,
+                18.111051
+              ],
+              "niveau": 0
+            },
+            "productClasses": [
+              9
+            ],
+            "departureTimeBaseTimetable": "2026-08-13T05:02:00Z",
+            "departureTimePlanned": "2026-08-13T05:02:00Z",
+            "departureTimeEstimated": "2026-08-13T05:02:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "0",
+              "area": "1",
+              "occupancy": "MANY_SEATS",
+              "platform": "1",
+              "callType": [
+                "ONDEMAND"
+              ]
+            }
+          },
+          "destination": {
+            "isGlobalId": true,
+            "id": "9025001000008000",
+            "name": "Nybroplan, Stockholm",
+            "disassembledName": "Nybroplan",
+            "type": "platform",
+            "coord": [
+              59.332062,
+              18.07652
+            ],
+            "niveau": 0,
+            "parent": {
+              "isGlobalId": true,
+              "id": "9021001008000000",
+              "name": "Nybroplan, Stockholm",
+              "disassembledName": "Nybroplan",
+              "type": "stop",
+              "parent": {
+                "id": "placeID:33001080:1",
+                "name": "Stockholm",
+                "type": "locality"
+              },
+              "properties": {
+                "stopId": "18008000"
+              },
+              "coord": [
+                59.332062,
+                18.07652
+              ],
+              "niveau": 0
+            },
+            "productClasses": [
+              9
+            ],
+            "arrivalTimeBaseTimetable": "2026-08-13T05:20:00Z",
+            "arrivalTimePlanned": "2026-08-13T05:20:00Z",
+            "arrivalTimeEstimated": "2026-08-13T05:20:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "0",
+              "area": "1",
+              "platform": "1",
+              "callType": [
+                "ONDEMAND"
+              ]
+            }
+          },
+          "transportation": {
+            "id": "tfs:06080: :R:y01",
+            "name": "Båt Pendelbåt 80",
+            "number": "Pendelbåt 80",
+            "product": {
+              "id": 10,
+              "class": 9,
+              "name": "Båt",
+              "iconId": 10
+            },
+            "operator": {
+              "id": "1",
+              "name": "Storstockholms Lokaltrafik"
+            },
+            "destination": {
+              "id": "18008000",
+              "name": "Nybroplan",
+              "type": "stop"
+            },
+            "properties": {
+              "trainNumber": "8002",
+              "tripCode": 415,
+              "timetablePeriod": "Current",
+              "lineDisplay": "LINE",
+              "globalId": "9011001008000000",
+              "RealtimeTripId": "9015001008008004"
+            },
+            "vesselInformation": {
+              "name": "Pendelbåt SL"
+            },
+            "isSamtrafik": false,
+            "disassembledName": "80"
+          },
+          "stopSequence": [
+            {
+              "isGlobalId": true,
+              "id": "9025001000008001",
+              "name": "Saltsjöqvarn, Stockholm",
+              "disassembledName": "Saltsjöqvarn",
+              "type": "platform",
+              "coord": [
+                59.315228,
+                18.111051
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008001000",
+                "name": "Saltsjöqvarn, Stockholm",
+                "disassembledName": "Saltsjöqvarn",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001082:1",
+                  "name": "Nacka",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008001"
+                },
+                "coord": [
+                  59.315228,
+                  18.111051
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "occupancy": "MANY_SEATS",
+                "platform": "1",
+                "zone": "tfs:32"
+              },
+              "departureTimePlanned": "2026-08-13T05:02:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000008009",
+              "name": "Allmänna gränd, Stockholm",
+              "disassembledName": "Allmänna gränd",
+              "type": "platform",
+              "coord": [
+                59.324249,
+                18.094378
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008009000",
+                "name": "Allmänna gränd, Stockholm",
+                "disassembledName": "Allmänna gränd",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008009"
+                },
+                "coord": [
+                  59.324162,
+                  18.094495
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "occupancy": "MANY_SEATS",
+                "platform": "1",
+                "zone": "tfs:545"
+              },
+              "departureTimePlanned": "2026-08-13T05:11:00Z",
+              "arrivalTimePlanned": "2026-08-13T05:11:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000008000",
+              "name": "Nybroplan, Stockholm",
+              "disassembledName": "Nybroplan",
+              "type": "platform",
+              "coord": [
+                59.332062,
+                18.07652
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008000000",
+                "name": "Nybroplan, Stockholm",
+                "disassembledName": "Nybroplan",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008000"
+                },
+                "coord": [
+                  59.332062,
+                  18.07652
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "platform": "1",
+                "zone": "tfs:33"
+              },
+              "arrivalTimePlanned": "2026-08-13T05:20:00Z"
+            }
+          ],
+          "coords": [
+            [
+              59.31525,
+              18.110928
+            ],
+            [
+              59.319947,
+              18.096232
+            ],
+            [
+              59.322493,
+              18.093637
+            ],
+            [
+              59.324143,
+              18.094581
+            ],
+            [
+              59.324134,
+              18.094654
+            ],
+            [
+              59.332114,
+              18.076523
+            ]
+          ]
+        },
+        {
+          "infos": [
+            
+          ],
+          "distance": 198,
+          "duration": 600,
+          "footPathInfo": [
+            {
+              "duration": 600,
+              "footPathElem": [
+                {
+                  "attributes": {
+                    "distance": 0,
+                    "duration": 100,
+                    "elevDoorWidth": 0,
+                    "elevLength": 0,
+                    "elevWidth": 0,
+                    "maxStepHeight": 0,
+                    "narrowestWidth": -1,
+                    "numberSteps": 0,
+                    "rampInclination": 0,
+                    "rampLength": 0,
+                    "rampWidth": 0
+                  },
+                  "description": "",
+                  "destination": {
+                    "coord": [
+                      59.332635,
+                      18.07696
+                    ],
+                    "id": "9021001010298000",
+                    "isGlobalId": true,
+                    "name": "Nybroplan",
+                    "properties": {
+                      "area": 2,
+                      "areaGid": "",
+                      "areaName": "Nybroplan",
+                      "areaType": 33,
+                      "georef": "32842761:51:MRCV:100",
+                      "platform": 0
+                    },
+                    "type": "stop"
+                  },
+                  "level": "LEVEL",
+                  "levelFrom": 0,
+                  "levelTo": 0,
+                  "openingHours": [
+                    
+                  ],
+                  "origin": {
+                    "coord": [
+                      59.332062,
+                      18.07652
+                    ],
+                    "id": "9021001008000000",
+                    "isGlobalId": true,
+                    "name": "Nybroplan",
+                    "properties": {
+                      "area": 1,
+                      "areaGid": "",
+                      "areaName": "Nybroplan",
+                      "areaType": 33,
+                      "georef": "1000717763:18:MRCV:100",
+                      "platform": 0
+                    },
+                    "type": "stop"
+                  },
+                  "type": "UNKNOWN"
+                }
+              ],
+              "position": "IDEST"
+            }
+          ],
+          "pathDescriptions": [
+            {
+              "coord": [
+                59.332048,
+                18.076556
+              ],
+              "cumDistance": 0,
+              "cumDuration": 0,
+              "distance": 0,
+              "duration": 0,
+              "fromCoordsIndex": 0,
+              "manoeuvre": "LEAVE_FERRY",
+              "name": "Ausstieg Boot/Schiff Pendelbåt 80",
+              "toCoordsIndex": 1,
+              "turnDirection": "UNKNOWN"
+            },
+            {
+              "coord": [
+                59.332044,
+                18.076547
+              ],
+              "cumDistance": 23,
+              "cumDuration": 21,
+              "distance": 23,
+              "duration": 21,
+              "fromCoordsIndex": 1,
+              "manoeuvre": "KEEP",
+              "name": "Nybrohamnen",
+              "skyDirection": 180,
+              "toCoordsIndex": 5,
+              "turnDirection": "STRAIGHT"
+            },
+            {
+              "coord": [
+                59.332186,
+                18.076852
+              ],
+              "cumDistance": 33,
+              "cumDuration": 29,
+              "distance": 9,
+              "duration": 8,
+              "fromCoordsIndex": 5,
+              "manoeuvre": "TURN",
+              "name": "",
+              "properties": {
+                "OUTDOOR_TYPE": "HIKING_TRAIL"
+              },
+              "skyDirection": 52,
+              "toCoordsIndex": 6,
+              "turnDirection": "LEFT"
+            },
+            {
+              "coord": [
+                59.332264,
+                18.076772
+              ],
+              "cumDistance": 43,
+              "cumDuration": 38,
+              "distance": 9,
+              "duration": 8,
+              "fromCoordsIndex": 6,
+              "manoeuvre": "TURN",
+              "name": "Nybrohamnen",
+              "properties": {
+                "OUTDOOR_TYPE": "HIKING_TRAIL"
+              },
+              "skyDirection": 330,
+              "toCoordsIndex": 7,
+              "turnDirection": "RIGHT"
+            },
+            {
+              "coord": [
+                59.332291,
+                18.076933
+              ],
+              "cumDistance": 49,
+              "cumDuration": 44,
+              "distance": 6,
+              "duration": 5,
+              "fromCoordsIndex": 7,
+              "manoeuvre": "TURN",
+              "name": "Nybroplan",
+              "properties": {
+                "OUTDOOR_TYPE": "HIKING_TRAIL"
+              },
+              "skyDirection": 329,
+              "toCoordsIndex": 10,
+              "turnDirection": "SHARP_LEFT"
+            },
+            {
+              "coord": [
+                59.332346,
+                18.076879
+              ],
+              "cumDistance": 58,
+              "cumDuration": 49,
+              "distance": 8,
+              "duration": 5,
+              "fromCoordsIndex": 10,
+              "manoeuvre": "CONTINUE",
+              "name": "Nybroplan",
+              "properties": {
+                "OUTDOOR_TYPE": "TRAFFICLIGHT"
+              },
+              "skyDirection": 329,
+              "toCoordsIndex": 12,
+              "turnDirection": "STRAIGHT"
+            },
+            {
+              "coord": [
+                59.332415,
+                18.076807
+              ],
+              "cumDistance": 120,
+              "cumDuration": 105,
+              "distance": 62,
+              "duration": 56,
+              "fromCoordsIndex": 12,
+              "manoeuvre": "TURN",
+              "name": "Nybroplan",
+              "properties": {
+                "OUTDOOR_TYPE": "HIKING_TRAIL"
+              },
+              "skyDirection": 300,
+              "toCoordsIndex": 17,
+              "turnDirection": "SLIGHT_LEFT"
+            },
+            {
+              "coord": [
+                59.332731,
+                18.075918
+              ],
+              "cumDistance": 124,
+              "cumDuration": 108,
+              "distance": 3,
+              "duration": 3,
+              "fromCoordsIndex": 17,
+              "manoeuvre": "TURN",
+              "name": "",
+              "properties": {
+                "OUTDOOR_TYPE": "HIKING_TRAIL"
+              },
+              "skyDirection": 28,
+              "toCoordsIndex": 19,
+              "turnDirection": "SLIGHT_RIGHT"
+            },
+            {
+              "coord": [
+                59.332763,
+                18.075954
+              ],
+              "cumDistance": 140,
+              "cumDuration": 119,
+              "distance": 15,
+              "duration": 10,
+              "fromCoordsIndex": 19,
+              "manoeuvre": "CONTINUE",
+              "name": "Fußgängerampel",
+              "properties": {
+                "OUTDOOR_TYPE": "TRAFFICLIGHT"
+              },
+              "skyDirection": 26,
+              "toCoordsIndex": 27,
+              "turnDirection": "STRAIGHT"
+            },
+            {
+              "coord": [
+                59.332891,
+                18.07608
+              ],
+              "cumDistance": 198,
+              "cumDuration": 171,
+              "distance": 58,
+              "duration": 52,
+              "fromCoordsIndex": 27,
+              "manoeuvre": "TURN",
+              "name": "",
+              "properties": {
+                "OUTDOOR_TYPE": [
+                  "HIKING_TRAIL",
+                  "PLATFORM_WAY"
+                ]
+              },
+              "skyDirection": 89,
+              "toCoordsIndex": 29,
+              "turnDirection": "SLIGHT_RIGHT"
+            },
+            {
+              "coord": [
+                59.332667,
+                18.077005
+              ],
+              "cumDistance": 198,
+              "cumDuration": 171,
+              "distance": 0,
+              "duration": 0,
+              "fromCoordsIndex": 29,
+              "manoeuvre": "ENTER_BUS",
+              "name": "Einstieg Bus Buss 76",
+              "toCoordsIndex": 30,
+              "turnDirection": "UNKNOWN"
+            }
+          ],
+          "origin": {
+            "isGlobalId": true,
+            "id": "9025001000008000",
+            "name": "Nybroplan, Stockholm",
+            "disassembledName": "Nybroplan",
+            "type": "platform",
+            "coord": [
+              59.332062,
+              18.07652
+            ],
+            "niveau": 0,
+            "parent": {
+              "isGlobalId": true,
+              "id": "9021001008000000",
+              "name": "Nybroplan, Stockholm",
+              "disassembledName": "Nybroplan",
+              "type": "stop",
+              "parent": {
+                "id": "placeID:33001080:1",
+                "name": "Stockholm",
+                "type": "locality"
+              },
+              "properties": {
+                "stopId": "18008000"
+              },
+              "coord": [
+                59.332062,
+                18.07652
+              ],
+              "niveau": 0
+            },
+            "productClasses": [
+              9
+            ],
+            "departureTimeBaseTimetable": "2026-08-13T05:20:00Z",
+            "departureTimePlanned": "2026-08-13T05:20:00Z",
+            "departureTimeEstimated": "2026-08-13T05:20:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "0",
+              "area": "1",
+              "platform": "1"
+            }
+          },
+          "destination": {
+            "isGlobalId": true,
+            "id": "9025001000010299",
+            "name": "Nybroplan, Stockholm",
+            "disassembledName": "Nybroplan",
+            "type": "platform",
+            "coord": [
+              59.332635,
+              18.07696
+            ],
+            "niveau": 0,
+            "parent": {
+              "isGlobalId": true,
+              "id": "9021001010298000",
+              "name": "Nybroplan, Stockholm",
+              "disassembledName": "Nybroplan",
+              "type": "stop",
+              "parent": {
+                "id": "placeID:33001080:1",
+                "name": "Stockholm",
+                "type": "locality"
+              },
+              "properties": {
+                "stopId": "18010298"
+              },
+              "coord": [
+                59.332813,
+                18.077005
+              ],
+              "niveau": 0
+            },
+            "productClasses": [
+              5
+            ],
+            "arrivalTimeBaseTimetable": "2026-08-13T05:30:00Z",
+            "arrivalTimePlanned": "2026-08-13T05:30:00Z",
+            "arrivalTimeEstimated": "2026-08-13T05:30:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "0",
+              "area": "2",
+              "platform": "2"
+            }
+          },
+          "transportation": {
+            "product": {
+              "class": 99,
+              "name": "footpath",
+              "iconId": 99
+            },
+            "properties": {
+              "tripCode": 0,
+              "lineDisplay": "LINE"
+            },
+            "isSamtrafik": false
+          },
+          "stopSequence": [
+            {
+              "isGlobalId": true,
+              "id": "9025001000008000",
+              "name": "Nybroplan, Stockholm",
+              "disassembledName": "Nybroplan",
+              "type": "platform",
+              "coord": [
+                59.332062,
+                18.07652
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008000000",
+                "name": "Nybroplan, Stockholm",
+                "disassembledName": "Nybroplan",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008000"
+                },
+                "coord": [
+                  59.332062,
+                  18.07652
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "platform": "1",
+                "zone": "tfs:33"
+              },
+              "departureTimePlanned": "2026-08-13T05:20:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000010299",
+              "name": "Nybroplan, Stockholm",
+              "disassembledName": "Nybroplan",
+              "type": "platform",
+              "coord": [
+                59.332635,
+                18.07696
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001010298000",
+                "name": "Nybroplan, Stockholm",
+                "disassembledName": "Nybroplan",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18010298"
+                },
+                "coord": [
+                  59.332813,
+                  18.077005
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                5
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "2",
+                "platform": "2",
+                "zone": "tfs:33"
+              },
+              "arrivalTimePlanned": "2026-08-13T05:30:00Z"
+            }
+          ],
+          "coords": [
+            [
+              59.332048,
+              18.076553
+            ],
+            [
+              59.332044,
+              18.076547
+            ],
+            [
+              59.332067,
+              18.076583
+            ],
+            [
+              59.332112,
+              18.076664
+            ],
+            [
+              59.332158,
+              18.076772
+            ],
+            [
+              59.332186,
+              18.076852
+            ],
+            [
+              59.332264,
+              18.076772
+            ],
+            [
+              59.332291,
+              18.076933
+            ],
+            [
+              59.332319,
+              18.076906
+            ],
+            [
+              59.332328,
+              18.076906
+            ],
+            [
+              59.332346,
+              18.076879
+            ],
+            [
+              59.332392,
+              18.076825
+            ],
+            [
+              59.332415,
+              18.076807
+            ],
+            [
+              59.332447,
+              18.076709
+            ],
+            [
+              59.332465,
+              18.076646
+            ],
+            [
+              59.332479,
+              18.076583
+            ],
+            [
+              59.332516,
+              18.076574
+            ],
+            [
+              59.332731,
+              18.075918
+            ],
+            [
+              59.332749,
+              18.075936
+            ],
+            [
+              59.332763,
+              18.075954
+            ],
+            [
+              59.332777,
+              18.075963
+            ],
+            [
+              59.3328,
+              18.07599
+            ],
+            [
+              59.332823,
+              18.076008
+            ],
+            [
+              59.332836,
+              18.076026
+            ],
+            [
+              59.33285,
+              18.076035
+            ],
+            [
+              59.332864,
+              18.076053
+            ],
+            [
+              59.332878,
+              18.076062
+            ],
+            [
+              59.332891,
+              18.07608
+            ],
+            [
+              59.332905,
+              18.076098
+            ],
+            [
+              59.332671,
+              18.076978
+            ],
+            [
+              59.332667,
+              18.077003
+            ],
+            [
+              59.332635,
+              18.076971
+            ]
+          ]
+        },
+        {
+          "infos": [
+            
+          ],
+          "duration": 768,
+          "origin": {
+            "isGlobalId": true,
+            "id": "9025001000010299",
+            "name": "Nybroplan, Stockholm",
+            "disassembledName": "Nybroplan",
+            "type": "platform",
+            "coord": [
+              59.332635,
+              18.07696
+            ],
+            "niveau": 0,
+            "parent": {
+              "isGlobalId": true,
+              "id": "9021001010298000",
+              "name": "Nybroplan, Stockholm",
+              "disassembledName": "Nybroplan",
+              "type": "stop",
+              "parent": {
+                "id": "placeID:33001080:1",
+                "name": "Stockholm",
+                "type": "locality"
+              },
+              "properties": {
+                "stopId": "18010298"
+              },
+              "coord": [
+                59.332813,
+                18.077005
+              ],
+              "niveau": 0
+            },
+            "productClasses": [
+              5
+            ],
+            "departureTimeBaseTimetable": "2026-08-13T05:35:12Z",
+            "departureTimePlanned": "2026-08-13T05:35:12Z",
+            "departureTimeEstimated": "2026-08-13T05:35:12Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "0",
+              "area": "2",
+              "occupancy": "FEW_SEATS",
+              "platform": "2",
+              "callType": [
+                "ONDEMAND"
+              ]
+            }
+          },
+          "destination": {
+            "isGlobalId": true,
+            "id": "9025001000010127",
+            "name": "Frihamnen, Stockholm",
+            "disassembledName": "Frihamnen",
+            "type": "platform",
+            "coord": [
+              59.341156,
+              18.117627
+            ],
+            "niveau": 0,
+            "parent": {
+              "isGlobalId": true,
+              "id": "9021001010028000",
+              "name": "Frihamnen, Stockholm",
+              "disassembledName": "Frihamnen",
+              "type": "stop",
+              "parent": {
+                "id": "placeID:33001080:1",
+                "name": "Stockholm",
+                "type": "locality"
+              },
+              "properties": {
+                "stopId": "18010028"
+              },
+              "coord": [
+                59.341472,
+                18.11778
+              ],
+              "niveau": 0
+            },
+            "productClasses": [
+              5
+            ],
+            "arrivalTimeBaseTimetable": "2026-08-13T05:48:00Z",
+            "arrivalTimePlanned": "2026-08-13T05:48:00Z",
+            "arrivalTimeEstimated": "2026-08-13T05:48:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "0",
+              "area": "1",
+              "platform": "1",
+              "callType": [
+                "ONDEMAND"
+              ]
+            }
+          },
+          "transportation": {
+            "id": "tfs:01076: :R:y01",
+            "name": "Buss Buss 76",
+            "number": "Buss 76",
+            "product": {
+              "id": 3,
+              "class": 5,
+              "name": "Buss",
+              "iconId": 3
+            },
+            "operator": {
+              "id": "1",
+              "name": "Storstockholms Lokaltrafik"
+            },
+            "destination": {
+              "id": "18010032",
+              "name": "Ropsten",
+              "type": "stop"
+            },
+            "properties": {
+              "tripCode": 549,
+              "timetablePeriod": "Current",
+              "lineDisplay": "LINE",
+              "globalId": "9011001007600000",
+              "RealtimeTripId": "9015001007604159"
+            },
+            "isSamtrafik": false,
+            "disassembledName": "76"
+          },
+          "stopSequence": [
+            {
+              "isGlobalId": true,
+              "id": "9025001000010299",
+              "name": "Nybroplan, Stockholm",
+              "disassembledName": "Nybroplan",
+              "type": "platform",
+              "coord": [
+                59.332635,
+                18.07696
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001010298000",
+                "name": "Nybroplan, Stockholm",
+                "disassembledName": "Nybroplan",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18010298"
+                },
+                "coord": [
+                  59.332813,
+                  18.077005
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                5
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "2",
+                "occupancy": "FEW_SEATS",
+                "platform": "2",
+                "zone": "tfs:33"
+              },
+              "departureTimePlanned": "2026-08-13T05:35:12Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000010303",
+              "name": "Styrmansgatan, Stockholm",
+              "disassembledName": "Styrmansgatan",
+              "type": "platform",
+              "coord": [
+                59.331485,
+                18.085422
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001010302000",
+                "name": "Styrmansgatan, Stockholm",
+                "disassembledName": "Styrmansgatan",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18010302"
+                },
+                "coord": [
+                  59.331618,
+                  18.084668
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                5
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "2",
+                "occupancy": "FEW_SEATS",
+                "platform": "1",
+                "zone": "tfs:33"
+              },
+              "departureTimePlanned": "2026-08-13T05:37:12Z",
+              "arrivalTimePlanned": "2026-08-13T05:37:12Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000010305",
+              "name": "Djurgårdsbron, Stockholm",
+              "disassembledName": "Djurgårdsbron",
+              "type": "platform",
+              "coord": [
+                59.331746,
+                18.092672
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001010224000",
+                "name": "Djurgårdsbron, Stockholm",
+                "disassembledName": "Djurgårdsbron",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18010224"
+                },
+                "coord": [
+                  59.331805,
+                  18.09242
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                5
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "3",
+                "occupancy": "FEW_SEATS",
+                "platform": "1",
+                "zone": "tfs:33"
+              },
+              "departureTimePlanned": "2026-08-13T05:38:42Z",
+              "arrivalTimePlanned": "2026-08-13T05:38:42Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000011063",
+              "name": "Berwaldhallen, Stockholm",
+              "disassembledName": "Berwaldhallen",
+              "type": "platform",
+              "coord": [
+                59.33252,
+                18.096975
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001010096000",
+                "name": "Berwaldhallen, Stockholm",
+                "disassembledName": "Berwaldhallen",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18010096"
+                },
+                "coord": [
+                  59.333107,
+                  18.09869
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                5
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "6",
+                "occupancy": "FEW_SEATS",
+                "platform": "1",
+                "zone": "tfs:33"
+              },
+              "departureTimePlanned": "2026-08-13T05:39:48Z",
+              "arrivalTimePlanned": "2026-08-13T05:39:48Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000010099",
+              "name": "Radiohuset, Stockholm",
+              "disassembledName": "Radiohuset",
+              "type": "platform",
+              "coord": [
+                59.335759,
+                18.10117
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001010098000",
+                "name": "Radiohuset, Stockholm",
+                "disassembledName": "Radiohuset",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18010098"
+                },
+                "coord": [
+                  59.335599,
+                  18.100218
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                5
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "2",
+                "occupancy": "MANY_SEATS",
+                "platform": "2",
+                "zone": "tfs:33"
+              },
+              "departureTimePlanned": "2026-08-13T05:41:30Z",
+              "arrivalTimePlanned": "2026-08-13T05:41:30Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000010049",
+              "name": "Filmhuset, Stockholm",
+              "disassembledName": "Filmhuset",
+              "type": "platform",
+              "coord": [
+                59.339443,
+                18.107018
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001010048000",
+                "name": "Filmhuset, Stockholm",
+                "disassembledName": "Filmhuset",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18010048"
+                },
+                "coord": [
+                  59.339269,
+                  18.104907
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                5
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "2",
+                "occupancy": "MANY_SEATS",
+                "platform": "2",
+                "zone": "tfs:33"
+              },
+              "departureTimePlanned": "2026-08-13T05:43:30Z",
+              "arrivalTimePlanned": "2026-08-13T05:43:30Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000010051",
+              "name": "Lindarängsvägen, Stockholm",
+              "disassembledName": "Lindarängsvägen",
+              "type": "platform",
+              "coord": [
+                59.339498,
+                18.11239
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001010051000",
+                "name": "Lindarängsvägen, Stockholm",
+                "disassembledName": "Lindarängsvägen",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18010051"
+                },
+                "coord": [
+                  59.339493,
+                  18.112471
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                5
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "2",
+                "occupancy": "MANY_SEATS",
+                "platform": "1",
+                "zone": "tfs:33"
+              },
+              "departureTimePlanned": "2026-08-13T05:44:54Z",
+              "arrivalTimePlanned": "2026-08-13T05:44:54Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000010011",
+              "name": "Frihamnsporten, Stockholm",
+              "disassembledName": "Frihamnsporten",
+              "type": "platform",
+              "coord": [
+                59.339979,
+                18.114474
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001010052000",
+                "name": "Frihamnsporten, Stockholm",
+                "disassembledName": "Frihamnsporten",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18010052"
+                },
+                "coord": [
+                  59.340478,
+                  18.114186
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                5
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "occupancy": "MANY_SEATS",
+                "platform": "1",
+                "zone": "tfs:33"
+              },
+              "departureTimePlanned": "2026-08-13T05:47:00Z",
+              "arrivalTimePlanned": "2026-08-13T05:47:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000010127",
+              "name": "Frihamnen, Stockholm",
+              "disassembledName": "Frihamnen",
+              "type": "platform",
+              "coord": [
+                59.341156,
+                18.117627
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001010028000",
+                "name": "Frihamnen, Stockholm",
+                "disassembledName": "Frihamnen",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18010028"
+                },
+                "coord": [
+                  59.341472,
+                  18.11778
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                5
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "platform": "1",
+                "zone": "tfs:33"
+              },
+              "arrivalTimePlanned": "2026-08-13T05:48:00Z"
+            }
+          ],
+          "coords": [
+            [
+              59.332633,
+              18.076958
+            ],
+            [
+              59.33251,
+              18.077439
+            ],
+            [
+              59.332409,
+              18.077638
+            ],
+            [
+              59.332123,
+              18.078651
+            ],
+            [
+              59.331658,
+              18.08034
+            ],
+            [
+              59.331541,
+              18.080829
+            ],
+            [
+              59.331457,
+              18.081146
+            ],
+            [
+              59.331415,
+              18.081314
+            ],
+            [
+              59.331398,
+              18.081415
+            ],
+            [
+              59.331389,
+              18.081503
+            ],
+            [
+              59.331378,
+              18.081654
+            ],
+            [
+              59.33138,
+              18.081795
+            ],
+            [
+              59.331416,
+              18.083106
+            ],
+            [
+              59.331485,
+              18.085426
+            ],
+            [
+              59.331622,
+              18.091415
+            ],
+            [
+              59.331715,
+              18.091985
+            ],
+            [
+              59.331741,
+              18.09253
+            ],
+            [
+              59.331744,
+              18.092669
+            ],
+            [
+              59.331744,
+              18.092669
+            ],
+            [
+              59.331749,
+              18.092896
+            ],
+            [
+              59.331737,
+              18.093147
+            ],
+            [
+              59.331676,
+              18.093505
+            ],
+            [
+              59.331682,
+              18.093993
+            ],
+            [
+              59.331712,
+              18.095132
+            ],
+            [
+              59.331716,
+              18.095222
+            ],
+            [
+              59.331723,
+              18.095311
+            ],
+            [
+              59.33174,
+              18.09545
+            ],
+            [
+              59.331758,
+              18.095555
+            ],
+            [
+              59.331785,
+              18.095663
+            ],
+            [
+              59.331868,
+              18.09597
+            ],
+            [
+              59.33192,
+              18.096135
+            ],
+            [
+              59.332014,
+              18.096377
+            ],
+            [
+              59.332105,
+              18.096525
+            ],
+            [
+              59.332205,
+              18.096641
+            ],
+            [
+              59.332306,
+              18.096721
+            ],
+            [
+              59.332521,
+              18.09698
+            ],
+            [
+              59.332521,
+              18.09698
+            ],
+            [
+              59.332559,
+              18.097025
+            ],
+            [
+              59.332744,
+              18.097286
+            ],
+            [
+              59.332817,
+              18.097452
+            ],
+            [
+              59.332902,
+              18.097684
+            ],
+            [
+              59.333013,
+              18.098424
+            ],
+            [
+              59.333044,
+              18.098721
+            ],
+            [
+              59.333049,
+              18.098924
+            ],
+            [
+              59.333029,
+              18.099158
+            ],
+            [
+              59.333302,
+              18.099346
+            ],
+            [
+              59.334512,
+              18.100284
+            ],
+            [
+              59.334648,
+              18.100369
+            ],
+            [
+              59.334726,
+              18.100468
+            ],
+            [
+              59.334805,
+              18.100502
+            ],
+            [
+              59.334921,
+              18.100557
+            ],
+            [
+              59.335011,
+              18.100607
+            ],
+            [
+              59.335136,
+              18.100691
+            ],
+            [
+              59.335268,
+              18.100807
+            ],
+            [
+              59.335426,
+              18.100915
+            ],
+            [
+              59.335773,
+              18.101183
+            ],
+            [
+              59.33576,
+              18.10116
+            ],
+            [
+              59.33649,
+              18.10176
+            ],
+            [
+              59.33661,
+              18.10187
+            ],
+            [
+              59.3367,
+              18.10191
+            ],
+            [
+              59.33675,
+              18.10194
+            ],
+            [
+              59.33681,
+              18.10194
+            ],
+            [
+              59.3369,
+              18.10201
+            ],
+            [
+              59.33726,
+              18.10231
+            ],
+            [
+              59.33747,
+              18.10249
+            ],
+            [
+              59.3376,
+              18.10262
+            ],
+            [
+              59.33766,
+              18.10274
+            ],
+            [
+              59.33774,
+              18.10283
+            ],
+            [
+              59.33773,
+              18.10289
+            ],
+            [
+              59.33774,
+              18.10293
+            ],
+            [
+              59.33775,
+              18.10299
+            ],
+            [
+              59.33781,
+              18.10314
+            ],
+            [
+              59.33789,
+              18.10321
+            ],
+            [
+              59.33799,
+              18.10324
+            ],
+            [
+              59.33807,
+              18.10319
+            ],
+            [
+              59.33812,
+              18.10312
+            ],
+            [
+              59.33819,
+              18.10316
+            ],
+            [
+              59.33826,
+              18.10318
+            ],
+            [
+              59.33834,
+              18.10317
+            ],
+            [
+              59.33847,
+              18.10326
+            ],
+            [
+              59.33868,
+              18.10344
+            ],
+            [
+              59.33898,
+              18.10375
+            ],
+            [
+              59.33907,
+              18.10388
+            ],
+            [
+              59.33916,
+              18.10407
+            ],
+            [
+              59.33922,
+              18.10424
+            ],
+            [
+              59.33932,
+              18.10472
+            ],
+            [
+              59.3394,
+              18.10555
+            ],
+            [
+              59.33941,
+              18.10628
+            ],
+            [
+              59.33943,
+              18.10702
+            ],
+            [
+              59.33951,
+              18.11106
+            ],
+            [
+              59.3395,
+              18.11155
+            ],
+            [
+              59.33954,
+              18.11176
+            ],
+            [
+              59.33954,
+              18.11207
+            ],
+            [
+              59.33953,
+              18.11254
+            ],
+            [
+              59.3395,
+              18.112388
+            ],
+            [
+              59.339465,
+              18.114542
+            ],
+            [
+              59.339611,
+              18.114543
+            ],
+            [
+              59.339844,
+              18.114529
+            ],
+            [
+              59.339964,
+              18.114477
+            ],
+            [
+              59.3399,
+              18.11454
+            ],
+            [
+              59.34012,
+              18.11443
+            ],
+            [
+              59.34024,
+              18.11434
+            ],
+            [
+              59.34044,
+              18.11427
+            ],
+            [
+              59.34048,
+              18.11467
+            ],
+            [
+              59.34051,
+              18.11485
+            ],
+            [
+              59.34059,
+              18.11504
+            ],
+            [
+              59.34084,
+              18.11598
+            ],
+            [
+              59.34091,
+              18.11632
+            ],
+            [
+              59.34092,
+              18.11651
+            ],
+            [
+              59.34095,
+              18.11674
+            ],
+            [
+              59.34108,
+              18.11723
+            ],
+            [
+              59.34118,
+              18.1176
+            ]
+          ]
+        },
+        {
+          "infos": [
+            
+          ],
+          "duration": 300,
+          "footPathInfo": [
+            {
+              "duration": 300,
+              "footPathElem": [
+                {
+                  "attributes": {
+                    "distance": 850,
+                    "duration": 50,
+                    "elevDoorWidth": 0,
+                    "elevLength": 0,
+                    "elevWidth": 0,
+                    "maxStepHeight": 0,
+                    "narrowestWidth": -1,
+                    "numberSteps": 0,
+                    "rampInclination": 0,
+                    "rampLength": 0,
+                    "rampWidth": 0
+                  },
+                  "description": "",
+                  "destination": {
+                    "coord": [
+                      59.345562,
+                      18.131461
+                    ],
+                    "id": "9021001008007000",
+                    "isGlobalId": true,
+                    "name": "Frihamnen",
+                    "properties": {
+                      "area": 1,
+                      "areaGid": "",
+                      "areaName": "Frihamnen",
+                      "areaType": 33,
+                      "georef": "0:0::100",
+                      "platform": 0
+                    },
+                    "type": "stop"
+                  },
+                  "level": "LEVEL",
+                  "levelFrom": 0,
+                  "levelTo": 0,
+                  "openingHours": [
+                    
+                  ],
+                  "origin": {
+                    "coord": [
+                      59.341156,
+                      18.117627
+                    ],
+                    "id": "9021001010028000",
+                    "isGlobalId": true,
+                    "name": "Frihamnen",
+                    "properties": {
+                      "area": 1,
+                      "areaGid": "",
+                      "areaName": "Frihamnen",
+                      "areaType": 33,
+                      "georef": "1000561486:63:MRCV:100",
+                      "platform": 0
+                    },
+                    "type": "stop"
+                  },
+                  "type": "UNKNOWN"
+                }
+              ],
+              "position": "IDEST"
+            }
+          ],
+          "origin": {
+            "isGlobalId": true,
+            "id": "9025001000010127",
+            "name": "Frihamnen, Stockholm",
+            "disassembledName": "Frihamnen",
+            "type": "platform",
+            "coord": [
+              59.341156,
+              18.117627
+            ],
+            "niveau": 0,
+            "parent": {
+              "isGlobalId": true,
+              "id": "9021001010028000",
+              "name": "Frihamnen, Stockholm",
+              "disassembledName": "Frihamnen",
+              "type": "stop",
+              "parent": {
+                "id": "placeID:33001080:1",
+                "name": "Stockholm",
+                "type": "locality"
+              },
+              "properties": {
+                "stopId": "18010028"
+              },
+              "coord": [
+                59.341472,
+                18.11778
+              ],
+              "niveau": 0
+            },
+            "productClasses": [
+              5
+            ],
+            "departureTimeBaseTimetable": "2026-08-13T05:48:00Z",
+            "departureTimePlanned": "2026-08-13T05:48:00Z",
+            "departureTimeEstimated": "2026-08-13T05:48:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "0",
+              "area": "1",
+              "platform": "1"
+            }
+          },
+          "destination": {
+            "isGlobalId": true,
+            "id": "9021001008007000",
+            "name": "Frihamnen, Stockholm",
+            "disassembledName": "Frihamnen",
+            "type": "stop",
+            "coord": [
+              59.345562,
+              18.131461
+            ],
+            "niveau": 0,
+            "parent": {
+              "id": "placeID:33001080:1",
+              "name": "Stockholm",
+              "type": "locality"
+            },
+            "productClasses": [
+              9
+            ],
+            "arrivalTimeBaseTimetable": "2026-08-13T05:53:00Z",
+            "arrivalTimePlanned": "2026-08-13T05:53:00Z",
+            "arrivalTimeEstimated": "2026-08-13T05:53:00Z",
+            "properties": {
+              "stopId": "18008007",
+              "AREA_NIVEAU_DIVA": "0",
+              "area": "1"
+            }
+          },
+          "transportation": {
+            "product": {
+              "class": 99,
+              "name": "footpath",
+              "iconId": 99
+            },
+            "properties": {
+              "tripCode": 0,
+              "lineDisplay": "LINE"
+            },
+            "isSamtrafik": false
+          },
+          "stopSequence": [
+            {
+              "isGlobalId": true,
+              "id": "9025001000010127",
+              "name": "Frihamnen, Stockholm",
+              "disassembledName": "Frihamnen",
+              "type": "platform",
+              "coord": [
+                59.341156,
+                18.117627
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001010028000",
+                "name": "Frihamnen, Stockholm",
+                "disassembledName": "Frihamnen",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18010028"
+                },
+                "coord": [
+                  59.341472,
+                  18.11778
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                5
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "platform": "1",
+                "zone": "tfs:33"
+              },
+              "departureTimePlanned": "2026-08-13T05:48:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9021001008007000",
+              "name": "Frihamnen, Stockholm",
+              "disassembledName": "Frihamnen",
+              "type": "stop",
+              "coord": [
+                59.345562,
+                18.131461
+              ],
+              "niveau": 0,
+              "parent": {
+                "id": "placeID:33001080:1",
+                "name": "Stockholm",
+                "type": "locality"
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "stopId": "18008007",
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "zone": "tfs:33"
+              },
+              "arrivalTimePlanned": "2026-08-13T05:53:00Z"
+            }
+          ],
+          "coords": [
+            [
+              59.341084,
+              18.117711
+            ],
+            [
+              59.345562,
+              18.131461
+            ]
+          ]
+        }
+      ],
+      "daysOfService": {
+        "rvb": "0000000033E000000000000700003E0000000000000000000000000000000000"
+      }
+    },
+    {
+      "tripDuration": 2280,
+      "tripRtDuration": 2280,
+      "rating": 0,
+      "isAdditional": false,
+      "interchanges": 0,
+      "legs": [
+        {
+          "infos": [
+            
+          ],
+          "duration": 2280,
+          "origin": {
+            "isGlobalId": true,
+            "id": "9025001000008001",
+            "name": "Saltsjöqvarn, Stockholm",
+            "disassembledName": "Saltsjöqvarn",
+            "type": "platform",
+            "coord": [
+              59.315228,
+              18.111051
+            ],
+            "niveau": 0,
+            "parent": {
+              "isGlobalId": true,
+              "id": "9021001008001000",
+              "name": "Saltsjöqvarn, Stockholm",
+              "disassembledName": "Saltsjöqvarn",
+              "type": "stop",
+              "parent": {
+                "id": "placeID:33001082:1",
+                "name": "Nacka",
+                "type": "locality"
+              },
+              "properties": {
+                "stopId": "18008001"
+              },
+              "coord": [
+                59.315228,
+                18.111051
+              ],
+              "niveau": 0
+            },
+            "productClasses": [
+              9
+            ],
+            "departureTimeBaseTimetable": "2026-08-13T05:16:00Z",
+            "departureTimePlanned": "2026-08-13T05:16:00Z",
+            "departureTimeEstimated": "2026-08-13T05:16:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "0",
+              "area": "1",
+              "occupancy": "MANY_SEATS",
+              "platform": "1",
+              "callType": [
+                "ONDEMAND"
+              ]
+            }
+          },
+          "destination": {
+            "isGlobalId": true,
+            "id": "9025001000008007",
+            "name": "Frihamnen, Stockholm",
+            "disassembledName": "Frihamnen",
+            "type": "platform",
+            "coord": [
+              59.345562,
+              18.131461
+            ],
+            "niveau": 0,
+            "parent": {
+              "isGlobalId": true,
+              "id": "9021001008007000",
+              "name": "Frihamnen, Stockholm",
+              "disassembledName": "Frihamnen",
+              "type": "stop",
+              "parent": {
+                "id": "placeID:33001080:1",
+                "name": "Stockholm",
+                "type": "locality"
+              },
+              "properties": {
+                "stopId": "18008007"
+              },
+              "coord": [
+                59.345558,
+                18.131524
+              ],
+              "niveau": 0
+            },
+            "productClasses": [
+              9
+            ],
+            "arrivalTimeBaseTimetable": "2026-08-13T05:54:00Z",
+            "arrivalTimePlanned": "2026-08-13T05:54:00Z",
+            "arrivalTimeEstimated": "2026-08-13T05:54:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "0",
+              "area": "1",
+              "platform": "1",
+              "callType": [
+                "ONDEMAND"
+              ]
+            }
+          },
+          "transportation": {
+            "id": "tfs:06080: :H:y01",
+            "name": "Båt Pendelbåt 80",
+            "number": "Pendelbåt 80",
+            "product": {
+              "id": 10,
+              "class": 9,
+              "name": "Båt",
+              "iconId": 10
+            },
+            "operator": {
+              "id": "1",
+              "name": "Storstockholms Lokaltrafik"
+            },
+            "destination": {
+              "id": "18008041",
+              "name": "Ropsten via Nacka Strand",
+              "type": "stop"
+            },
+            "properties": {
+              "trainNumber": "8008",
+              "tripCode": 328,
+              "timetablePeriod": "Current",
+              "lineDisplay": "LINE",
+              "globalId": "9011001008000000",
+              "RealtimeTripId": "9015001008008007"
+            },
+            "vesselInformation": {
+              "name": "Pendelbåt SL"
+            },
+            "isSamtrafik": false,
+            "disassembledName": "80"
+          },
+          "stopSequence": [
+            {
+              "isGlobalId": true,
+              "id": "9025001000008001",
+              "name": "Saltsjöqvarn, Stockholm",
+              "disassembledName": "Saltsjöqvarn",
+              "type": "platform",
+              "coord": [
+                59.315228,
+                18.111051
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008001000",
+                "name": "Saltsjöqvarn, Stockholm",
+                "disassembledName": "Saltsjöqvarn",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001082:1",
+                  "name": "Nacka",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008001"
+                },
+                "coord": [
+                  59.315228,
+                  18.111051
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "occupancy": "MANY_SEATS",
+                "platform": "1",
+                "zone": "tfs:32"
+              },
+              "departureTimePlanned": "2026-08-13T05:16:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000008002",
+              "name": "Finnboda hamn, Stockholm",
+              "disassembledName": "Finnboda hamn",
+              "type": "platform",
+              "coord": [
+                59.31609,
+                18.124472
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008002000",
+                "name": "Finnboda hamn, Stockholm",
+                "disassembledName": "Finnboda hamn",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001082:1",
+                  "name": "Nacka",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008002"
+                },
+                "coord": [
+                  59.31609,
+                  18.124472
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "occupancy": "MANY_SEATS",
+                "platform": "1",
+                "zone": "tfs:32"
+              },
+              "departureTimePlanned": "2026-08-13T05:21:00Z",
+              "arrivalTimePlanned": "2026-08-13T05:21:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000008008",
+              "name": "Kvarnholmen, Nacka",
+              "disassembledName": "Kvarnholmen",
+              "type": "platform",
+              "coord": [
+                59.317639,
+                18.137066
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008008000",
+                "name": "Kvarnholmen, Nacka",
+                "disassembledName": "Kvarnholmen",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001082:1",
+                  "name": "Nacka",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008008"
+                },
+                "coord": [
+                  59.317685,
+                  18.137031
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "occupancy": "MANY_SEATS",
+                "platform": "1",
+                "zone": "tfs:32"
+              },
+              "departureTimePlanned": "2026-08-13T05:26:00Z",
+              "arrivalTimePlanned": "2026-08-13T05:26:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000008006",
+              "name": "Blockhusudden, Stockholm",
+              "disassembledName": "Blockhusudden",
+              "type": "platform",
+              "coord": [
+                59.320917,
+                18.151395
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008006000",
+                "name": "Blockhusudden, Stockholm",
+                "disassembledName": "Blockhusudden",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008006"
+                },
+                "coord": [
+                  59.320917,
+                  18.151395
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "occupancy": "MANY_SEATS",
+                "platform": "1",
+                "zone": "tfs:33"
+              },
+              "departureTimePlanned": "2026-08-13T05:30:00Z",
+              "arrivalTimePlanned": "2026-08-13T05:30:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000008003",
+              "name": "Nacka strand, Nacka",
+              "disassembledName": "Nacka strand",
+              "type": "platform",
+              "coord": [
+                59.318368,
+                18.160054
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008003000",
+                "name": "Nacka strand, Nacka",
+                "disassembledName": "Nacka strand",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001082:1",
+                  "name": "Nacka",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008003"
+                },
+                "coord": [
+                  59.318396,
+                  18.160036
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "occupancy": "MANY_SEATS",
+                "platform": "1",
+                "zone": "tfs:32"
+              },
+              "departureTimePlanned": "2026-08-13T05:36:00Z",
+              "arrivalTimePlanned": "2026-08-13T05:36:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000008005",
+              "name": "Lidingö/Dalénum, Lidingö",
+              "disassembledName": "Lidingö/Dalénum",
+              "type": "platform",
+              "coord": [
+                59.343185,
+                18.15241
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008005000",
+                "name": "Lidingö/Dalénum, Lidingö",
+                "disassembledName": "Lidingö/Dalénum",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001086:1",
+                  "name": "Lidingö",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008005"
+                },
+                "coord": [
+                  59.343185,
+                  18.15241
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "occupancy": "MANY_SEATS",
+                "platform": "1",
+                "zone": "tfs:34"
+              },
+              "departureTimePlanned": "2026-08-13T05:49:00Z",
+              "arrivalTimePlanned": "2026-08-13T05:49:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "9025001000008007",
+              "name": "Frihamnen, Stockholm",
+              "disassembledName": "Frihamnen",
+              "type": "platform",
+              "coord": [
+                59.345562,
+                18.131461
+              ],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "9021001008007000",
+                "name": "Frihamnen, Stockholm",
+                "disassembledName": "Frihamnen",
+                "type": "stop",
+                "parent": {
+                  "id": "placeID:33001080:1",
+                  "name": "Stockholm",
+                  "type": "locality"
+                },
+                "properties": {
+                  "stopId": "18008007"
+                },
+                "coord": [
+                  59.345558,
+                  18.131524
+                ],
+                "niveau": 0
+              },
+              "productClasses": [
+                9
+              ],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "1",
+                "platform": "1",
+                "zone": "tfs:33"
+              },
+              "arrivalTimePlanned": "2026-08-13T05:54:00Z"
+            }
+          ],
+          "coords": [
+            [
+              59.315152,
+              18.110981
+            ],
+            [
+              59.316284,
+              18.112615
+            ],
+            [
+              59.317661,
+              18.123181
+            ],
+            [
+              59.31736,
+              18.124629
+            ],
+            [
+              59.316083,
+              18.124446
+            ],
+            [
+              59.316085,
+              18.124458
+            ],
+            [
+              59.317087,
+              18.126684
+            ],
+            [
+              59.317717,
+              18.133566
+            ],
+            [
+              59.317513,
+              18.13704
+            ],
+            [
+              59.317506,
+              18.137016
+            ],
+            [
+              59.318646,
+              18.138255
+            ],
+            [
+              59.319928,
+              18.150552
+            ],
+            [
+              59.320898,
+              18.151404
+            ],
+            [
+              59.32091,
+              18.151404
+            ],
+            [
+              59.320273,
+              18.151622
+            ],
+            [
+              59.318584,
+              18.158097
+            ],
+            [
+              59.318329,
+              18.158907
+            ],
+            [
+              59.318266,
+              18.158892
+            ],
+            [
+              59.33327,
+              18.159048
+            ],
+            [
+              59.338788,
+              18.155765
+            ],
+            [
+              59.342224,
+              18.152288
+            ],
+            [
+              59.343169,
+              18.152417
+            ],
+            [
+              59.343152,
+              18.152422
+            ],
+            [
+              59.345514,
+              18.13147
+            ]
+          ]
+        }
+      ],
+      "daysOfService": {
+        "rvb": "0000000033E000007CF9F3E700003E7C00000000000000000000000000000000"
+      }
+    }
+  ]
+}
