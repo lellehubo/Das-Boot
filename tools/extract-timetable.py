@@ -171,10 +171,22 @@ def check(times, label, warnings):
         warnings.append(f"{label}: contains duplicates")
 
 
-# Stops the "Jobbet" scenarios board or leave the boat at, by table name.
-LEG_TARGETS = {
-    "ropsten": {"Frihamnen": "frihamnen_pier"},
-    "nybroplan": {"Allmänna": "allmanna_grand"},
+# Boat legs the "Jobbet" scenarios need, per direction, as
+# (board table name, alight table name, board node id, alight node id).
+#
+# Both commute directions are covered. Going to work the boat is boarded at
+# Saltsjoqvarn; coming home it is boarded at Allmanna grand or Frihamnen and left
+# at Saltsjoqvarn. Which sailing direction a pair belongs to follows from the pier
+# order: Allmanna grand lies west of Saltsjoqvarn, Frihamnen east of it.
+LEG_PAIRS = {
+    "ropsten": [
+        ("Saltsjöqvarn", "Frihamnen", "saltsjoqvarn", "frihamnen_pier"),
+        ("Allmänna", "Saltsjöqvarn", "allmanna_grand", "saltsjoqvarn"),
+    ],
+    "nybroplan": [
+        ("Saltsjöqvarn", "Allmänna", "saltsjoqvarn", "allmanna_grand"),
+        ("Frihamnen", "Saltsjöqvarn", "frihamnen_pier", "saltsjoqvarn"),
+    ],
 }
 
 COLUMN_TOLERANCE = 6  # points; a column's cells share an x within this
@@ -198,8 +210,11 @@ def rows_for(words, stop_name):
     )
 
 
-def extract_legs(document, pages, targets, warnings):
-    """Map each printed departure to its arrival at each target stop."""
+def extract_legs(document, pages, pairs, warnings):
+    """Map each printed departure to its arrival, for every board/alight pair.
+
+    Result shape: {day_type: {board_node: {departure: {alight_node: arrival}}}}
+    """
     result = {}
     carried = None
 
@@ -210,33 +225,45 @@ def extract_legs(document, pages, targets, warnings):
             for _x0, y0, _x1, _y1, text, *_ in words
             if text in DAY_HEADINGS
         )
-        origin_rows = rows_for(words, ORIGIN)
-        target_rows = {name: rows_for(words, name) for name in targets}
+        # Day type is anchored on Saltsjoqvarn's rows, which every block has.
+        anchor_rows = rows_for(words, ORIGIN)
+        day_types = []
+        for anchor_y in anchor_rows:
+            above = [key for heading_y, key in headings if heading_y < anchor_y]
+            day_types.append(above[-1] if above else carried)
+            if day_types[-1] is not None:
+                carried = day_types[-1]
 
-        for block, origin_y in enumerate(origin_rows):
-            above = [key for heading_y, key in headings if heading_y < origin_y]
-            day_type = above[-1] if above else carried
-            if day_type is None:
-                continue
-            carried = day_type
+        for board_name, alight_name, board_node, alight_node in pairs:
+            board_rows = rows_for(words, board_name)
+            alight_rows = rows_for(words, alight_name)
 
-            departures = row_cells(words, origin_y)
-            for name, node in targets.items():
-                if block >= len(target_rows[name]):
-                    warnings.append(f"page {index + 1}: no {name} row for block {block}")
+            for block, day_type in enumerate(day_types):
+                if day_type is None:
                     continue
-                arrivals = row_cells(words, target_rows[name][block])
+                if block >= len(board_rows) or block >= len(alight_rows):
+                    warnings.append(
+                        f"page {index + 1}: missing {board_name}/{alight_name} row for block {block}"
+                    )
+                    continue
+
+                departures = row_cells(words, board_rows[block])
+                arrivals = row_cells(words, alight_rows[block])
                 for x, departure in departures.items():
                     match = [
                         arrivals[ax] for ax in arrivals if abs(ax - x) < COLUMN_TOLERANCE
                     ]
                     if not match:
                         continue
-                    # A negative difference means the boat called at the target
-                    # before Saltsjoqvarn, i.e. this run goes the other way.
+                    # A negative difference means the boat called at the alight
+                    # stop first, so this run travels the other way.
                     if (to_minutes(match[0]) - to_minutes(departure)) % 1440 > 720:
                         continue
-                    result.setdefault(day_type, {}).setdefault(departure, {})[node] = match[0]
+                    (
+                        result.setdefault(day_type, {})
+                        .setdefault(board_node, {})
+                        .setdefault(departure, {})
+                    )[alight_node] = match[0]
 
         if headings:
             carried = headings[-1][1]
@@ -259,7 +286,7 @@ def main():
 
     if legs_mode:
         output = {
-            direction: extract_legs(document, pages, LEG_TARGETS[direction], warnings)
+            direction: extract_legs(document, pages, LEG_PAIRS[direction], warnings)
             for direction, pages in PAGES.items()
         }
     else:

@@ -11,7 +11,16 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 import { loadData } from "../js/data-layer.js";
-import { planScenario, planAll, toMinutes, toClock } from "../js/engine-scenarios.js";
+import {
+  planScenario,
+  planAll,
+  toMinutes,
+  toClock,
+  defaultDirection,
+  TO_WORK,
+  TO_HOME,
+  PENDING,
+} from "../js/engine-scenarios.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (p) => JSON.parse(readFileSync(join(ROOT, p), "utf8"));
@@ -83,7 +92,7 @@ const byId = (id) => data.scenarios.scenarios.find((s) => s.id === id);
 test("räknar gå hemifrån-tid baklänges från första båten", () => {
   const plan = planScenario(byId("boat_direct_frihamnen"), TEGEL, ctxAt("07:00"));
   // 3 min promenad hemifrån till bryggan, båten går 07:16
-  assert.equal(toClock(plan.leaveHome), "07:13");
+  assert.equal(toClock(plan.leaveAt), "07:13");
   assert.equal(toClock(plan.legs[1].start), "07:16");
   assert.equal(toClock(plan.legs[1].end), "07:54", "ankomst ur tidtabellen");
   // 26 min promenad Frihamnen -> Tegeluddsvägen
@@ -93,7 +102,7 @@ test("räknar gå hemifrån-tid baklänges från första båten", () => {
 test("väljer nästa båt när den första redan gått", () => {
   const plan = planScenario(byId("boat_direct_frihamnen"), TEGEL, ctxAt("07:20"));
   assert.equal(toClock(plan.legs[1].start), "07:46");
-  assert.equal(toClock(plan.leaveHome), "07:43");
+  assert.equal(toClock(plan.leaveAt), "07:43");
 });
 
 test("hoppar över turer som inte når målbryggan", () => {
@@ -130,7 +139,7 @@ test("försening skjuter fram både avgång och ankomst", () => {
   assert.equal(toClock(plan.legs[1].start), "07:23");
   assert.equal(toClock(plan.legs[1].end), "08:01", "07:54 plus 7 min försening");
   assert.equal(plan.legs[1].delay, 7);
-  assert.equal(toClock(plan.leaveHome), "07:20");
+  assert.equal(toClock(plan.leaveAt), "07:20");
 });
 
 test("inställd tur bryter scenariot med orsak", () => {
@@ -174,12 +183,12 @@ test("väntan räknas bara vid byten, inte på första bryggan", () => {
   const plan = planScenario(byId("boat_tram_strandvagen"), TEGEL, ctx);
   assert.equal(plan.waiting, 4);
   assert.equal(plan.legs[1].wait, 0, "första båten ska inte räknas som väntan");
-  assert.equal(toClock(plan.leaveHome), "07:24");
+  assert.equal(toClock(plan.leaveAt), "07:24");
 });
 
 test("restid mäts dörr till dörr från gå hemifrån", () => {
   const plan = planScenario(byId("boat_direct_frihamnen"), TEGEL, ctxAt("07:00"));
-  assert.equal(plan.travelMinutes, plan.arrive - plan.leaveHome);
+  assert.equal(plan.travelMinutes, plan.arrive - plan.leaveAt);
   assert.equal(plan.travelMinutes, 67, "07:13 till 08:20");
 });
 
@@ -226,11 +235,123 @@ test("sommartabellen planerar med sina egna dagtyper", () => {
   };
   const plan = planScenario(byId("boat_bike_djurgarden"), TEGEL, ctx);
   assert.ok(!plan.broken, `skulle planeras, men: ${plan.broken?.reason}`);
-  assert.equal(toClock(plan.leaveHome), "07:29");
+  assert.equal(toClock(plan.leaveAt), "07:29");
 });
 
 test("oprövat scenario är markerat", () => {
   const plan = planScenario(byId("boat_direct_frihamnen"), TEGEL, ctxAt("07:00"));
   assert.equal(plan.untested, true);
   assert.equal(plan.uncalibrated, true, "alla gångtider är ännu okalibrerade");
+});
+
+// ---- Hemresan ----------------------------------------------------------
+// Samma scenarier lästa baklänges. Eftermiddagsbåtarna nedan är verkliga
+// hösttider: 16:31 från Frihamnen är framme vid Saltsjöqvarn 17:09.
+
+const AFTERNOON = {
+  1442: [],
+  312: [
+    { line: "80", mode: "SHIP", scheduled: "16:33", destination: "Ropsten" },
+    { line: "80", mode: "SHIP", scheduled: "16:48", destination: "Ropsten" },
+  ],
+  1001: [
+    { line: "80", mode: "SHIP", scheduled: "16:23", destination: "Nybroplan" },
+    { line: "80", mode: "SHIP", scheduled: "16:53", destination: "Nybroplan" },
+  ],
+  1406: [{ line: "7", mode: "TRAM", scheduled: "16:20" }],
+};
+
+function homeCtx(clock, sites = {}) {
+  return {
+    data,
+    weights,
+    boatLegs,
+    dayType: "mtor",
+    direction: TO_HOME,
+    now: toMinutes(clock),
+    departures: feed({ ...AFTERNOON, ...sites }),
+  };
+}
+
+test("riktningen gissas på tid: morgon till jobbet, eftermiddag hem", () => {
+  assert.equal(defaultDirection(toMinutes("07:00")), TO_WORK);
+  assert.equal(defaultDirection(toMinutes("11:59")), TO_WORK);
+  assert.equal(defaultDirection(toMinutes("12:00")), TO_HOME);
+  assert.equal(defaultDirection(toMinutes("17:30")), TO_HOME);
+});
+
+test("hemresan vänder benen: jobbet först, hemma sist", () => {
+  const plan = planScenario(byId("boat_direct_frihamnen"), TEGEL, homeCtx("16:00"));
+  assert.ok(!plan.broken, `skulle planeras, men: ${plan.broken?.reason}`);
+  assert.equal(plan.legs[0].from, "tegeluddsvagen_3", "börjar på jobbet");
+  assert.equal(plan.legs.at(-1).to, "home", "slutar hemma");
+  assert.equal(plan.legs[1].from, "frihamnen_pier");
+  assert.equal(plan.legs[1].to, "saltsjoqvarn");
+});
+
+test("hemresan använder båten åt andra hållet", () => {
+  const plan = planScenario(byId("boat_direct_frihamnen"), TEGEL, homeCtx("16:00"));
+  // 26 min promenad från Tegeluddsvägen till Frihamnen: tidigast 16:26,
+  // så 16:23-båten är missad och 16:53 blir valet.
+  assert.equal(toClock(plan.legs[1].start), "16:53");
+  assert.equal(toClock(plan.legs[1].end), "17:32", "ankomst ur tidtabellen");
+  // 3 min från bryggan hem
+  assert.equal(toClock(plan.arrive), "17:35");
+  assert.equal(toClock(plan.leaveAt), "16:27", "gå från jobbet");
+});
+
+test("hemresan via Allmänna gränd byter riktning på båten", () => {
+  const plan = planScenario(byId("boat_bike_djurgarden"), TEGEL, homeCtx("16:00"));
+  assert.ok(!plan.broken, `skulle planeras, men: ${plan.broken?.reason}`);
+  assert.equal(plan.legs[1].from, "allmanna_grand");
+  assert.equal(plan.legs[1].to, "saltsjoqvarn");
+  assert.equal(plan.legs[1].minutes, 8, "Allmänna gränd till Saltsjöqvarn tar 8 min");
+});
+
+test("morgonriktningen är oförändrad", () => {
+  const plan = planScenario(byId("boat_direct_frihamnen"), TEGEL, ctxAt("07:00"));
+  assert.equal(plan.legs[0].from, "home");
+  assert.equal(plan.legs.at(-1).to, "tegeluddsvagen_3");
+  assert.equal(toClock(plan.leaveAt), "07:13");
+});
+
+test("planAll planerar hela hemresan", () => {
+  const plans = planAll(TEGEL, homeCtx("16:00"));
+  const working = plans.filter((p) => !p.broken);
+  assert.ok(working.length >= 2, `minst två vägar hem, fick ${working.length}`);
+  for (const p of working) {
+    assert.equal(p.legs[0].from, "tegeluddsvagen_3");
+    assert.equal(p.legs.at(-1).to, "home");
+  }
+  for (let i = 1; i < working.length; i++)
+    assert.ok(working[i - 1].arrive <= working[i].arrive, "ankomst stigande");
+});
+
+test("kort realtidsfönster ger 'syns inte än', inte 'ingen tur'", () => {
+  // SL ger som mest sex avgångar per linje. Efter 29 min promenad till
+  // Djurgårdsbron ligger man bortom fönstret — trafiken går, vi ser den inte.
+  const ctx = homeCtx("16:00", {
+    1100: [
+      { line: "7", mode: "TRAM", scheduled: "16:05" },
+      { line: "7", mode: "TRAM", scheduled: "16:10" },
+    ],
+  });
+  const plan = planScenario(byId("boat_tram_strandvagen"), TEGEL, ctx);
+  assert.equal(plan.broken.code, PENDING);
+  assert.match(plan.broken.reason, /Realtiden räcker bara till 16:10/);
+});
+
+test("tom avgångslista är fortfarande 'ingen tur'", () => {
+  const ctx = homeCtx("16:00", { 1100: [] });
+  const plan = planScenario(byId("boat_tram_strandvagen"), TEGEL, ctx);
+  assert.equal(plan.broken.code, "no_run");
+});
+
+test("väntande scenarier sorteras före brutna", () => {
+  const plans = planAll(TEGEL, homeCtx("16:00", { 1100: [] }));
+  const codes = plans.map((p) => (p.broken ? p.broken.code : "ok"));
+  const firstBroken = codes.indexOf("no_run");
+  const lastPending = codes.lastIndexOf(PENDING);
+  if (firstBroken !== -1 && lastPending !== -1)
+    assert.ok(lastPending < firstBroken, "väntande ska ligga före brutna");
 });
