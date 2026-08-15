@@ -6,11 +6,13 @@
 
   "nodes": {
     "home": {
-      "label": "Hemma, Saltsjöqvarn",
+      "label": "Hästholmsvägen 29",
+      "short_label": "hemma",
       "type": "place",
       "lat": 59.3143,
       "lon": 18.1111,
-      "corridor": "saltsjoqvarn"
+      "corridor": "saltsjoqvarn",
+      "note": "Koordinaten är ungefärlig och satt till Saltsjöqvarn-området. Gångtiden till bryggan i leg-times.json är det som faktiskt används."
     },
 
     "saltsjoqvarn": {

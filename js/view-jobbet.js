@@ -1,7 +1,6 @@
-// The "Jobbet" view: which of my ways to work runs right now, and when do I leave.
-//
-// Loaded only when the feature flag is on. It registers itself on window.jobbet
-// because the rest of the app is a classic script and cannot import from a module.
+// The "Jobbet" view: which of my ways to and from work runs right now, and when
+// do I leave. It registers itself on window.jobbet because the rest of the app is
+// a classic script and cannot import from a module.
 
 // Dependencies load dynamically so they inherit this module's ?v= cache buster.
 // With static imports the browser keeps serving the previously cached copies even
@@ -12,9 +11,9 @@ const [{ loadData, destinationsFor, DataError }, { departures }, engine] = await
   import(`./api-sl.js${VERSION}`),
   import(`./engine-scenarios.js${VERSION}`),
 ]);
-const { planAll, toClock, toMinutes } = engine;
+const { planAll, toClock, toMinutes, defaultDirection, TO_WORK, TO_HOME } = engine;
 
-const HOME = "saltsjoqvarn";
+const HOME_PIER = "saltsjoqvarn";
 const REFRESH_MS = 30_000;
 
 let data = null;
@@ -24,6 +23,15 @@ let feeds = new Map();
 let lastFetch = 0;
 let fetching = false;
 let rankOpen = false;
+
+// null = följ klockan. Ett eget val gäller resten av dygnet, sedan tar
+// klockan över igen — annars sitter gårdagens val kvar nästa morgon.
+let chosenDirection = null;
+let chosenOn = null;
+
+function currentDirection(se) {
+  return chosenDirection && chosenOn === se.iso ? chosenDirection : defaultDirection(se.min);
+}
 
 const el = (id) => document.getElementById(id);
 
@@ -44,25 +52,30 @@ function esc(s) {
   );
 }
 
-/** Which sites the current scenarios need departures from. */
-function requiredSites() {
+/**
+ * Which sites we need departures from, for the direction being shown.
+ * Going home the boat is boarded where the morning trip left it, so the ends of
+ * each transit leg swap round.
+ */
+function requiredSites(direction) {
   const ids = new Set();
+  const end = direction === TO_HOME ? "to" : "from";
   for (const scenario of data.scenarios.scenarios) {
     if (scenario.status === "dormant") continue;
     for (const leg of scenario.legs) {
       if (leg.type !== "transit") continue;
-      const node = data.node(leg.from);
+      const node = data.node(leg[end]);
       if (node?.site_id != null) ids.add(node.site_id);
     }
   }
   return [...ids];
 }
 
-async function refresh() {
+async function refresh(direction = TO_WORK) {
   if (fetching || !data) return;
   fetching = true;
   try {
-    const sites = requiredSites();
+    const sites = requiredSites(direction);
     const results = await Promise.all(
       sites.map((id) => departures(id).then((r) => [id, r]).catch(() => [id, null]))
     );
@@ -77,43 +90,59 @@ async function refresh() {
   }
 }
 
-/** Next boat in each direction from home, which decides what is even possible. */
-function nextBoats(se) {
-  const home = data.node(HOME);
-  const feed = feeds.get(home.site_id);
-  const out = { nybroplan: null, ropsten: null };
-  if (!feed) return out;
+/** Next line 80 departure from a pier, optionally limited to one sailing direction. */
+function nextBoatFrom(nodeId, se, directionCode) {
+  const node = data.node(nodeId);
+  const feed = node && feeds.get(node.site_id);
+  if (!feed) return null;
 
+  let best = null;
   for (const d of feed.departures) {
     if (d.line !== "80" || d.mode !== "SHIP" || d.cancelled || !d.scheduled) continue;
-    const key = d.directionCode === 1 ? "ropsten" : "nybroplan";
+    if (directionCode && d.directionCode !== directionCode) continue;
     const departs = toMinutes(d.expected || d.scheduled);
     const diff = departs - se.min;
     if (diff < -1) continue;
-    if (!out[key] || diff < out[key].diff) {
-      out[key] = { diff, departs, destination: d.destination, delay: d.delay ?? 0 };
-    }
+    if (!best || diff < best.diff)
+      best = { diff, departs, destination: d.destination, delay: d.delay ?? 0 };
   }
-  return out;
+  return best;
 }
 
-function renderBoats(se) {
-  const boats = nextBoats(se);
-  const cards = [
-    ["nybroplan", "Mot stan"],
-    ["ropsten", "Mot Ropsten"],
-  ].map(([key, label]) => {
-    const boat = boats[key];
-    if (!boat)
-      return `<div class="boatcard none"><div class="bdir">${label}</div><div class="btime">–</div><div class="bcd">ingen avgång</div></div>`;
-    const soon = boat.diff < 12 ? " soon" : "";
-    return (
-      `<div class="boatcard"><div class="bdir">${label}</div>` +
-      `<div class="btime">${toClock(boat.departs)}</div>` +
-      `<div class="bcd${soon}">${fmtCountdown(boat.diff)} · ${esc(boat.destination)}</div></div>`
-    );
-  });
-  el("jBoats").innerHTML = cards.join("");
+/**
+ * The two boats worth knowing about right now.
+ *
+ * Going to work that is the next sailing each way from the home pier, since the
+ * direction decides which family of scenarios is even possible. Going home it is
+ * the next boat back from each pier the afternoon routes board at.
+ */
+function boatCards(se, direction) {
+  if (direction === TO_HOME) {
+    return [
+      ["Från Allmänna gränd", nextBoatFrom("allmanna_grand", se, 1)],
+      ["Från Frihamnen", nextBoatFrom("frihamnen_pier", se, 2)],
+    ];
+  }
+  const home = nextBoatFrom(HOME_PIER, se);
+  return [
+    ["Mot stan", nextBoatFrom(HOME_PIER, se, 2)],
+    ["Mot Ropsten", nextBoatFrom(HOME_PIER, se, 1)],
+  ];
+}
+
+function renderBoats(se, direction) {
+  el("jBoats").innerHTML = boatCards(se, direction)
+    .map(([label, boat]) => {
+      if (!boat)
+        return `<div class="boatcard none"><div class="bdir">${label}</div><div class="btime">–</div><div class="bcd">ingen avgång</div></div>`;
+      const soon = boat.diff < 12 ? " soon" : "";
+      return (
+        `<div class="boatcard"><div class="bdir">${label}</div>` +
+        `<div class="btime">${toClock(boat.departs)}</div>` +
+        `<div class="bcd${soon}">${fmtCountdown(boat.diff)} · ${esc(boat.destination)}</div></div>`
+      );
+    })
+    .join("");
 }
 
 function tags(plan) {
@@ -144,9 +173,10 @@ function summarise(plan) {
     .join("<br>");
 }
 
-function renderBest(se, plans) {
+function renderBest(se, plans, direction) {
   const best = plans.find((p) => !p.broken);
   const host = el("jBest");
+  const leaveLabel = direction === TO_HOME ? "Gå från jobbet" : "Gå hemifrån";
 
   if (!best) {
     const reason = plans[0]?.broken?.reason || "Inga scenarier kunde planeras";
@@ -157,14 +187,13 @@ function renderBest(se, plans) {
     return;
   }
 
-  const diff = best.leaveHome - se.min;
+  const diff = best.leaveAt - se.min;
   const cls = diff <= 0.2 ? " now" : diff < 8 ? " soon" : "";
-  const walkTime = best.legs[0]?.minutes ?? 0;
 
   host.innerHTML =
     `<div class="leave">` +
-    `<div class="leave-lbl">Gå hemifrån</div>` +
-    `<div class="leave-time">${toClock(best.leaveHome)}</div>` +
+    `<div class="leave-lbl">${leaveLabel}</div>` +
+    `<div class="leave-time">${toClock(best.leaveAt)}</div>` +
     `<div class="leave-cd${cls}">${diff <= 0.2 ? "gå nu" : fmtCountdown(diff)}</div>` +
     `<div class="leave-name">${esc(best.label)}</div>` +
     `<div class="leave-why">${summarise(best)}</div>` +
@@ -185,21 +214,22 @@ function renderRank(se, plans) {
   body.innerHTML = rest
     .map((plan) => {
       if (plan.broken) {
+        const pending = plan.broken.code === engine.PENDING;
         return (
           `<div class="rank broken"><div class="rank-l">` +
           `<div class="rank-name">${esc(plan.label)}</div>` +
-          `<div class="rank-reason">${esc(plan.broken.reason)}</div>` +
-          `</div><div class="rank-r"><div class="rank-arr">–</div></div></div>`
+          `<div class="rank-reason${pending ? " pending" : ""}">${esc(plan.broken.reason)}</div>` +
+          `</div><div class="rank-r"><div class="rank-arr">${pending ? "snart" : "–"}</div></div></div>`
         );
       }
-      const diff = plan.leaveHome - se.min;
+      const diff = plan.leaveAt - se.min;
       return (
         `<div class="rank"><div class="rank-l">` +
         `<div class="rank-name">${esc(plan.label)}</div>` +
         `<div class="rank-sub">${plan.travelMinutes} min · ${plan.transfers} byte${plan.transfers === 1 ? "" : "n"}` +
         (plan.requiresBike ? " · cykel" : "") +
         `</div></div><div class="rank-r">` +
-        `<div class="rank-leave">${toClock(plan.leaveHome)}</div>` +
+        `<div class="rank-leave">${toClock(plan.leaveAt)}</div>` +
         `<div class="rank-arr">framme ${toClock(plan.arrive)} · ${fmtCountdown(diff)}</div>` +
         `</div></div>`
       );
@@ -227,15 +257,21 @@ function render(se) {
     return;
   }
 
+  const direction = currentDirection(se);
+  renderDirectionToggle(direction);
+
   const active = destinationsFor(data, se.iso);
   const destination = active[0];
-  el("jDestText").textContent = destination ? destination.label : "ingen destination";
   if (!destination) {
+    el("jDestText").textContent = "ingen destination";
     el("jBest").innerHTML =
       '<div class="leave"><div class="leave-lbl">Ingen destination gäller idag</div>' +
       '<div class="leave-why">Lägg till en i scenarios.json.</div></div>';
     return;
   }
+  // Badgen visar vart resan bär, inte var man är.
+  el("jDestText").textContent =
+    direction === TO_HOME ? data.node("home").label : destination.label;
 
   // Tidtabellen byter på datum, och dagtyperna skiljer sig mellan utgåvorna.
   const table =
@@ -246,12 +282,13 @@ function render(se) {
     weights: data.weights,
     boatLegs: table.legs,
     dayType: window.dayType(se),
+    direction,
     now: se.min,
     departures: feeds,
   });
 
-  renderBoats(se);
-  renderBest(se, plans);
+  renderBoats(se, direction);
+  renderBest(se, plans, direction);
   renderRank(se, plans);
 
   const age = lastFetch ? Math.round((Date.now() - lastFetch) / 1000) : null;
@@ -260,7 +297,14 @@ function render(se) {
       ? "Väntar på realtidsdata…"
       : age > 90
         ? `Realtiden är ${Math.round(age / 60)} min gammal.`
-        : "Bara morgonresan än så länge. Hemresan är inte byggd.";
+        : direction === TO_HOME
+          ? "Hemresan är samma vägar baklänges. Säg till om någon eftermiddagsväg skiljer sig."
+          : "Gångtiderna är uppskattade tills de mätts upp.";
+}
+
+function renderDirectionToggle(direction) {
+  for (const button of document.querySelectorAll("#jDirSeg button"))
+    button.classList.toggle("active", button.dataset.dir === direction);
 }
 
 async function boot() {
@@ -281,10 +325,24 @@ async function boot() {
     console.error(e);
     return;
   }
-  await refresh();
-  setInterval(refresh, REFRESH_MS);
+  const forNow = () => refresh(currentDirection(window.nowSE()));
+  await forNow();
+  setInterval(forNow, REFRESH_MS);
   document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) refresh();
+    if (!document.hidden) forNow();
+  });
+}
+
+for (const button of document.querySelectorAll("#jDirSeg button")) {
+  button.addEventListener("click", () => {
+    const se = window.nowSE();
+    chosenDirection = button.dataset.dir;
+    chosenOn = se.iso;
+    rankOpen = false;
+    el("jRankBody").style.maxHeight = "0";
+    el("jRank").classList.remove("open");
+    refresh(chosenDirection).then(() => render(window.nowSE()));
+    render(se);
   });
 }
 
@@ -299,7 +357,12 @@ el("jRankHead").addEventListener("click", () => {
 window.jobbet = {
   render,
   activate() {
-    refresh();
+    refresh(currentDirection(window.nowSE()));
+  },
+  /** Force a direction from the console or a test, bypassing the clock. */
+  setDirection(direction) {
+    chosenDirection = direction;
+    chosenOn = window.nowSE().iso;
   },
   /**
    * Feed the engine a synthetic departure set instead of live data.
@@ -310,7 +373,7 @@ window.jobbet = {
   useFixture(sites) {
     if (!sites) {
       feeds = new Map();
-      return refresh();
+      return refresh(currentDirection(window.nowSE()));
     }
     feeds = new Map(
       Object.entries(sites).map(([id, list]) => [
