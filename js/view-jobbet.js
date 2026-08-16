@@ -192,7 +192,7 @@ const WEATHER_CAUSE = {
 function weatherTag(plan) {
   const verdict = plan.weather;
   if (!verdict || verdict.level === "clear") return "";
-  const cause = WEATHER_CAUSE[verdict.reasons[0]?.kind] || "väder";
+  const cause = WEATHER_CAUSE[verdict.reasons?.[0]?.kind] || "väder";
   const when = verdict.inheritedFrom ? " i eftermiddag" : "";
   const lead = verdict.level === "avoid" ? "avrådes" : "obs";
   return `<span class="tag">${lead} · ${cause}${when}</span>`;
@@ -351,11 +351,19 @@ function render(se) {
     returnForecast: forecasts.work,
     direction,
   };
-  const ranked = wxScore.applyWeather(
-    plans,
-    wxScore.verdictsFor(plans, weatherCtx),
-    data.weights.weather
-  );
+  // Scoring is an addition just like the fetch above it. A throw here must cost
+  // the verdict, never the departure board, so unscored plans fall back to the
+  // engine's own order rather than taking the whole view down with them.
+  let ranked = plans;
+  try {
+    ranked = wxScore.applyWeather(
+      plans,
+      wxScore.verdictsFor(plans, weatherCtx),
+      data.weights.weather
+    );
+  } catch (e) {
+    console.warn(`väder: bedömningen misslyckades (${e.message})`);
+  }
 
   renderBoats(se, direction);
   renderBest(se, ranked, direction);
