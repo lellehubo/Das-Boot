@@ -6,13 +6,14 @@
 // With static imports the browser keeps serving the previously cached copies even
 // when this file is refetched, which silently hides edits during development.
 const VERSION = new URL(import.meta.url).search;
-const [{ loadData, destinationsFor, DataError }, { departures }, engine, wx, wxScore] =
+const [{ loadData, destinationsFor, DataError }, { departures }, engine, wx, wxScore, wxPhrase] =
   await Promise.all([
     import(`./data-layer.js${VERSION}`),
     import(`./api-sl.js${VERSION}`),
     import(`./engine-scenarios.js${VERSION}`),
     import(`./weather.js${VERSION}`),
     import(`./weather-score.js${VERSION}`),
+    import(`./weather-phrase.js${VERSION}`),
   ]);
 const { planAll, toClock, toMinutes, defaultDirection, TO_WORK, TO_HOME } = engine;
 
@@ -198,6 +199,67 @@ function weatherTag(plan) {
   return `<span class="tag">${lead} · ${cause}${when}</span>`;
 }
 
+/**
+ * The weather in words, for the trips that are still ahead of you.
+ *
+ * In the morning that is both legs of the day: the one you are about to make,
+ * and the one home, because the bike you take now has to come back. After noon
+ * only the trip home is left, so a second line would be about a journey already
+ * behind you.
+ *
+ * The outbound window is the one the plan actually derives; the return window is
+ * the fixed afternoon one, since at breakfast the evening boat is not chosen.
+ */
+function weatherLines(se, direction, best) {
+  const weather = data.weights.weather;
+  const opts = { localMinutesOf: wxScore.localMinutesOf };
+  const back = weather.return_window_hours;
+  const out = [];
+
+  const describe = (forecast, fromMin, toMin, label) => {
+    if (!forecast) return;
+    const summary = wxScore.summariseWindow(forecast, se.iso, fromMin, toMin);
+    const said = wxPhrase.describeWindow(summary, opts);
+    if (said) out.push({ label, ...said });
+  };
+
+  // Without a plan there is no derived window, so fall back to the next hour —
+  // the question "what is it like out there" still has an answer.
+  const exposure = best && wxScore.exposureOf(best, weather);
+  const fromMin = exposure ? exposure.fromMin : se.min;
+  const toMin = exposure ? exposure.toMin : se.min + 60;
+
+  if (direction === TO_HOME) {
+    describe(forecasts.work, fromMin, toMin, "Hem");
+  } else {
+    describe(forecasts.home, fromMin, toMin, "Till jobbet");
+    if (back) describe(forecasts.work, back.from * 60, back.to * 60, "Hem i eftermiddag");
+  }
+  return out;
+}
+
+function renderWeather(se, direction, best) {
+  const host = el("jWeather");
+  if (!host) return;
+  let lines = [];
+  // Describing the weather must never cost the departure board, same rule as
+  // the scoring call below.
+  try {
+    lines = weatherLines(se, direction, best);
+  } catch (e) {
+    console.warn(`väder: beskrivningen misslyckades (${e.message})`);
+  }
+  host.innerHTML = lines
+    .map(
+      (l) =>
+        `<div class="wx-line"><span class="wx-ico">${wxPhrase.iconSvg(l.icon)}</span>` +
+        `<span class="wx-when">${esc(l.label)}</span>` +
+        `<span class="wx-text">${esc(l.text)}</span></div>`
+    )
+    .join("");
+  host.style.display = lines.length ? "" : "none";
+}
+
 function tags(plan) {
   const out = [];
   if (plan.requiresBike) out.push('<span class="tag bike">cykel · plats ej garanterad</span>');
@@ -366,6 +428,7 @@ function render(se) {
   }
 
   renderBoats(se, direction);
+  renderWeather(se, direction, ranked.find((p) => !p.broken));
   renderBest(se, ranked, direction);
   renderRank(se, ranked);
 
