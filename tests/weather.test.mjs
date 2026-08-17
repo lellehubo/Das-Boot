@@ -353,3 +353,64 @@ test("trafikstörningar väger tyngre än väder", () => {
   const ranked = applyWeather(plans, verdictsFor(plans, ctx), weather);
   assert.equal(ranked[0].id, "blöt men går", "en inställd tur är sämre än en blöt promenad");
 });
+
+test("jämnt regn sorterar om efter exponering — förut rörde sig listan inte alls", () => {
+  // Rain across the whole morning grades every route the same, so the verdict
+  // alone cannot separate them. Before this the list stayed in arrival order on
+  // exactly the day the advice was worth having.
+  const lang = plan("34 min ute", [leg("bike", 7 * 60, 34)], { arrive: 7 * 60 + 50 });
+  const kort = plan("12 min ute", [leg("bike", 7 * 60, 12)], { arrive: 7 * 60 + 55 });
+  const plans = [lang, kort];
+  const ctx = {
+    weather,
+    isoDate: DAY,
+    forecast: forecastOf(hours(DAY, 6, 10, RAIN)),
+    returnForecast: null,
+    direction: "to_work",
+  };
+  const ranked = applyWeather(plans, verdictsFor(plans, ctx), weather);
+
+  assert.equal(ranked[0].weather.level, ranked[1].weather.level, "samma bedömning båda");
+  assert.equal(ranked[0].id, "12 min ute", "kortast ute först, trots senare ankomst");
+  assert.equal(ranked[1].id, "34 min ute");
+});
+
+test("en värre bedömning väger alltid tyngre än kortare exponering", () => {
+  // A brief avoid must not sort above a long caution: the level is the first key.
+  const kortAvoid = plan("kort men avrådes", [leg("bike", 7 * 60, 10)], { arrive: 7 * 60 + 20 });
+  const langCaution = plan("lång men obs", [leg("bike", 9 * 60, 40)], { arrive: 9 * 60 + 50 });
+  const plans = [kortAvoid, langCaution];
+  const ctx = {
+    weather,
+    isoDate: DAY,
+    // Downpour early, drizzle later, so the two windows get different verdicts.
+    forecast: forecastOf([
+      ...hours(DAY, 6, 9, { precipProbability: 90, precipMmPerH: 2.4, precipMinMmPerH: 2, precipMaxMmPerH: 2.8, temperature: 12, windGust: 4 }),
+      ...hours(DAY, 9, 12, { precipProbability: 25, precipMmPerH: 0.05, precipMinMmPerH: 0, precipMaxMmPerH: 0.1, temperature: 14, windGust: 4 }),
+    ]),
+    returnForecast: null,
+    direction: "to_work",
+  };
+  const ranked = applyWeather(plans, verdictsFor(plans, ctx), weather);
+  assert.equal(ranked[0].id, "lång men obs", "obs före avrådes även om den är längre ute");
+  assert.equal(ranked[0].weather.level, CAUTION);
+  assert.equal(ranked[1].weather.level, AVOID);
+});
+
+test("på en fin dag styr ankomsttiden, inte exponeringen", () => {
+  // Twelve minutes in the sun is not better than thirty; nothing should change
+  // on a clear day.
+  const langTidigt = plan("lång men tidig", [leg("walk", 7 * 60, 30)], { arrive: 7 * 60 + 40 });
+  const kortSent = plan("kort men sen", [leg("walk", 7 * 60, 8)], { arrive: 8 * 60 + 30 });
+  const plans = [kortSent, langTidigt];
+  const ctx = {
+    weather,
+    isoDate: DAY,
+    forecast: forecastOf(hours(DAY, 6, 10, { precipProbability: 0, precipMmPerH: 0, precipMinMmPerH: 0, precipMaxMmPerH: 0, temperature: 20, windGust: 3 })),
+    returnForecast: null,
+    direction: "to_work",
+  };
+  const ranked = applyWeather(plans, verdictsFor(plans, ctx), weather);
+  assert.equal(ranked[0].weatherPenalty, 0);
+  assert.equal(ranked[0].id, "lång men tidig", "framme först vinner när vädret är fint");
+});
