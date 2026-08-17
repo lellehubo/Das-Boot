@@ -157,10 +157,16 @@ export const TO_HOME = "to_home";
  * Written as a transform rather than a second set of scenarios so there is one
  * list to maintain. If an afternoon route genuinely differs from its morning
  * mirror, give it its own scenario with `direction: "to_home"`.
+ *
+ * The label cannot be mirrored the way the legs can: "båten till Allmänna
+ * gränd, cykel därifrån" describes the morning in the wrong order for the trip
+ * home, where the bike comes first. So a scenario carries `label_home` for the
+ * way back and falls back to the morning wording when it has none.
  */
 function reverse(scenario) {
   return {
     ...scenario,
+    label: scenario.label_home || scenario.label,
     legs: scenario.legs
       .slice()
       .reverse()
@@ -198,7 +204,7 @@ export function planScenario(scenario, destination, ctx) {
     if (leg.type === "walk" || leg.type === "bike") {
       const minutes = ctx.data.legTime(from, to, leg.type);
       if (minutes == null) {
-        return broken(scenario, NO_RUN, `Ingen ${leg.type}-tid för ${from} → ${to}`);
+        return broken(plan_, NO_RUN, `Ingen ${leg.type}-tid för ${from} → ${to}`);
       }
       if (!ctx.data.legIsCalibrated(from, to)) uncalibrated = true;
       legs.push({ type: leg.type, from, to, minutes, start: clock, end: clock + minutes });
@@ -208,7 +214,7 @@ export function planScenario(scenario, destination, ctx) {
 
     transfers++;
     const result = transitCandidates(ctx, leg, from, to, clock, transfers > 0);
-    if (result.error) return broken(scenario, result.error, result.reason);
+    if (result.error) return broken(plan_, result.error, result.reason);
 
     const pick = result.candidates[0];
     // Time between arriving at the stop and the service leaving. At the first
@@ -243,7 +249,7 @@ export function planScenario(scenario, destination, ctx) {
 
   return {
     id: scenario.id,
-    label: scenario.label,
+    label: plan_.label,
     requiresBike: scenario.requires_bike === true,
     untested: scenario.status === "untested",
     uncalibrated,
@@ -257,6 +263,8 @@ export function planScenario(scenario, destination, ctx) {
   };
 }
 
+// Callers pass the direction-correct plan, so `scenario.label` here is already
+// the return wording when the trip home is the one being planned.
 function broken(scenario, code, reason) {
   return {
     id: scenario.id,
