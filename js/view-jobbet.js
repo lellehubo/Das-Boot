@@ -177,26 +177,14 @@ function renderBoats(se, direction) {
     .join("");
 }
 
-const WEATHER_CAUSE = {
-  precipitation: "nederbörd",
-  gust: "byvind",
-  ice: "halka",
-  thunder: "åska",
-  spread: "spridda skurar",
-};
+// Wording for the per-route warning lives in weather-phrase.js, next to the
+// sentence it has to sit under without repeating it.
 
-/**
- * Placeholder wording. Copy and colour belong to the design pass; this exists so
- * the verdict is visible while the logic is being calibrated, and reuses the
- * chip that is already there rather than inventing a component.
- */
+/** The route's own warning, coloured by how bad it is. */
 function weatherTag(plan) {
-  const verdict = plan.weather;
-  if (!verdict || verdict.level === "clear") return "";
-  const cause = WEATHER_CAUSE[verdict.reasons?.[0]?.kind] || "väder";
-  const when = verdict.inheritedFrom ? " i eftermiddag" : "";
-  const lead = verdict.level === "avoid" ? "avrådes" : "obs";
-  return `<span class="tag">${lead} · ${cause}${when}</span>`;
+  const warning = wxPhrase.warningFor(plan.weather);
+  if (!warning) return "";
+  return `<span class="tag wx-${warning.level}">${esc(warning.text)}</span>`;
 }
 
 /**
