@@ -95,6 +95,13 @@ export function summariseWindow(forecast, isoDate, fromMin, toMin) {
   let anyFrozen = false;
   let sawSpread = false;
   let maxStepHours = 0;
+  // Presentation needs a little more than scoring does: the warm end of the
+  // range, which symbols occurred, and when the thunder peaks. Collected here
+  // rather than re-walked in the view, but left uninterpreted — naming the
+  // weather is the phrase layer's job, not this one's.
+  let maxTemperature = -Infinity;
+  const symbolCodes = [];
+  let thunderPeakMs = null;
 
   for (const h of steps) {
     maxStepHours = Math.max(maxStepHours, h.spanHours);
@@ -110,10 +117,16 @@ export function summariseWindow(forecast, isoDate, fromMin, toMin) {
       spreadMmPerH = Math.max(spreadMmPerH, h.precipMaxMmPerH - h.precipMinMmPerH);
     }
     if (h.windGust != null) maxGust = Math.max(maxGust, h.windGust);
-    if (h.temperature != null) minTemperature = Math.min(minTemperature, h.temperature);
-    if (h.thunderProbability != null)
+    if (h.temperature != null) {
+      minTemperature = Math.min(minTemperature, h.temperature);
+      maxTemperature = Math.max(maxTemperature, h.temperature);
+    }
+    if (h.thunderProbability != null) {
+      if (h.thunderProbability > maxThunderProbability) thunderPeakMs = h.endMs;
       maxThunderProbability = Math.max(maxThunderProbability, h.thunderProbability);
+    }
     if (h.frozenPart != null && h.frozenPart > 0) anyFrozen = true;
+    if (h.symbolCode != null) symbolCodes.push(h.symbolCode);
   }
 
   return {
@@ -127,7 +140,10 @@ export function summariseWindow(forecast, isoDate, fromMin, toMin) {
     spreadMmPerH,
     maxGust,
     minTemperature: Number.isFinite(minTemperature) ? minTemperature : null,
+    maxTemperature: Number.isFinite(maxTemperature) ? maxTemperature : null,
     maxThunderProbability,
+    thunderPeakMs,
+    symbolCodes,
     anyFrozen,
     maxStepHours,
     source: forecast.source,
