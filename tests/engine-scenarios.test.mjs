@@ -402,3 +402,20 @@ test("en bruten hemresa rapporteras med hemrubriken, inte morgonens", () => {
   assert.ok(hem.broken, "skulle vara bruten");
   assert.equal(hem.label, "Cykel till Allmänna gränd, båten hem");
 });
+
+test("hemresan börjar på cykeln för cykelvägarna, gå för de andra", () => {
+  // Underlaget för avfärdsverbet i vyn: "Gå från jobbet" vore fel när första
+  // benet är cykel, och det är just vad spegelvändningen ger.
+  const cykel = planScenario(byId("boat_direct_frihamnen_bike"), TEGEL, homeCtx("16:00"));
+  assert.ok(!cykel.broken, `cykelvägen skulle planeras: ${cykel.broken?.reason}`);
+  assert.equal(cykel.legs[0].type, "bike");
+
+  const gang = planScenario(byId("boat_direct_frihamnen"), TEGEL, homeCtx("16:00"));
+  assert.ok(!gang.broken, `gångvägen skulle planeras: ${gang.broken?.reason}`);
+  assert.equal(gang.legs[0].type, "walk");
+
+  // På morgonen börjar båda med promenaden till bryggan, så verbet skiljer sig
+  // bara på hemvägen.
+  assert.equal(planScenario(byId("boat_direct_frihamnen_bike"), TEGEL, ctxAt("07:00")).legs[0].type, "walk");
+  assert.equal(planScenario(byId("boat_direct_frihamnen"), TEGEL, ctxAt("07:00")).legs[0].type, "walk");
+});

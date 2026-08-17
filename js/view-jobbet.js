@@ -278,10 +278,25 @@ function summarise(plan) {
     .join("<br>");
 }
 
+/**
+ * How you actually set off, which is not always on foot.
+ *
+ * Every morning route starts with the walk to the pier, but mirrored for the
+ * afternoon the bike routes start on the bike — so a direction-based verb told
+ * you to walk from work and then to cycle 17 minutes. Reading the first leg
+ * keeps the two in step whichever way the trip runs.
+ */
+function departVerb(plan) {
+  const first = plan.legs.find((l) => l.type === "walk" || l.type === "bike" || l.type === "transit");
+  if (!first) return "Gå";
+  if (first.type === "bike") return "Cykla";
+  if (first.type === "transit") return "Åk";
+  return "Gå";
+}
+
 function renderBest(se, plans, direction) {
   const best = plans.find((p) => !p.broken);
   const host = el("jBest");
-  const leaveLabel = direction === TO_HOME ? "Gå från jobbet" : "Gå hemifrån";
 
   if (!best) {
     const reason = plans[0]?.broken?.reason || "Inga scenarier kunde planeras";
@@ -294,12 +309,14 @@ function renderBest(se, plans, direction) {
 
   const diff = best.leaveAt - se.min;
   const cls = diff <= 0.2 ? " now" : diff < 8 ? " soon" : "";
+  const verb = departVerb(best);
+  const leaveLabel = `${verb} ${direction === TO_HOME ? "från jobbet" : "hemifrån"}`;
 
   host.innerHTML =
     `<div class="leave">` +
     `<div class="leave-lbl">${leaveLabel}</div>` +
     `<div class="leave-time">${toClock(best.leaveAt)}</div>` +
-    `<div class="leave-cd${cls}">${diff <= 0.2 ? "gå nu" : fmtCountdown(diff)}</div>` +
+    `<div class="leave-cd${cls}">${diff <= 0.2 ? `${verb.toLowerCase()} nu` : fmtCountdown(diff)}</div>` +
     `<div class="leave-name">${esc(best.label)}</div>` +
     `<div class="leave-why">${summarise(best)}</div>` +
     `<div class="leave-meta">Framme <b>${toClock(best.arrive)}</b> · ${best.travelMinutes} min dörr till dörr` +
