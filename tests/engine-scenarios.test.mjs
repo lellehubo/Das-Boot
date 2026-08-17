@@ -355,3 +355,50 @@ test("väntande scenarier sorteras före brutna", () => {
   if (firstBroken !== -1 && lastPending !== -1)
     assert.ok(lastPending < firstBroken, "väntande ska ligga före brutna");
 });
+
+test("hemresan får sin egen rubrik — benen vänds men orden gör det inte", () => {
+  const scenario = byId("boat_bike_djurgarden");
+  const ut = planScenario(scenario, TEGEL, ctxAt("07:00"));
+  const hem = planScenario(scenario, TEGEL, homeCtx("16:00"));
+
+  assert.equal(ut.label, "Båten till Allmänna gränd, cykel därifrån");
+  // Morgonens ordalydelse sätter båten först; hem kommer cykeln först, så att
+  // återanvända den skulle beskriva resan baklänges.
+  assert.equal(hem.label, "Cykel till Allmänna gränd, båten hem");
+
+  // Och benen ligger verkligen i den ordningen, så rubriken matchar planen.
+  assert.equal(hem.legs[0].type, "bike");
+  assert.equal(hem.legs.at(-1).type, "walk");
+  assert.equal(hem.legs.at(-1).to, "home");
+});
+
+test("varje scenario har en hemrubrik, så ingen väg beskrivs baklänges", () => {
+  for (const s of data.scenarios.scenarios) {
+    assert.ok(s.label_home, `${s.id} saknar label_home`);
+    assert.notEqual(s.label_home, s.label, `${s.id} har samma rubrik båda hållen`);
+  }
+});
+
+test("scenario utan label_home behåller morgonens rubrik", () => {
+  const bare = {
+    id: "utan_hemrubrik",
+    label: "Enkel väg",
+    destinations: [TEGEL.id],
+    legs: [
+      { type: "walk", from: "home", to: "saltsjoqvarn" },
+      { type: "transit", mode: "SHIP", line: "80", from: "saltsjoqvarn", to: "allmanna_grand" },
+      { type: "walk", from: "allmanna_grand", to: "$destination" },
+    ],
+  };
+  assert.equal(planScenario(bare, TEGEL, homeCtx("16:00")).label, "Enkel väg");
+});
+
+test("en bruten hemresa rapporteras med hemrubriken, inte morgonens", () => {
+  // Inga avgångar alls: planen bryts, och felmeddelandet ska ändå benämna
+  // vägen så som den ser ut på hemvägen.
+  const tomt = homeCtx("16:00");
+  tomt.departures = new Map();
+  const hem = planScenario(byId("boat_bike_djurgarden"), TEGEL, tomt);
+  assert.ok(hem.broken, "skulle vara bruten");
+  assert.equal(hem.label, "Cykel till Allmänna gränd, båten hem");
+});

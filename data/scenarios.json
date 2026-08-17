@@ -24,6 +24,7 @@
     {
       "id": "boat_bike_djurgarden",
       "label": "Båten till Allmänna gränd, cykel därifrån",
+      "label_home": "Cykel till Allmänna gränd, båten hem",
       "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
       "requires_bike": true,
       "legs": [
@@ -36,6 +37,7 @@
     {
       "id": "boat_tram_strandvagen",
       "label": "Båten och spårvagnen, promenad Strandvägen till Gärdet",
+      "label_home": "Spårvagnen från Gärdet, båten från Allmänna gränd",
       "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
       "requires_bike": false,
       "legs": [
@@ -50,6 +52,7 @@
     {
       "id": "boat_bus67_karlaplan",
       "label": "Båten och buss 67 till Karlaplan, gå därifrån",
+      "label_home": "Gå till Karlaplan, buss 67 och båten hem",
       "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
       "requires_bike": false,
       "legs": [
@@ -64,6 +67,7 @@
     {
       "id": "boat_direct_frihamnen",
       "label": "Båten hela vägen till Frihamnen",
+      "label_home": "Båten hela vägen från Frihamnen",
       "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
       "requires_bike": false,
       "status": "untested",
@@ -78,6 +82,7 @@
     {
       "id": "boat_direct_frihamnen_bike",
       "label": "Båten till Frihamnen, cykel sista biten",
+      "label_home": "Cykel till Frihamnen, båten hem",
       "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
       "requires_bike": true,
       "status": "untested",
@@ -91,6 +96,7 @@
     {
       "id": "boat_direct_vartahamnen",
       "label": "Båten till Värtahamnen",
+      "label_home": "Båten hem från Värtahamnen",
       "destinations": ["hangovagen_office"],
       "requires_bike": false,
       "status": "dormant",
