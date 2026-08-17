@@ -265,6 +265,13 @@
   .rank.broken .rank-name{color:var(--ink3);}
   .rank-reason{font-size:11.5px;color:var(--amberlt);margin-top:3px;}
   .rank-reason.pending{color:var(--ink3);}
+  #jWeather{margin-bottom:12px;display:flex;flex-direction:column;gap:1px;background:var(--card);border:1px solid var(--bd);border-radius:16px;overflow:hidden;}
+  .wx-line{display:flex;align-items:center;gap:10px;padding:11px 14px;}
+  .wx-line + .wx-line{border-top:1px solid var(--bd);}
+  .wx-ico{flex:none;display:flex;color:var(--ink2);}
+  .wx-icon{width:22px;height:22px;}
+  .wx-when{flex:none;font-size:10.5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink3);min-width:88px;}
+  .wx-text{font-size:13px;color:var(--ink);line-height:1.35;}
   .jobbet-err{background:var(--reds);border:1px solid rgba(230,51,42,0.35);color:#ffd9d5;font-size:12.5px;line-height:1.5;padding:12px 14px;border-radius:14px;white-space:pre-wrap;}
 </style>
 </head>
@@ -386,6 +393,7 @@
       </div>
     </div>
     <div class="boats" id="jBoats"></div>
+    <div id="jWeather" style="display:none"></div>
     <div id="jBest"></div>
     <div class="ranklist" id="jRank">
       <button class="full-head" id="jRankHead" aria-expanded="false">
@@ -413,7 +421,7 @@
 </div>
 
 <script>
-  const APP_VERSION = "2026-08-16a"; // bumpa vid ändring i js/ för att bryta modulcachen
+  const APP_VERSION = "2026-08-17a"; // bumpa vid ändring i js/ för att bryta modulcachen
 
   // ---- Verifierade avgångar från Saltsjöqvarn (HH:MM) ----
   // Utlästa ur SL:s tryckta tidtabeller med tools/extract-timetable.py och
