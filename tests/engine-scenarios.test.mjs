@@ -419,3 +419,46 @@ test("hemresan börjar på cykeln för cykelvägarna, gå för de andra", () => 
   assert.equal(planScenario(byId("boat_direct_frihamnen_bike"), TEGEL, ctxAt("07:00")).legs[0].type, "walk");
   assert.equal(planScenario(byId("boat_direct_frihamnen"), TEGEL, ctxAt("07:00")).legs[0].type, "walk");
 });
+
+test("nästa likadana resa fås genom att planera om en minut för sent", () => {
+  // Så vyn får fram "missar du den"-raden: samma scenario, nu satt strax efter
+  // den avgivna gå-tiden, vilket utesluter turen som just föreslagits.
+  const first = planScenario(byId("boat_direct_frihamnen"), TEGEL, ctxAt("07:00"));
+  assert.equal(toClock(first.leaveAt), "07:13");
+  assert.equal(toClock(first.legs[1].start), "07:16");
+
+  const next = planScenario(byId("boat_direct_frihamnen"), TEGEL, ctxAt(toClock(first.leaveAt + 1)));
+  assert.ok(!next.broken, `nästa skulle planeras: ${next.broken?.reason}`);
+  assert.equal(toClock(next.legs[1].start), "07:46", "nästa båt, inte samma igen");
+  // Gå-tiden räknas om baklänges från den senare båten, inte som samma promenad
+  // plus en minut.
+  assert.equal(toClock(next.leaveAt), "07:43");
+  assert.ok(next.arrive > first.arrive);
+});
+
+test("den senare resan behåller bytesreglerna, inte bara båttiden", () => {
+  // Ett scenario med byte: gå-tiden ska härledas ur den senare kedjan i sin
+  // helhet, så att bytesmarginalen fortfarande hålls.
+  const first = planScenario(byId("boat_bus67_karlaplan"), TEGEL, ctxAt("07:00"));
+  assert.ok(!first.broken, `första skulle planeras: ${first.broken?.reason}`);
+  const next = planScenario(byId("boat_bus67_karlaplan"), TEGEL, ctxAt(toClock(first.leaveAt + 1)));
+  if (!next.broken) {
+    const buss = next.legs.find((l) => l.mode === "BUS");
+    const bat = next.legs.find((l) => l.mode === "SHIP");
+    assert.ok(buss.start >= bat.end, "bussen går inte före båten kommit fram");
+  }
+});
+
+test("sista turen på dagen har ingen nästa, och det är inte ett fel", () => {
+  // Bara en enda båt i flödet: omplaneringen hittar ingen senare tur.
+  const bara = ctxAt("07:00", {
+    sites: { 1442: [{ line: "80", mode: "SHIP", scheduled: "07:16", destination: "Ropsten" }] },
+  });
+  const first = planScenario(byId("boat_direct_frihamnen"), TEGEL, bara);
+  assert.ok(!first.broken);
+  const efter = ctxAt(toClock(first.leaveAt + 1), {
+    sites: { 1442: [{ line: "80", mode: "SHIP", scheduled: "07:16", destination: "Ropsten" }] },
+  });
+  const next = planScenario(byId("boat_direct_frihamnen"), TEGEL, efter);
+  assert.ok(next.broken, "ingen senare tur ska rapporteras som bruten, inte som samma tur igen");
+});
