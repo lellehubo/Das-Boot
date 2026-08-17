@@ -277,6 +277,10 @@
   .wx-text{font-size:13px;color:var(--ink);line-height:1.35;}
   .tag.wx-caution{background:var(--ambers);border-color:rgba(224,169,85,0.36);color:var(--amberlt);}
   .tag.wx-avoid{background:var(--reds);border-color:rgba(230,51,42,0.42);color:#ffd9d5;}
+  .leave-next{display:flex;align-items:baseline;gap:8px;margin-top:12px;padding-top:11px;border-top:1px solid var(--bd);}
+  .ln-lbl{flex:none;font-size:10px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink3);}
+  .ln-body{font-size:12.5px;color:var(--ink2);line-height:1.35;}
+  .ln-body b{color:var(--ink);font-variant-numeric:tabular-nums;}
   .jobbet-err{background:var(--reds);border:1px solid rgba(230,51,42,0.35);color:#ffd9d5;font-size:12.5px;line-height:1.5;padding:12px 14px;border-radius:14px;white-space:pre-wrap;}
 </style>
 </head>
@@ -426,7 +430,7 @@
 </div>
 
 <script>
-  const APP_VERSION = "2026-08-17d"; // bumpa vid ändring i js/ för att bryta modulcachen
+  const APP_VERSION = "2026-08-17e"; // bumpa vid ändring i js/ för att bryta modulcachen
 
   // ---- Verifierade avgångar från Saltsjöqvarn (HH:MM) ----
   // Utlästa ur SL:s tryckta tidtabeller med tools/extract-timetable.py och

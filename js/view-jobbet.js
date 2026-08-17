@@ -294,7 +294,44 @@ function departVerb(plan) {
   return "Gå";
 }
 
-function renderBest(se, plans, direction) {
+/** First transit departure in a plan, which is what "the next one" means. */
+function firstRide(plan) {
+  return plan.legs.find((l) => l.type === "transit") || null;
+}
+
+/**
+ * The same route one departure later, for when you are not going to make this one.
+ *
+ * Planned by replanning the scenario as if you had left a minute too late, which
+ * rules out the departure just offered and lets the engine pick the following
+ * one. Deriving it that way rather than reaching for candidates[1] keeps every
+ * rule that makes a plan valid — transfer buffers, which runs actually reach the
+ * target, the timetable behind the boat leg — instead of duplicating them here,
+ * and it re-derives the leave time backwards from the later boat rather than
+ * assuming the walk is unchanged.
+ *
+ * Returns null at the end of the day, or when the replan lands on the same
+ * departure, so the row simply does not appear.
+ */
+function nextLike(plan, destination, ctx) {
+  const scenario = data.scenarios.scenarios.find((s) => s.id === plan.id);
+  const ride = firstRide(plan);
+  if (!scenario || !ride || plan.leaveAt == null) return null;
+
+  let later = null;
+  try {
+    later = engine.planScenario(scenario, destination, { ...ctx, now: plan.leaveAt + 1 });
+  } catch (e) {
+    console.warn(`nästa likadana: ${e.message}`);
+    return null;
+  }
+  if (!later || later.broken || later.leaveAt == null) return null;
+  const laterRide = firstRide(later);
+  if (!laterRide || laterRide.start <= ride.start) return null;
+  return later;
+}
+
+function renderBest(se, plans, direction, nextSame) {
   const best = plans.find((p) => !p.broken);
   const host = el("jBest");
 
@@ -323,7 +360,25 @@ function renderBest(se, plans, direction) {
     (best.waiting ? ` · ${Math.round(best.waiting)} min väntan vid byte` : "") +
     `</div>` +
     tags(best) +
+    nextRow(nextSame, verb) +
     `</div>`;
+}
+
+/**
+ * "If you miss it" — the same way one departure later.
+ *
+ * Only the leave time, the departure and the arrival: enough to decide whether
+ * to hurry, without repeating the whole itinerary that is already above it.
+ */
+function nextRow(next, verb) {
+  if (!next) return "";
+  const ride = firstRide(next);
+  const what = ride ? ` · ${ride.mode === "SHIP" ? "båt" : ride.line} ${toClock(ride.start)}` : "";
+  return (
+    `<div class="leave-next"><span class="ln-lbl">Missar du den</span>` +
+    `<span class="ln-body">${esc(verb.toLowerCase())} <b>${toClock(next.leaveAt)}</b>${what}` +
+    ` · framme ${toClock(next.arrive)}</span></div>`
+  );
 }
 
 function renderRank(se, plans) {
@@ -399,7 +454,7 @@ function render(se) {
   const table =
     boatLegs.tables.find((t) => t.from <= se.iso && se.iso <= t.to) || boatLegs.tables.at(-1);
 
-  const plans = planAll(destination, {
+  const planCtx = {
     data,
     weights: data.weights,
     boatLegs: table.legs,
@@ -407,7 +462,8 @@ function render(se) {
     direction,
     now: se.min,
     departures: feeds,
-  });
+  };
+  const plans = planAll(destination, planCtx);
 
   // Grading happens against the end you set off from; the return window is
   // always read at the office, since that is where the bike would be waiting.
@@ -432,9 +488,10 @@ function render(se) {
     console.warn(`väder: bedömningen misslyckades (${e.message})`);
   }
 
+  const best = ranked.find((p) => !p.broken);
   renderBoats(se, direction);
-  renderWeather(se, direction, ranked.find((p) => !p.broken));
-  renderBest(se, ranked, direction);
+  renderWeather(se, direction, best);
+  renderBest(se, ranked, direction, best ? nextLike(best, destination, planCtx) : null);
   renderRank(se, ranked);
 
   const age = lastFetch ? Math.round((Date.now() - lastFetch) / 1000) : null;
