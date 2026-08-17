@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { describeWindow, iconSvg, SYMBOLS } from "../js/weather-phrase.js";
+import { describeWindow, iconSvg, SYMBOLS, warningFor, worstReason } from "../js/weather-phrase.js";
 
 // The view passes the real zone-aware helper; a fixed one keeps these tests
 // independent of where they run.
@@ -122,4 +122,83 @@ test("inget fönster ger ingen beskrivning i stället för att kasta", () => {
 test("ikonen är giltig svg och okänt namn faller tillbaka", () => {
   assert.match(iconSvg("sun"), /^<svg class="wx-icon"/);
   assert.match(iconSvg("finns-inte"), /^<svg class="wx-icon"/);
+});
+
+// ---- Per-route warning ----
+
+function verdict(over = {}) {
+  return {
+    level: "avoid",
+    reasons: [{ kind: "precipitation", rate: 0.9 }],
+    exposure: { minutes: 20, types: ["walk", "bike"] },
+    window: { anyFrozen: false },
+    inheritedFrom: null,
+    ...over,
+  };
+}
+
+test("åskan tar över nederbörden — det var buggen", () => {
+  // Scoring raises reasons in threshold order, so precipitation lands first
+  // even when the thunder is the thing that matters.
+  const reasons = [{ kind: "precipitation", rate: 1.2 }, { kind: "thunder", probability: 45 }];
+  assert.equal(worstReason(reasons).kind, "thunder");
+  const w = warningFor(verdict({ reasons }));
+  assert.equal(w.text, "avrådes · 20 min i åskvädret");
+});
+
+test("halka går före nederbörd, men efter åska", () => {
+  const halka = [{ kind: "precipitation" }, { kind: "ice", temperature: -1 }];
+  assert.equal(worstReason(halka).kind, "ice");
+  assert.equal(warningFor(verdict({ reasons: halka })).text, "avrådes · 20 min på halka");
+
+  const bada = [{ kind: "ice" }, { kind: "thunder" }];
+  assert.equal(worstReason(bada).kind, "thunder");
+});
+
+test("byvind kommer sist av de riktiga skälen", () => {
+  const reasons = [{ kind: "gust", speed: 14 }, { kind: "precipitation" }];
+  assert.equal(worstReason(reasons).kind, "precipitation");
+  const bara = warningFor(verdict({ reasons: [{ kind: "gust", speed: 14 }] }));
+  assert.equal(bara.text, "avrådes · 20 min i byvinden");
+});
+
+test("varningen bär exponeringen, inte en upprepning av prognosen", () => {
+  const kort = warningFor(verdict({ exposure: { minutes: 12, types: ["bike"] } }));
+  const lang = warningFor(verdict({ exposure: { minutes: 34, types: ["walk"] } }));
+  assert.equal(kort.text, "avrådes · 12 min i regnet");
+  assert.equal(lang.text, "avrådes · 34 min i regnet");
+  // The forecast sentence says how hard it rains; the chip must not.
+  assert.ok(!/sannolikt|kraftigt|mm/.test(kort.text));
+});
+
+test("snö sägs som snö, inte som regn", () => {
+  const w = warningFor(verdict({ window: { anyFrozen: true } }));
+  assert.equal(w.text, "avrådes · 20 min i snön");
+});
+
+test("obs vid caution, avrådes vid avoid, och nivån följer med för färgen", () => {
+  assert.equal(warningFor(verdict({ level: "caution" })).text, "obs · 20 min i regnet");
+  assert.equal(warningFor(verdict({ level: "caution" })).level, "caution");
+  assert.equal(warningFor(verdict()).level, "avoid");
+});
+
+test("ärvd eftermiddagsbedömning sägs vara eftermiddagens", () => {
+  const w = warningFor(verdict({ inheritedFrom: { fromMin: 960, toMin: 1080 } }));
+  assert.equal(w.text, "avrådes · 20 min i regnet i eftermiddag");
+});
+
+test("clear och saknad bedömning ger ingen varning alls", () => {
+  assert.equal(warningFor(verdict({ level: "clear" })), null);
+  assert.equal(warningFor(null), null);
+});
+
+test("okänt skäl och saknad exponering faller tillbaka utan att kasta", () => {
+  assert.equal(warningFor(verdict({ reasons: [{ kind: "meteorregn" }] })).text, "avrådes · dåligt väder");
+  assert.equal(warningFor(verdict({ exposure: null })).text, "avrådes · i regnet");
+  assert.equal(warningFor(verdict({ reasons: null })).text, "avrådes · dåligt väder");
+});
+
+test("spridda skurar behåller sin egen formulering", () => {
+  const w = warningFor(verdict({ level: "caution", reasons: [{ kind: "spread", spread: 0.8 }] }));
+  assert.equal(w.text, "obs · 20 min med skurar i luften");
 });
