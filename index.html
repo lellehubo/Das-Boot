@@ -423,7 +423,7 @@
 </div>
 
 <script>
-  const APP_VERSION = "2026-08-17b"; // bumpa vid ändring i js/ för att bryta modulcachen
+  const APP_VERSION = "2026-08-17c"; // bumpa vid ändring i js/ för att bryta modulcachen
 
   // ---- Verifierade avgångar från Saltsjöqvarn (HH:MM) ----
   // Utlästa ur SL:s tryckta tidtabeller med tools/extract-timetable.py och
@@ -638,15 +638,20 @@
     STOPS.forEach(function(s){ const d = Math.abs(s.x - rel); if(d < bd){ bd = d; best = s; } });
     return best;
   }
+  // Positions are percentages, never measured pixels. renderRail runs again
+  // whenever the active stop changes, and geolocation can answer after the app
+  // has switched to another view - the rail is display:none by then, clientWidth
+  // reads 0, and every stop plus the pin would be pinned to the left edge.
+  // A percentage needs no layout, so it is right whether the rail is on screen
+  // or not, and it survives a resize without being recomputed.
   function renderRail(){
     const rail = document.getElementById("rail");
     rail.querySelectorAll(".stop").forEach(function(n){ n.remove(); });
-    const w = rail.clientWidth;
     STOPS.forEach(function(s){
       const el = document.createElement("button");
       el.type = "button";
       el.className = "stop" + (s.fav?" fav":"") + (s.id===activeStop.id?" active":"") + (s.id===activeStop.id && s.id===detectedStopId?" located":"");
-      el.style.left = (s.x*w) + "px";
+      el.style.left = (s.x*100) + "%";
       el.setAttribute("aria-label", "Välj brygga "+s.name);
       if(s.id===activeStop.id) el.setAttribute("aria-current","true");
       // dölj favorit-label som kolliderar med aktiv bryggas label
@@ -661,7 +666,7 @@
       });
       rail.appendChild(el);
     });
-    const rp=document.getElementById("railpin"); if(rp) rp.style.left=(activeStop.x*w)+"px";
+    const rp=document.getElementById("railpin"); if(rp) rp.style.left=(activeStop.x*100)+"%";
   }
   document.getElementById("rail").addEventListener("click", function(e){
     if(e.target.closest(".stop")) return; // knappens egen lyssnare tog det
@@ -1114,7 +1119,7 @@
   document.addEventListener("visibilitychange", function(){ if(!document.hidden){ fetchLive(); maybeRelocate(); } });
   window.addEventListener("focus", maybeRelocate);
   window.addEventListener("pageshow", function(e){ if(e.persisted) maybeRelocate(); });
-  window.addEventListener("resize", function(){ renderRail(); });
+  // Ingen resize-lyssnare behövs: bryggornas lägen är procent av axeln.
   // Autopositionera vid start OCH varje gång appen kommer i förgrunden,
   // så att man alltid ser tiderna för bryggan man faktiskt står vid.
   locate(true);
