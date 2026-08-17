@@ -6,11 +6,14 @@
 // With static imports the browser keeps serving the previously cached copies even
 // when this file is refetched, which silently hides edits during development.
 const VERSION = new URL(import.meta.url).search;
-const [{ loadData, destinationsFor, DataError }, { departures }, engine] = await Promise.all([
-  import(`./data-layer.js${VERSION}`),
-  import(`./api-sl.js${VERSION}`),
-  import(`./engine-scenarios.js${VERSION}`),
-]);
+const [{ loadData, destinationsFor, DataError }, { departures }, engine, wx, wxScore] =
+  await Promise.all([
+    import(`./data-layer.js${VERSION}`),
+    import(`./api-sl.js${VERSION}`),
+    import(`./engine-scenarios.js${VERSION}`),
+    import(`./weather.js${VERSION}`),
+    import(`./weather-score.js${VERSION}`),
+  ]);
 const { planAll, toClock, toMinutes, defaultDirection, TO_WORK, TO_HOME } = engine;
 
 const HOME_PIER = "saltsjoqvarn";
@@ -23,6 +26,11 @@ let feeds = new Map();
 let lastFetch = 0;
 let fetching = false;
 let rankOpen = false;
+
+// Both ends of the commute, because the bike decision needs the afternoon at the
+// office as well as the morning at home. Null until the first fetch lands, and
+// null again is a perfectly good state: the board renders without it.
+let forecasts = { home: null, work: null };
 
 // null = följ klockan. Ett eget val gäller resten av dygnet, sedan tar
 // klockan över igen — annars sitter gårdagens val kvar nästa morgon.
@@ -90,6 +98,29 @@ async function refresh(direction = TO_WORK) {
   }
 }
 
+/**
+ * Forecasts for both ends of the commute.
+ *
+ * Weather is an addition, never a dependency: this swallows every failure so a
+ * dead SMHI cannot stop the departures from rendering. The client caches on its
+ * own TTL, so calling this on the ordinary refresh tick costs nothing.
+ */
+async function refreshWeather() {
+  if (!data) return;
+  const se = window.nowSE();
+  const destination = destinationsFor(data, se.iso)[0];
+  if (!destination) return;
+  const points = wxScore.pointsFor(data, destination);
+  for (const which of ["home", "work"]) {
+    if (!points[which]) continue;
+    try {
+      forecasts[which] = await wx.forecast(points[which], data.weights.weather);
+    } catch (e) {
+      console.warn(`väder (${which}): ${e.message}`);
+    }
+  }
+}
+
 /** Next line 80 departure from a pier, optionally limited to one sailing direction. */
 function nextBoatFrom(nodeId, se, directionCode) {
   const node = data.node(nodeId);
@@ -145,11 +176,35 @@ function renderBoats(se, direction) {
     .join("");
 }
 
+const WEATHER_CAUSE = {
+  precipitation: "nederbörd",
+  gust: "byvind",
+  ice: "halka",
+  thunder: "åska",
+  spread: "spridda skurar",
+};
+
+/**
+ * Placeholder wording. Copy and colour belong to the design pass; this exists so
+ * the verdict is visible while the logic is being calibrated, and reuses the
+ * chip that is already there rather than inventing a component.
+ */
+function weatherTag(plan) {
+  const verdict = plan.weather;
+  if (!verdict || verdict.level === "clear") return "";
+  const cause = WEATHER_CAUSE[verdict.reasons?.[0]?.kind] || "väder";
+  const when = verdict.inheritedFrom ? " i eftermiddag" : "";
+  const lead = verdict.level === "avoid" ? "avrådes" : "obs";
+  return `<span class="tag">${lead} · ${cause}${when}</span>`;
+}
+
 function tags(plan) {
   const out = [];
   if (plan.requiresBike) out.push('<span class="tag bike">cykel · plats ej garanterad</span>');
   if (plan.untested) out.push('<span class="tag untested">oprövad</span>');
   if (plan.uncalibrated) out.push('<span class="tag">tider ej uppmätta</span>');
+  const weather = weatherTag(plan);
+  if (weather) out.push(weather);
   return out.length ? `<div class="chip-row">${out.join("")}</div>` : "";
 }
 
@@ -287,19 +342,54 @@ function render(se) {
     departures: feeds,
   });
 
+  // Grading happens against the end you set off from; the return window is
+  // always read at the office, since that is where the bike would be waiting.
+  const weatherCtx = {
+    weather: data.weights.weather,
+    isoDate: se.iso,
+    forecast: direction === TO_HOME ? forecasts.work : forecasts.home,
+    returnForecast: forecasts.work,
+    direction,
+  };
+  // Scoring is an addition just like the fetch above it. A throw here must cost
+  // the verdict, never the departure board, so unscored plans fall back to the
+  // engine's own order rather than taking the whole view down with them.
+  let ranked = plans;
+  try {
+    ranked = wxScore.applyWeather(
+      plans,
+      wxScore.verdictsFor(plans, weatherCtx),
+      data.weights.weather
+    );
+  } catch (e) {
+    console.warn(`väder: bedömningen misslyckades (${e.message})`);
+  }
+
   renderBoats(se, direction);
-  renderBest(se, plans, direction);
-  renderRank(se, plans);
+  renderBest(se, ranked, direction);
+  renderRank(se, ranked);
 
   const age = lastFetch ? Math.round((Date.now() - lastFetch) / 1000) : null;
   el("jNote").textContent =
-    age === null
+    (age === null
       ? "Väntar på realtidsdata…"
       : age > 90
         ? `Realtiden är ${Math.round(age / 60)} min gammal.`
         : direction === TO_HOME
           ? "Hemresan är samma vägar baklänges. Säg till om någon eftermiddagsväg skiljer sig."
-          : "Gångtiderna är uppskattade tills de mätts upp.";
+          : "Gångtiderna är uppskattade tills de mätts upp.") + weatherCredit();
+}
+
+/**
+ * Source credit for the forecast. CC BY 4.0 makes this a licence condition, not
+ * a nicety, so it renders whenever a forecast is actually in use.
+ */
+function weatherCredit() {
+  const active = forecasts.home || forecasts.work;
+  if (!active) return "";
+  const credit = data.weights.weather.attribution?.[active.source] || active.source;
+  const stale = active.stale ? ", senast kända" : "";
+  return ` · Väder: ${credit}${stale}.`;
 }
 
 function renderDirectionToggle(direction) {
@@ -325,7 +415,10 @@ async function boot() {
     console.error(e);
     return;
   }
-  const forNow = () => refresh(currentDirection(window.nowSE()));
+  const forNow = () => {
+    refreshWeather();
+    return refresh(currentDirection(window.nowSE()));
+  };
   await forNow();
   setInterval(forNow, REFRESH_MS);
   document.addEventListener("visibilitychange", () => {
