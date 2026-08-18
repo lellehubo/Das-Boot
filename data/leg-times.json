@@ -20,8 +20,8 @@
       "note": "Buss 67." },
 
     { "from": "allmanna_grand", "to": "liljevalchs", "walk": 2, "calibrated": false },
-    { "from": "allmanna_grand", "to": "tegeluddsvagen_3", "bike": 17, "walk": 48, "calibrated": false,
-      "note": "Via Djurgårdsbron och Narvavägen." },
+    { "from": "allmanna_grand", "to": "tegeluddsvagen_3", "bike": 14, "walk": 48, "calibrated": true,
+      "note": "Via Djurgårdsbron och Narvavägen. Cykeltiden uppmätt till 12-14 min mellan kontorets entré och bryggan. Det övre värdet står här: avgångstiden räknas baklänges från båten, så en minut för lite kostar en halvtimmes väntan på nästa tur medan en minut för mycket kostar en minut på bryggan. Gångtiden är fortfarande en uppskattning." },
     { "from": "allmanna_grand", "to": "hangovagen_office", "bike": 21, "walk": 57, "calibrated": false },
 
     { "from": "djurgardsbron", "to": "tegeluddsvagen_3", "walk": 29, "bike": 10, "calibrated": false,
