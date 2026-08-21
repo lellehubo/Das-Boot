@@ -176,61 +176,6 @@ export function describeWindow(summary, { localMinutesOf }) {
   return { icon, text };
 }
 
-/**
- * Which reason to lead a warning with.
- *
- * Not the first one raised: the scoring layer adds them in threshold order, so
- * a thunderstorm with rain in it reported "nederbörd" and never mentioned the
- * thunder. Ordered by what should stop you going out — lightning outranks a
- * fall, which outranks getting wet, which outranks being buffeted.
- */
-const CAUSE_ORDER = ["thunder", "ice", "precipitation", "gust", "spread"];
-
-export function worstReason(reasons) {
-  for (const kind of CAUSE_ORDER) {
-    const hit = (reasons || []).find((r) => r && r.kind === kind);
-    if (hit) return hit;
-  }
-  return null;
-}
-
-/** What you would be out in, in the accusative the sentence needs. */
-function exposedTo(kind, frozen) {
-  switch (kind) {
-    case "thunder": return "i åskvädret";
-    case "ice": return "på halka";
-    case "precipitation": return frozen ? "i snön" : "i regnet";
-    case "gust": return "i byvinden";
-    case "spread": return "med skurar i luften";
-    default: return null;
-  }
-}
-
-/**
- * The per-route warning: what this particular way costs you in this weather.
- *
- * Deliberately not a restatement of the forecast — describeWindow already says
- * what it is like outside. What differs between the routes is how long they
- * leave you in it, which is also the thing that decides which one to pick. So
- * the chip carries the minutes, and the sentence above carries the weather.
- *
- * Returns null when there is nothing to warn about.
- */
-export function warningFor(verdict) {
-  if (!verdict || verdict.level === "clear") return null;
-  const reason = worstReason(verdict.reasons);
-  const what = exposedTo(reason?.kind, verdict.window?.anyFrozen === true);
-  const minutes = verdict.exposure?.minutes;
-  const lead = verdict.level === "avoid" ? "avrådes" : "obs";
-  const when = verdict.inheritedFrom ? " i eftermiddag" : "";
-
-  const body =
-    minutes != null && what
-      ? `${Math.round(minutes)} min ${what}`
-      : what || "dåligt väder";
-  return { level: verdict.level, text: `${lead} · ${body}${when}` };
-}
-
 /** Without a symbol code the sky is unknown, so lean on what we do have. */
 function fallbackIcon(summary) {
   if (summary.maxThunderProbability >= 20) return "thunder";

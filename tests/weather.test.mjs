@@ -316,11 +316,14 @@ test("applyWeather muterar inte sina argument", () => {
   assert.deepEqual(plans, snapshot, "originalet ska vara orört");
 });
 
-test("vädret sorterar om men tar aldrig bort, och gynnar mindre exponering", () => {
-  const exposed = plan("lång promenad", [leg("walk", 7 * 60 + 30, 30)], { arrive: 8 * 60 });
-  const sheltered = plan("kort promenad", [leg("walk", 8 * 60 + 15, 5)], { arrive: 8 * 60 + 20 });
-  const plans = [exposed, sheltered];
+// ---- Vädret bestämmer inte ----
 
+test("vädret ändrar inte ordningen — den är användarens egen rangordning", () => {
+  // Tidigare sorterade det här om listan. Han bad uttryckligen om att få se
+  // vädret och bestämma själv, så ordningen in är ordningen ut.
+  const torr = plan("torr väg", [leg("walk", 7 * 60 + 15, 5)], { arrive: 8 * 60 });
+  const blöt = plan("blöt väg", [leg("walk", 7 * 60, 30)], { arrive: 8 * 60 + 10 });
+  const plans = [blöt, torr];
   const ctx = {
     weather,
     isoDate: DAY,
@@ -328,21 +331,12 @@ test("vädret sorterar om men tar aldrig bort, och gynnar mindre exponering", ()
     returnForecast: null,
     direction: "to_work",
   };
-  const ranked = applyWeather(plans, verdictsFor(plans, ctx), weather);
-
-  assert.equal(ranked.length, 2, "inget alternativ får försvinna");
-  assert.equal(ranked[0].id, "kort promenad", "den torrare vägen först trots senare ankomst");
-  assert.equal(ranked[0].weatherPenalty, 0);
-  assert.equal(ranked[1].weatherPenalty, 2);
+  const ut = applyWeather(plans, verdictsFor(plans, ctx), weather);
+  assert.deepEqual(ut.map((p) => p.id), ["blöt väg", "torr väg"], "samma ordning som in");
 });
 
-test("trafikstörningar väger tyngre än väder", () => {
-  const wet = plan("blöt men går", [leg("walk", 7 * 60, 30)], { arrive: 8 * 60 });
-  const cancelled = plan("inställd", [leg("walk", 7 * 60, 30)], {
-    arrive: 7 * 60 + 40,
-    broken: { code: "cancelled", reason: "Turen är inställd" },
-  });
-  const plans = [cancelled, wet];
+test("bedömningen följer ändå med, så vyn kan visa en ikon per väg", () => {
+  const p = plan("cykel", [leg("bike", 7 * 60, 20)], { arrive: 8 * 60 });
   const ctx = {
     weather,
     isoDate: DAY,
@@ -350,17 +344,17 @@ test("trafikstörningar väger tyngre än väder", () => {
     returnForecast: null,
     direction: "to_work",
   };
-  const ranked = applyWeather(plans, verdictsFor(plans, ctx), weather);
-  assert.equal(ranked[0].id, "blöt men går", "en inställd tur är sämre än en blöt promenad");
+  const ut = applyWeather([p], verdictsFor([p], ctx), weather);
+  assert.ok(ut[0].weather, "bedömningen ska finnas kvar på planen");
+  assert.equal(ut[0].weather.level, AVOID);
+  assert.ok(ut[0].weather.window, "fönstret följer med för ikonen");
 });
 
-test("jämnt regn sorterar om efter exponering — förut rörde sig listan inte alls", () => {
-  // Rain across the whole morning grades every route the same, so the verdict
-  // alone cannot separate them. Before this the list stayed in arrival order on
-  // exactly the day the advice was worth having.
-  const lang = plan("34 min ute", [leg("bike", 7 * 60, 34)], { arrive: 7 * 60 + 50 });
-  const kort = plan("12 min ute", [leg("bike", 7 * 60, 12)], { arrive: 7 * 60 + 55 });
-  const plans = [lang, kort];
+test("inget alternativ försvinner, inte ens i hällregn", () => {
+  const plans = [
+    plan("a", [leg("bike", 7 * 60, 20)], { arrive: 8 * 60 }),
+    plan("b", [leg("walk", 7 * 60, 30)], { arrive: 8 * 60 + 5 }),
+  ];
   const ctx = {
     weather,
     isoDate: DAY,
@@ -368,49 +362,5 @@ test("jämnt regn sorterar om efter exponering — förut rörde sig listan inte
     returnForecast: null,
     direction: "to_work",
   };
-  const ranked = applyWeather(plans, verdictsFor(plans, ctx), weather);
-
-  assert.equal(ranked[0].weather.level, ranked[1].weather.level, "samma bedömning båda");
-  assert.equal(ranked[0].id, "12 min ute", "kortast ute först, trots senare ankomst");
-  assert.equal(ranked[1].id, "34 min ute");
-});
-
-test("en värre bedömning väger alltid tyngre än kortare exponering", () => {
-  // A brief avoid must not sort above a long caution: the level is the first key.
-  const kortAvoid = plan("kort men avrådes", [leg("bike", 7 * 60, 10)], { arrive: 7 * 60 + 20 });
-  const langCaution = plan("lång men obs", [leg("bike", 9 * 60, 40)], { arrive: 9 * 60 + 50 });
-  const plans = [kortAvoid, langCaution];
-  const ctx = {
-    weather,
-    isoDate: DAY,
-    // Downpour early, drizzle later, so the two windows get different verdicts.
-    forecast: forecastOf([
-      ...hours(DAY, 6, 9, { precipProbability: 90, precipMmPerH: 2.4, precipMinMmPerH: 2, precipMaxMmPerH: 2.8, temperature: 12, windGust: 4 }),
-      ...hours(DAY, 9, 12, { precipProbability: 25, precipMmPerH: 0.05, precipMinMmPerH: 0, precipMaxMmPerH: 0.1, temperature: 14, windGust: 4 }),
-    ]),
-    returnForecast: null,
-    direction: "to_work",
-  };
-  const ranked = applyWeather(plans, verdictsFor(plans, ctx), weather);
-  assert.equal(ranked[0].id, "lång men obs", "obs före avrådes även om den är längre ute");
-  assert.equal(ranked[0].weather.level, CAUTION);
-  assert.equal(ranked[1].weather.level, AVOID);
-});
-
-test("på en fin dag styr ankomsttiden, inte exponeringen", () => {
-  // Twelve minutes in the sun is not better than thirty; nothing should change
-  // on a clear day.
-  const langTidigt = plan("lång men tidig", [leg("walk", 7 * 60, 30)], { arrive: 7 * 60 + 40 });
-  const kortSent = plan("kort men sen", [leg("walk", 7 * 60, 8)], { arrive: 8 * 60 + 30 });
-  const plans = [kortSent, langTidigt];
-  const ctx = {
-    weather,
-    isoDate: DAY,
-    forecast: forecastOf(hours(DAY, 6, 10, { precipProbability: 0, precipMmPerH: 0, precipMinMmPerH: 0, precipMaxMmPerH: 0, temperature: 20, windGust: 3 })),
-    returnForecast: null,
-    direction: "to_work",
-  };
-  const ranked = applyWeather(plans, verdictsFor(plans, ctx), weather);
-  assert.equal(ranked[0].weatherPenalty, 0);
-  assert.equal(ranked[0].id, "lång men tidig", "framme först vinner när vädret är fint");
+  assert.equal(applyWeather(plans, verdictsFor(plans, ctx), weather).length, 2);
 });

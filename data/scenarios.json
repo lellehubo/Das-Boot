@@ -1,6 +1,5 @@
 {
   "schema_version": 1,
-
   "destinations": [
     {
       "id": "tegeluddsvagen_3",
@@ -17,97 +16,171 @@
       "valid_to": null
     }
   ],
-
-  "note": "Destinationen väljs automatiskt på dagens datum. Överlappar två destinationer ska användaren kunna växla manuellt. Riktningen home_to_work vänds spegelvänt för hemresan, med samma ben i omvänd ordning.",
-
+  "note": "Destinationen valjs automatiskt pa dagens datum. Riktningen home_to_work vands spegelvant for hemresan, med samma ben i omvand ordning; label_home bar hemresans ordalydelse. priority ar anvandarens egen rangordning och styr listans ordning - lagre tal forst. Frihamnen- och Ropsten-vagarna togs bort 2026-08-21 pa hans begaran: han vill inte ha dem foreslagna, inte ens i regn.",
   "scenarios": [
     {
       "id": "boat_bike_djurgarden",
       "label": "Båten till Allmänna gränd, cykel därifrån",
       "label_home": "Cykel till Allmänna gränd, båten hem",
-      "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
+      "destinations": [
+        "tegeluddsvagen_3",
+        "hangovagen_office"
+      ],
       "requires_bike": true,
+      "priority": 1,
       "legs": [
-        { "type": "walk", "from": "home", "to": "saltsjoqvarn" },
-        { "type": "transit", "mode": "SHIP", "line": "80", "from": "saltsjoqvarn", "to": "allmanna_grand" },
-        { "type": "bike", "from": "allmanna_grand", "to": "$destination" }
+        {
+          "type": "walk",
+          "from": "home",
+          "to": "saltsjoqvarn"
+        },
+        {
+          "type": "transit",
+          "mode": "SHIP",
+          "line": "80",
+          "from": "saltsjoqvarn",
+          "to": "allmanna_grand"
+        },
+        {
+          "type": "bike",
+          "from": "allmanna_grand",
+          "to": "$destination"
+        }
       ]
     },
-
     {
       "id": "boat_tram_strandvagen",
       "label": "Båten och spårvagnen, promenad Strandvägen till Gärdet",
       "label_home": "Spårvagnen från Gärdet, båten från Allmänna gränd",
-      "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
+      "destinations": [
+        "tegeluddsvagen_3",
+        "hangovagen_office"
+      ],
       "requires_bike": false,
+      "priority": 2,
       "legs": [
-        { "type": "walk", "from": "home", "to": "saltsjoqvarn" },
-        { "type": "transit", "mode": "SHIP", "line": "80", "from": "saltsjoqvarn", "to": "allmanna_grand" },
-        { "type": "walk", "from": "allmanna_grand", "to": "liljevalchs" },
-        { "type": "transit", "mode": "TRAM", "line": "7", "from": "liljevalchs", "to": "djurgardsbron" },
-        { "type": "walk", "from": "djurgardsbron", "to": "$destination" }
+        {
+          "type": "walk",
+          "from": "home",
+          "to": "saltsjoqvarn"
+        },
+        {
+          "type": "transit",
+          "mode": "SHIP",
+          "line": "80",
+          "from": "saltsjoqvarn",
+          "to": "allmanna_grand"
+        },
+        {
+          "type": "walk",
+          "from": "allmanna_grand",
+          "to": "liljevalchs"
+        },
+        {
+          "type": "transit",
+          "mode": "TRAM",
+          "line": "7",
+          "from": "liljevalchs",
+          "to": "djurgardsbron"
+        },
+        {
+          "type": "walk",
+          "from": "djurgardsbron",
+          "to": "$destination"
+        }
       ]
     },
-
     {
       "id": "boat_bus67_karlaplan",
       "label": "Båten och buss 67 till Karlaplan, gå därifrån",
       "label_home": "Gå till Karlaplan, buss 67 och båten hem",
-      "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
+      "destinations": [
+        "tegeluddsvagen_3",
+        "hangovagen_office"
+      ],
       "requires_bike": false,
+      "priority": 3,
       "legs": [
-        { "type": "walk", "from": "home", "to": "saltsjoqvarn" },
-        { "type": "transit", "mode": "SHIP", "line": "80", "from": "saltsjoqvarn", "to": "allmanna_grand" },
-        { "type": "walk", "from": "allmanna_grand", "to": "liljevalchs" },
-        { "type": "transit", "mode": "BUS", "line": "67", "from": "liljevalchs", "to": "karlaplan" },
-        { "type": "walk", "from": "karlaplan", "to": "$destination" }
+        {
+          "type": "walk",
+          "from": "home",
+          "to": "saltsjoqvarn"
+        },
+        {
+          "type": "transit",
+          "mode": "SHIP",
+          "line": "80",
+          "from": "saltsjoqvarn",
+          "to": "allmanna_grand"
+        },
+        {
+          "type": "walk",
+          "from": "allmanna_grand",
+          "to": "liljevalchs"
+        },
+        {
+          "type": "transit",
+          "mode": "BUS",
+          "line": "67",
+          "from": "liljevalchs",
+          "to": "karlaplan"
+        },
+        {
+          "type": "walk",
+          "from": "karlaplan",
+          "to": "$destination"
+        }
       ]
     },
-
     {
-      "id": "boat_direct_frihamnen",
-      "label": "Båten hela vägen till Frihamnen",
-      "label_home": "Båten hela vägen från Frihamnen",
-      "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
-      "requires_bike": false,
-      "status": "untested",
-      "legs": [
-        { "type": "walk", "from": "home", "to": "saltsjoqvarn" },
-        { "type": "transit", "mode": "SHIP", "line": "80", "from": "saltsjoqvarn", "to": "frihamnen_pier" },
-        { "type": "walk", "from": "frihamnen_pier", "to": "$destination" }
+      "id": "boat_bus67_bus1_gardet",
+      "label": "Båten, buss 67 och buss 1 till Gärdet",
+      "label_home": "Buss 1 från Gärdet, buss 67 och båten hem",
+      "destinations": [
+        "tegeluddsvagen_3",
+        "hangovagen_office"
       ],
-      "note": "Noll byten. Turen är verifierad att finnas i hösttabellen: 06:31 kommer fram 07:07, 07:16 kommer fram 07:54, 07:46 kommer fram 08:26 (36-40 min på vattnet). Föreslaget av analysen, inte av användaren — status untested gäller tills han kvitterat att han gillar den, inte att den existerar."
-    },
-
-    {
-      "id": "boat_direct_frihamnen_bike",
-      "label": "Båten till Frihamnen, cykel sista biten",
-      "label_home": "Cykel till Frihamnen, båten hem",
-      "destinations": ["tegeluddsvagen_3", "hangovagen_office"],
-      "requires_bike": true,
-      "status": "untested",
-      "legs": [
-        { "type": "walk", "from": "home", "to": "saltsjoqvarn" },
-        { "type": "transit", "mode": "SHIP", "line": "80", "from": "saltsjoqvarn", "to": "frihamnen_pier" },
-        { "type": "bike", "from": "frihamnen_pier", "to": "$destination" }
-      ]
-    },
-
-    {
-      "id": "boat_direct_vartahamnen",
-      "label": "Båten till Värtahamnen",
-      "label_home": "Båten hem från Värtahamnen",
-      "destinations": ["hangovagen_office"],
       "requires_bike": false,
-      "status": "dormant",
-      "valid_from": "2027-04-01",
-      "requires_node": "vartahamnen_pier",
+      "priority": 4,
       "legs": [
-        { "type": "walk", "from": "home", "to": "saltsjoqvarn" },
-        { "type": "transit", "mode": "SHIP", "line": "80", "from": "saltsjoqvarn", "to": "vartahamnen_pier" },
-        { "type": "walk", "from": "vartahamnen_pier", "to": "$destination" }
+        {
+          "type": "walk",
+          "from": "home",
+          "to": "saltsjoqvarn"
+        },
+        {
+          "type": "transit",
+          "mode": "SHIP",
+          "line": "80",
+          "from": "saltsjoqvarn",
+          "to": "allmanna_grand"
+        },
+        {
+          "type": "walk",
+          "from": "allmanna_grand",
+          "to": "liljevalchs"
+        },
+        {
+          "type": "transit",
+          "mode": "BUS",
+          "line": "67",
+          "from": "liljevalchs",
+          "to": "karlaplan"
+        },
+        {
+          "type": "transit",
+          "mode": "BUS",
+          "line": "1",
+          "from": "karlaplan",
+          "to": "gardet"
+        },
+        {
+          "type": "walk",
+          "from": "gardet",
+          "to": "$destination"
+        }
       ],
-      "note": "Aktiveras först när vartahamnen_pier fått ett site_id i stops.json. Aktivera aldrig automatiskt."
+      "note": "Tillagd 2026-08-21. Gardet ligger 5 min fran kontoret, sa den har vagen har kortast promenad av alla utan cykel: 10 min ute mot 26 for buss 67 rakt av. Den ar ocksa den som gor hemresan rimlig - speglat blir det 5 min gang till Gardet i stallet for 21 min till Karlaplan."
     }
   ]
 }

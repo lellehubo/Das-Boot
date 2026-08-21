@@ -403,6 +403,16 @@
       ],
       "forward_direction_code": 1,
       "direction_note": "direction_code 1 ar mot Ropsten, alltsa framat i listan. 2 ar mot Norsborg och Satra."
+    },
+    "1": {
+      "note": "Buss 1, hallplatserna i ordning mot Frihamnen. Bara de appen anvander.",
+      "stops": [
+        "karlaplan",
+        "gardet",
+        "frihamnen_bus"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "direction_code 2 ar mot Frihamnen och passerar Gardet. 1 ar mot Stora Essingen, at andra hallet."
     }
   },
   "destination_aliases": {

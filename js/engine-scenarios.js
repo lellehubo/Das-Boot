@@ -274,6 +274,7 @@ export function planScenario(scenario, destination, ctx) {
   return {
     id: scenario.id,
     label: plan_.label,
+    priority: scenario.priority ?? 99,
     requiresBike: scenario.requires_bike === true,
     untested: scenario.status === "untested",
     uncalibrated,
@@ -293,6 +294,7 @@ function broken(scenario, code, reason) {
   return {
     id: scenario.id,
     label: scenario.label,
+    priority: scenario.priority ?? 99,
     requiresBike: scenario.requires_bike === true,
     untested: scenario.status === "untested",
     legs: [],
@@ -312,8 +314,16 @@ export function defaultDirection(minutesIntoDay) {
 
 /**
  * Plan every scenario for a destination.
- * Working ones sort by arrival time; broken ones fall to the bottom.
- * Scoring comes in phase 4 — this is arrival order only.
+ *
+ * Working plans come first in the user's own order — `priority` in
+ * scenarios.json — then the ones realtime cannot see far enough to plan, then
+ * the genuinely broken. A pending plan is not a failure, so it does not sit
+ * among the cancellations.
+ *
+ * Priority rather than arrival because the ranking is a standing preference,
+ * not a race: he would rather take the bike and the boat from Allmänna gränd
+ * than a route that happens to arrive four minutes earlier. Arrival still
+ * settles ties between scenarios given the same priority.
  */
 export function planAll(destination, ctx) {
   const plans = ctx.data.scenarios.scenarios
@@ -327,13 +337,13 @@ export function planAll(destination, ctx) {
     }
   }
 
-  // Working plans first by arrival, then ones we cannot see far enough to plan,
-  // then genuinely broken ones. A pending plan is not a failure, so it should not
-  // sit among the cancellations.
   const rank = (p) => (!p.broken ? 0 : p.broken.code === PENDING ? 1 : 2);
   return plans.sort((a, b) => {
     const d = rank(a) - rank(b);
     if (d !== 0) return d;
-    return rank(a) === 0 ? a.arrive - b.arrive : 0;
+    if (rank(a) !== 0) return 0;
+    const byPriority = a.priority - b.priority;
+    if (byPriority !== 0) return byPriority;
+    return a.arrive - b.arrive;
   });
 }
