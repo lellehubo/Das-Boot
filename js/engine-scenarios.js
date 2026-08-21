@@ -186,11 +186,19 @@ export const TO_HOME = "to_home";
  * gränd, cykel därifrån" describes the morning in the wrong order for the trip
  * home, where the bike comes first. So a scenario carries `label_home` for the
  * way back and falls back to the morning wording when it has none.
+ *
+ * Preference does not mirror either, and for the same underlying reason: the
+ * legs swap ends but their *cost* does not swap with them. Bus 1 is an extra
+ * change on the way out and only saves a walk on the way back, so it belongs
+ * near the bottom in the morning and near the top in the afternoon. Hence
+ * `priority_home`, falling back to `priority` when a route ranks the same both
+ * ways.
  */
 function reverse(scenario) {
   return {
     ...scenario,
     label: scenario.label_home || scenario.label,
+    priority: scenario.priority_home ?? scenario.priority,
     legs: scenario.legs
       .slice()
       .reverse()
@@ -274,7 +282,7 @@ export function planScenario(scenario, destination, ctx) {
   return {
     id: scenario.id,
     label: plan_.label,
-    priority: scenario.priority ?? 99,
+    priority: plan_.priority ?? 99,
     requiresBike: scenario.requires_bike === true,
     untested: scenario.status === "untested",
     uncalibrated,

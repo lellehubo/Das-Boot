@@ -530,3 +530,40 @@ test("Frihamnen och Ropsten föreslås inte längre", () => {
   assert.ok(!nodes.has("frihamnen_pier"), "ingen väg får gå via Frihamnens brygga");
   assert.ok(!nodes.has("ropsten"), "ingen väg får gå via Ropsten");
 });
+
+test("rangordningen speglas inte — buss 1 är bra hem, klen på morgonen", () => {
+  const ut = planScenario(byId("boat_bus67_bus1_gardet"), TEGEL, ctxAt("07:00"));
+  const hem = planScenario(byId("boat_bus67_bus1_gardet"), TEGEL, homeCtx("16:00"));
+  assert.equal(ut.priority, 4, "sist på morgonen: ett byte extra och senare framme");
+  assert.equal(hem.priority, 2, "tvåa hem: 5 min gång till Gärdet i stället för 21 till Karlaplan");
+
+  // Spårvagnen går åt andra hållet: bra ut, sämst hem.
+  assert.equal(planScenario(byId("boat_tram_strandvagen"), TEGEL, ctxAt("07:00")).priority, 2);
+  assert.equal(planScenario(byId("boat_tram_strandvagen"), TEGEL, homeCtx("16:00")).priority, 4);
+});
+
+test("utan priority_home gäller morgonens ordning även hem", () => {
+  const bare = {
+    id: "utan_hemprio",
+    label: "Enkel väg",
+    priority: 7,
+    destinations: [TEGEL.id],
+    legs: [
+      { type: "walk", from: "home", to: "saltsjoqvarn" },
+      { type: "transit", mode: "SHIP", line: "80", from: "saltsjoqvarn", to: "allmanna_grand" },
+      { type: "walk", from: "allmanna_grand", to: "$destination" },
+    ],
+  };
+  assert.equal(planScenario(bare, TEGEL, homeCtx("16:00")).priority, 7);
+});
+
+test("hemresan leder med en väg som faktiskt börjar kort", () => {
+  const plans = planAll(TEGEL, homeCtx("16:00")).filter((p) => !p.broken);
+  assert.ok(plans.length >= 2, `minst två vägar hem, fick ${plans.length}`);
+  // Den långa promenaden först var precis det som gjorde hemresan oanvändbar.
+  const första = plans[0].legs[0];
+  assert.ok(
+    första.minutes <= 15,
+    `hemresan ska inte inledas med en lång promenad, fick ${första.minutes} min`
+  );
+});

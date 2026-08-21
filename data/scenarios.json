@@ -16,7 +16,7 @@
       "valid_to": null
     }
   ],
-  "note": "Destinationen valjs automatiskt pa dagens datum. Riktningen home_to_work vands spegelvant for hemresan, med samma ben i omvand ordning; label_home bar hemresans ordalydelse. priority ar anvandarens egen rangordning och styr listans ordning - lagre tal forst. Frihamnen- och Ropsten-vagarna togs bort 2026-08-21 pa hans begaran: han vill inte ha dem foreslagna, inte ens i regn.",
+  "note": "Destinationen valjs automatiskt pa dagens datum. Riktningen home_to_work vands spegelvant for hemresan, med samma ben i omvand ordning; label_home bar hemresans ordalydelse. priority ar anvandarens egen rangordning och styr listans ordning - lagre tal forst. priority_home galler hemresan: kostnaden speglas inte med benen, sa en vag kan vara bra at ena hallet och dalig at det andra. Frihamnen- och Ropsten-vagarna togs bort 2026-08-21 pa hans begaran: han vill inte ha dem foreslagna, inte ens i regn.",
   "scenarios": [
     {
       "id": "boat_bike_djurgarden",
@@ -28,6 +28,7 @@
       ],
       "requires_bike": true,
       "priority": 1,
+      "priority_home": 1,
       "legs": [
         {
           "type": "walk",
@@ -58,6 +59,7 @@
       ],
       "requires_bike": false,
       "priority": 2,
+      "priority_home": 4,
       "legs": [
         {
           "type": "walk",
@@ -88,7 +90,8 @@
           "from": "djurgardsbron",
           "to": "$destination"
         }
-      ]
+      ],
+      "priority_note": "Hem ligger den sist: speglat borjar den med 29 minuters promenad till Djurgardsbron for att sedan aka sparvagn i tre. Pa morgonen ar ordningen den omvanda och vagen ar bra."
     },
     {
       "id": "boat_bus67_karlaplan",
@@ -100,6 +103,7 @@
       ],
       "requires_bike": false,
       "priority": 3,
+      "priority_home": 3,
       "legs": [
         {
           "type": "walk",
@@ -130,7 +134,8 @@
           "from": "karlaplan",
           "to": "$destination"
         }
-      ]
+      ],
+      "priority_note": "Hem borjar den med 21 minuters promenad till Karlaplan, darav tredjeplatsen. Pa morgonen kommer promenaden sist i stallet."
     },
     {
       "id": "boat_bus67_bus1_gardet",
@@ -142,6 +147,7 @@
       ],
       "requires_bike": false,
       "priority": 4,
+      "priority_home": 2,
       "legs": [
         {
           "type": "walk",
@@ -180,7 +186,8 @@
           "to": "$destination"
         }
       ],
-      "note": "Tillagd 2026-08-21. Gardet ligger 5 min fran kontoret, sa den har vagen har kortast promenad av alla utan cykel: 10 min ute mot 26 for buss 67 rakt av. Den ar ocksa den som gor hemresan rimlig - speglat blir det 5 min gang till Gardet i stallet for 21 min till Karlaplan."
+      "note": "Tillagd 2026-08-21. Gardet ligger 5 min fran kontoret, sa den har vagen har kortast promenad av alla utan cykel: 10 min ute mot 26 for buss 67 rakt av. Den ar ocksa den som gor hemresan rimlig - speglat blir det 5 min gang till Gardet i stallet for 21 min till Karlaplan.",
+      "priority_note": "Hem ligger den tvaa: 5 min gang till Gardet mot 21 till Karlaplan. Pa morgonen ar den sist av de fungerande - da kostar den ett extra byte och kommer fram senare an cykeln, utan att spara nagon gangtid som spelar roll."
     }
   ]
 }
