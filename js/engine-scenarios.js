@@ -64,6 +64,7 @@ function transitCandidates(ctx, leg, fromId, toId, notBefore, isTransfer) {
     ? sequenceDirection(ctx, leg.line, fromId, toId)
     : null;
   const arrivalFor = isBoat ? boatRuns(ctx, direction, fromId, toId) : null;
+  const wantDirection = requiredDirectionCode(ctx, leg.line, fromId, toId);
 
   const out = [];
   let sawCancelled = false;
@@ -73,6 +74,10 @@ function transitCandidates(ctx, leg, fromId, toId, notBefore, isTransfer) {
 
   for (const d of feed.departures) {
     if (d.line !== leg.line || d.mode !== leg.mode) continue;
+    // A service running the other way from this stop is a different journey.
+    // Only skip when the feed actually states a direction; a missing one is not
+    // evidence of the wrong way.
+    if (wantDirection != null && d.directionCode != null && d.directionCode !== wantDirection) continue;
     const scheduled = d.scheduled;
     if (!scheduled) continue;
 
@@ -138,12 +143,31 @@ function transitCandidates(ctx, leg, fromId, toId, notBefore, isTransfer) {
 
 /** Which way along the line we are travelling, as a key into the leg table. */
 function sequenceDirection(ctx, line, fromId, toId) {
-  const order = ctx.data.lineSequences.get(line);
-  if (!order) return null;
-  const a = order.get(fromId);
-  const b = order.get(toId);
+  const seq = ctx.data.lineSequences.get(line);
+  if (!seq) return null;
+  const a = seq.order.get(fromId);
+  const b = seq.order.get(toId);
   if (a == null || b == null) return null;
   return b > a ? "ropsten" : "nybroplan";
+}
+
+/**
+ * The direction_code a service must carry to be going our way, or null when the
+ * line's order does not cover both ends and we cannot tell.
+ *
+ * Without this a leg matches on line and mode alone, which on every two-way stop
+ * accepts the service leaving in the opposite direction. It is not a boat-only
+ * concern: bus 67 from Liljevalchs runs to Blockhusudden as well as past
+ * Karlaplan, and metro 13 from Karlaplan is half Norsborg-bound.
+ */
+function requiredDirectionCode(ctx, line, fromId, toId) {
+  const seq = ctx.data.lineSequences.get(line);
+  if (!seq || seq.forwardDirectionCode == null) return null;
+  const a = seq.order.get(fromId);
+  const b = seq.order.get(toId);
+  if (a == null || b == null) return null;
+  const forward = seq.forwardDirectionCode;
+  return b > a ? forward : forward === 1 ? 2 : 1;
 }
 
 export const TO_WORK = "to_work";

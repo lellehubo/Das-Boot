@@ -42,13 +42,21 @@ function findLeg(index, from, to) {
   return index.get(`${from}>${to}`) || index.get(`${to}>${from}`) || null;
 }
 
-/** Position of each stop along a line, for deciding whether a run reaches a stop. */
+/**
+ * Position of each stop along a line, plus which direction_code means "forward"
+ * along that order.
+ *
+ * The order alone answers whether a run reaches a stop. The code is what lets a
+ * leg reject services running the other way: line and mode alone match a 67
+ * towards Blockhusudden just as happily as one towards Karlaplan, and those are
+ * opposite journeys from the same stop.
+ */
 function indexLineSequences(stops) {
   const sequences = new Map();
   for (const [line, spec] of Object.entries(stops.line_sequences || {})) {
     const order = new Map();
     spec.stops.forEach((node, i) => order.set(node, i));
-    sequences.set(line, order);
+    sequences.set(line, { order, forwardDirectionCode: spec.forward_direction_code ?? null });
   }
   return sequences;
 }
