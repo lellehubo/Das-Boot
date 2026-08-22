@@ -50,10 +50,24 @@ test("gångtider fungerar i båda riktningarna", async () => {
 test("linjesekvensen avgör om en tur når en brygga", async () => {
   stubFetch();
   const data = await loadData();
-  const order = data.lineSequences.get("80");
+  const { order } = data.lineSequences.get("80");
   // En tur mot Ropsten som vänder vid Nacka Strand passerar aldrig Frihamnen.
   assert.ok(order.get("nacka_strand") < order.get("frihamnen_pier"));
   assert.ok(order.get("saltsjoqvarn") < order.get("nacka_strand"));
+});
+
+test("varje linje vet vilken riktningskod som är framåt", async () => {
+  stubFetch();
+  const data = await loadData();
+  // Avläst ur SL:s realtidsflöde, inte gissat. Utan den kan ett ben inte skilja
+  // en tur mot Karlaplan från en mot Blockhusudden.
+  const väntat = { 80: 1, 7: 2, 67: 2, 13: 1 };
+  for (const [linje, kod] of Object.entries(väntat)) {
+    const seq = data.lineSequences.get(linje);
+    assert.ok(seq, `linje ${linje} saknar sekvens`);
+    assert.equal(seq.forwardDirectionCode, kod, `linje ${linje}`);
+    assert.ok(seq.order.size >= 2, `linje ${linje} behöver minst två hållplatser`);
+  }
 });
 
 test("destination väljs på datum, överlapp ger flera träffar", async () => {

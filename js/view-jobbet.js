@@ -181,59 +181,70 @@ function renderBoats(se, direction) {
 // sentence it has to sit under without repeating it.
 
 /** The route's own warning, coloured by how bad it is. */
+/**
+ * The weather on this particular route: a symbol, and how long it leaves you in
+ * it. No verdict word.
+ *
+ * "Avrådes" was the app deciding for him. The minutes are the fact he needs to
+ * make the same call himself, and the icon says what he would be out in. The
+ * level still tints it, so a downpour reads differently from a drizzle at a
+ * glance, but nothing here tells him not to go.
+ */
 function weatherTag(plan) {
-  const warning = wxPhrase.warningFor(plan.weather);
-  if (!warning) return "";
-  return `<span class="tag wx-${warning.level}">${esc(warning.text)}</span>`;
+  const verdict = plan.weather;
+  if (!verdict) return "";
+  const summary = verdict.window;
+  const said = summary
+    ? wxPhrase.describeWindow(summary, { localMinutesOf: wxScore.localMinutesOf })
+    : null;
+  const minutes = verdict.exposure?.minutes;
+  if (!said && minutes == null) return "";
+  const level = verdict.level === "clear" ? "" : ` wx-${verdict.level}`;
+  const ute = minutes != null ? `${Math.round(minutes)} min ute` : "";
+  return (
+    `<span class="tag wx-route${level}" title="${esc(said ? said.text : "")}">` +
+    `${said ? wxPhrase.iconSvg(said.icon) : ""}${ute}</span>`
+  );
 }
 
 /**
- * The weather in words, for the trips that are still ahead of you.
+ * The day's weather, morning and afternoon.
  *
- * In the morning that is both legs of the day: the one you are about to make,
- * and the one home, because the bike you take now has to come back. After noon
- * only the trip home is left, so a second line would be about a journey already
- * behind you.
+ * Fixed windows rather than the ones each plan derives. The overview answers
+ * "what is it like today", which is a question about the day, not about the
+ * route on top of the card — the per-route icon covers that. Both halves show
+ * regardless of direction, because at eight in the morning the afternoon is
+ * still worth knowing about, and at four the morning costs nothing to leave up.
  *
- * The outbound window is the one the plan actually derives; the return window is
- * the fixed afternoon one, since at breakfast the evening boat is not chosen.
+ * Read at home for the morning and at the office for the afternoon, since that
+ * is where you would be standing in each.
  */
-function weatherLines(se, direction, best) {
+function weatherLines(se) {
   const weather = data.weights.weather;
   const opts = { localMinutesOf: wxScore.localMinutesOf };
-  const back = weather.return_window_hours;
+  const windows = weather.day_windows || {};
   const out = [];
 
-  const describe = (forecast, fromMin, toMin, label) => {
-    if (!forecast) return;
-    const summary = wxScore.summariseWindow(forecast, se.iso, fromMin, toMin);
+  const describe = (forecast, win) => {
+    if (!forecast || !win) return;
+    const summary = wxScore.summariseWindow(forecast, se.iso, win.from * 60, win.to * 60);
     const said = wxPhrase.describeWindow(summary, opts);
-    if (said) out.push({ label, ...said });
+    if (said) out.push({ label: win.label, ...said });
   };
 
-  // Without a plan there is no derived window, so fall back to the next hour —
-  // the question "what is it like out there" still has an answer.
-  const exposure = best && wxScore.exposureOf(best, weather);
-  const fromMin = exposure ? exposure.fromMin : se.min;
-  const toMin = exposure ? exposure.toMin : se.min + 60;
-
-  if (direction === TO_HOME) {
-    describe(forecasts.work, fromMin, toMin, "Hem");
-  } else {
-    describe(forecasts.home, fromMin, toMin, "Till jobbet");
-    if (back) describe(forecasts.work, back.from * 60, back.to * 60, "Hem i eftermiddag");
-  }
+  describe(forecasts.home, windows.morning);
+  describe(forecasts.work, windows.afternoon);
   return out;
 }
 
-function renderWeather(se, direction, best) {
+function renderWeather(se) {
   const host = el("jWeather");
   if (!host) return;
   let lines = [];
   // Describing the weather must never cost the departure board, same rule as
   // the scoring call below.
   try {
-    lines = weatherLines(se, direction, best);
+    lines = weatherLines(se);
   } catch (e) {
     console.warn(`väder: beskrivningen misslyckades (${e.message})`);
   }
@@ -490,7 +501,7 @@ function render(se) {
 
   const best = ranked.find((p) => !p.broken);
   renderBoats(se, direction);
-  renderWeather(se, direction, best);
+  renderWeather(se);
   renderBest(se, ranked, direction, best ? nextLike(best, destination, planCtx) : null);
   renderRank(se, ranked);
 

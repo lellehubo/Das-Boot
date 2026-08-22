@@ -304,44 +304,24 @@ export function verdictsFor(plans, ctx) {
 }
 
 /**
- * Re-rank plans with the weather taken into account.
+ * Attach the weather to each plan, without touching the order.
  *
- * Weather can only reorder, never remove: choosing to ride in the rain is the
- * user's call to make. A disruption still outranks a wet ride, so the existing
- * broken/pending order is untouched and the penalty only separates plans that
- * are otherwise equally available.
+ * The order is the user's own ranking, set in scenarios.json, and the weather
+ * does not get a vote in it. He asked to see what it is like and decide for
+ * himself — an app that quietly demotes the bike on a wet morning is making the
+ * call for him, which is the thing he did not want.
  *
- * Three keys, in order. The verdict comes first, because avoid should never sort
- * above caution however brief it is. Then, and only when the weather is actually
- * against you, the exposed minutes: steady rain grades every route the same, so
- * without this the list never moved on exactly the day the advice was worth
- * having. Arrival time settles the rest, and remains the only key on a fine day
- * — twelve minutes in the sun is not better than thirty.
+ * The verdict still rides along so the view can show an icon beside each route.
+ * `weatherPenalty` is kept for the same reason a thermometer has numbers on it:
+ * it says how bad, not what to do.
  *
  * Pure: the input array and its plans are not modified.
  */
-const exposedMinutes = (p) => p.weather?.exposure?.minutes ?? 0;
-
 export function applyWeather(plans, verdicts, weather) {
   const scale = weather.penalty || { avoid: 2, caution: 1, clear: 0 };
-  const scored = plans.map((plan) => {
+  return plans.map((plan) => {
     const verdict = verdicts.get(plan.id) || null;
     return { ...plan, weather: verdict, weatherPenalty: verdict ? scale[verdict.level] ?? 0 : 0 };
-  });
-
-  const rank = (p) => (!p.broken ? 0 : p.broken.code === "pending" ? 1 : 2);
-  return scored.sort((a, b) => {
-    const byRank = rank(a) - rank(b);
-    if (byRank !== 0) return byRank;
-    if (rank(a) !== 0) return 0;
-    const byWeather = a.weatherPenalty - b.weatherPenalty;
-    if (byWeather !== 0) return byWeather;
-    // Equal verdicts and a penalty to pay: least time outdoors wins.
-    if (a.weatherPenalty > 0) {
-      const byExposure = exposedMinutes(a) - exposedMinutes(b);
-      if (byExposure !== 0) return byExposure;
-    }
-    return a.arrive - b.arrive;
   });
 }
 

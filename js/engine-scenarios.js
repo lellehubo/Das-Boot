@@ -64,6 +64,7 @@ function transitCandidates(ctx, leg, fromId, toId, notBefore, isTransfer) {
     ? sequenceDirection(ctx, leg.line, fromId, toId)
     : null;
   const arrivalFor = isBoat ? boatRuns(ctx, direction, fromId, toId) : null;
+  const wantDirection = requiredDirectionCode(ctx, leg.line, fromId, toId);
 
   const out = [];
   let sawCancelled = false;
@@ -73,6 +74,10 @@ function transitCandidates(ctx, leg, fromId, toId, notBefore, isTransfer) {
 
   for (const d of feed.departures) {
     if (d.line !== leg.line || d.mode !== leg.mode) continue;
+    // A service running the other way from this stop is a different journey.
+    // Only skip when the feed actually states a direction; a missing one is not
+    // evidence of the wrong way.
+    if (wantDirection != null && d.directionCode != null && d.directionCode !== wantDirection) continue;
     const scheduled = d.scheduled;
     if (!scheduled) continue;
 
@@ -138,12 +143,31 @@ function transitCandidates(ctx, leg, fromId, toId, notBefore, isTransfer) {
 
 /** Which way along the line we are travelling, as a key into the leg table. */
 function sequenceDirection(ctx, line, fromId, toId) {
-  const order = ctx.data.lineSequences.get(line);
-  if (!order) return null;
-  const a = order.get(fromId);
-  const b = order.get(toId);
+  const seq = ctx.data.lineSequences.get(line);
+  if (!seq) return null;
+  const a = seq.order.get(fromId);
+  const b = seq.order.get(toId);
   if (a == null || b == null) return null;
   return b > a ? "ropsten" : "nybroplan";
+}
+
+/**
+ * The direction_code a service must carry to be going our way, or null when the
+ * line's order does not cover both ends and we cannot tell.
+ *
+ * Without this a leg matches on line and mode alone, which on every two-way stop
+ * accepts the service leaving in the opposite direction. It is not a boat-only
+ * concern: bus 67 from Liljevalchs runs to Blockhusudden as well as past
+ * Karlaplan, and metro 13 from Karlaplan is half Norsborg-bound.
+ */
+function requiredDirectionCode(ctx, line, fromId, toId) {
+  const seq = ctx.data.lineSequences.get(line);
+  if (!seq || seq.forwardDirectionCode == null) return null;
+  const a = seq.order.get(fromId);
+  const b = seq.order.get(toId);
+  if (a == null || b == null) return null;
+  const forward = seq.forwardDirectionCode;
+  return b > a ? forward : forward === 1 ? 2 : 1;
 }
 
 export const TO_WORK = "to_work";
@@ -162,11 +186,19 @@ export const TO_HOME = "to_home";
  * gränd, cykel därifrån" describes the morning in the wrong order for the trip
  * home, where the bike comes first. So a scenario carries `label_home` for the
  * way back and falls back to the morning wording when it has none.
+ *
+ * Preference does not mirror either, and for the same underlying reason: the
+ * legs swap ends but their *cost* does not swap with them. Bus 1 is an extra
+ * change on the way out and only saves a walk on the way back, so it belongs
+ * near the bottom in the morning and near the top in the afternoon. Hence
+ * `priority_home`, falling back to `priority` when a route ranks the same both
+ * ways.
  */
 function reverse(scenario) {
   return {
     ...scenario,
     label: scenario.label_home || scenario.label,
+    priority: scenario.priority_home ?? scenario.priority,
     legs: scenario.legs
       .slice()
       .reverse()
@@ -250,6 +282,7 @@ export function planScenario(scenario, destination, ctx) {
   return {
     id: scenario.id,
     label: plan_.label,
+    priority: plan_.priority ?? 99,
     requiresBike: scenario.requires_bike === true,
     untested: scenario.status === "untested",
     uncalibrated,
@@ -269,6 +302,7 @@ function broken(scenario, code, reason) {
   return {
     id: scenario.id,
     label: scenario.label,
+    priority: scenario.priority ?? 99,
     requiresBike: scenario.requires_bike === true,
     untested: scenario.status === "untested",
     legs: [],
@@ -288,8 +322,16 @@ export function defaultDirection(minutesIntoDay) {
 
 /**
  * Plan every scenario for a destination.
- * Working ones sort by arrival time; broken ones fall to the bottom.
- * Scoring comes in phase 4 — this is arrival order only.
+ *
+ * Working plans come first in the user's own order — `priority` in
+ * scenarios.json — then the ones realtime cannot see far enough to plan, then
+ * the genuinely broken. A pending plan is not a failure, so it does not sit
+ * among the cancellations.
+ *
+ * Priority rather than arrival because the ranking is a standing preference,
+ * not a race: he would rather take the bike and the boat from Allmänna gränd
+ * than a route that happens to arrive four minutes earlier. Arrival still
+ * settles ties between scenarios given the same priority.
  */
 export function planAll(destination, ctx) {
   const plans = ctx.data.scenarios.scenarios
@@ -303,13 +345,13 @@ export function planAll(destination, ctx) {
     }
   }
 
-  // Working plans first by arrival, then ones we cannot see far enough to plan,
-  // then genuinely broken ones. A pending plan is not a failure, so it should not
-  // sit among the cancellations.
   const rank = (p) => (!p.broken ? 0 : p.broken.code === PENDING ? 1 : 2);
   return plans.sort((a, b) => {
     const d = rank(a) - rank(b);
     if (d !== 0) return d;
-    return rank(a) === 0 ? a.arrive - b.arrive : 0;
+    if (rank(a) !== 0) return 0;
+    const byPriority = a.priority - b.priority;
+    if (byPriority !== 0) return byPriority;
+    return a.arrive - b.arrive;
   });
 }
