@@ -392,6 +392,27 @@ function nextRow(next, verb) {
   );
 }
 
+/**
+ * The same weather symbol the top card carries, small enough to sit in the list.
+ *
+ * He asked for an icon beside the route suggestions, plural — one on the
+ * recommended route alone would mean comparing them still needs opening each.
+ */
+function rankWeather(plan) {
+  const summary = plan.weather?.window;
+  if (!summary) return "";
+  const said = wxPhrase.describeWindow(summary, { localMinutesOf: wxScore.localMinutesOf });
+  if (!said) return "";
+  const level = plan.weather.level === "clear" ? "" : ` rank-wx-${plan.weather.level}`;
+  return `<span class="rank-wx${level}" title="${esc(said.text)}">${wxPhrase.iconSvg(said.icon)}</span>`;
+}
+
+/** Minutes outdoors, the one number that separates these routes in bad weather. */
+function rankExposure(plan) {
+  const minutes = plan.weather?.exposure?.minutes;
+  return minutes == null ? "" : ` · ${Math.round(minutes)} min ute`;
+}
+
 function renderRank(se, plans) {
   const rest = plans.slice(1);
   const body = el("jRankBody");
@@ -413,9 +434,10 @@ function renderRank(se, plans) {
       const diff = plan.leaveAt - se.min;
       return (
         `<div class="rank"><div class="rank-l">` +
-        `<div class="rank-name">${esc(plan.label)}</div>` +
+        `<div class="rank-name">${rankWeather(plan)}${esc(plan.label)}</div>` +
         `<div class="rank-sub">${plan.travelMinutes} min · ${plan.transfers} byte${plan.transfers === 1 ? "" : "n"}` +
         (plan.requiresBike ? " · cykel" : "") +
+        rankExposure(plan) +
         `</div></div><div class="rank-r">` +
         `<div class="rank-leave">${toClock(plan.leaveAt)}</div>` +
         `<div class="rank-arr">framme ${toClock(plan.arrive)} · ${fmtCountdown(diff)}</div>` +
