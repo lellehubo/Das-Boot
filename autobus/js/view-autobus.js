@@ -400,8 +400,12 @@ function laterDepartures(plan, destination, ctx, count = 2) {
  * Two of them, because one answers "can I make the next" and two answer "how
  * bad is it if I miss both" — which is the question you have when you are still
  * looking for your keys. Absent rather than empty when there is nothing later.
+ *
+ * Labelled by what is listed, not by what you do: the times are bus departures,
+ * and calling the row "gå sedan" made it read as a second instruction rather
+ * than a timetable.
  */
-function laterRow(later, verb) {
+function laterRow(later) {
   if (!later.length) return "";
   const items = later
     .map((p) => {
@@ -413,7 +417,7 @@ function laterRow(later, verb) {
       );
     })
     .join("");
-  return `<div class="later"><span class="later-lbl">${esc(verb.toLowerCase())} sedan</span>${items}</div>`;
+  return `<div class="later"><span class="later-lbl">Nästa bussar</span>${items}</div>`;
 }
 
 /** The chips under the card, in Das Boot's own row. */
@@ -469,7 +473,7 @@ function renderBest(se, plans, direction, later) {
     (best.waiting ? ` · ${Math.round(best.waiting)} min väntan vid byte` : "") +
     `</div>` +
     `${tags(best)}` +
-    laterRow(later || [], verb) +
+    laterRow(later || []) +
     `</div>`;
 }
 
