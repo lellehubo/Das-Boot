@@ -6,7 +6,7 @@
 // With static imports the browser keeps serving the previously cached copies even
 // when this file is refetched, which silently hides edits during development.
 const VERSION = new URL(import.meta.url).search;
-const [{ loadData, destinationsFor, DataError }, { departures }, engine, wx, wxScore, wxPhrase] =
+const [{ loadData, destinationsFor, DataError }, { departures, deviations }, engine, wx, wxScore, wxPhrase] =
   await Promise.all([
     import(`./data-layer.js${VERSION}`),
     import(`./api-sl.js${VERSION}`),
@@ -32,6 +32,10 @@ let rankOpen = false;
 // office as well as the morning at home. Null until the first fetch lands, and
 // null again is a perfectly good state: the board renders without it.
 let forecasts = { home: null, work: null };
+
+// Störningsmeddelanden från SL. Skilt från förseningen på en enskild avgång,
+// som redan finns som expected minus scheduled och visas på benet.
+let alerts = [];
 
 // null = följ klockan. Ett eget val gäller resten av dygnet, sedan tar
 // klockan över igen — annars sitter gårdagens val kvar nästa morgon.
@@ -120,6 +124,71 @@ async function refreshWeather() {
       console.warn(`väder (${which}): ${e.message}`);
     }
   }
+}
+
+/**
+ * Disruptions for the stops these routes use.
+ *
+ * Boat, bus and tram — the three modes the scenarios ride. Like the weather,
+ * a failure here costs the alerts and nothing else.
+ */
+async function refreshAlerts(direction) {
+  if (!data) return;
+  try {
+    alerts = await deviations(requiredSites(direction), ["SHIP", "BUS", "TRAM"]);
+  } catch (e) {
+    console.warn(`avvikelser: ${e.message}`);
+  }
+}
+
+/** Disruptions touching a plan's own lines. No line scope means the whole area. */
+function alertsFor(plan) {
+  if (!plan) return alerts;
+  const lines = new Set(
+    plan.legs.filter((l) => l.type === "transit" && l.line).map((l) => String(l.line))
+  );
+  return alerts.filter((a) => !a.lines.length || a.lines.some((l) => lines.has(String(l))));
+}
+
+/**
+ * The disruptions worth showing above the card.
+ *
+ * Filtered to the route being recommended: a message about the 67 is noise on a
+ * morning you are cycling from Allmänna gränd. Capped at three — beyond that it
+ * stops being information and becomes a wall.
+ */
+function renderAlerts(plan) {
+  const host = el("jAlerts");
+  if (!host) return;
+  const list = alertsFor(plan);
+  if (!list.length) {
+    host.innerHTML = "";
+    host.style.display = "none";
+    return;
+  }
+  host.innerHTML = list
+    .slice(0, 3)
+    .map((a) => {
+      const lines = a.lines.length
+        ? `<span class="dev-lines">${esc(a.lines.slice(0, 6).join(", "))}</span>`
+        : "";
+      return (
+        `<div class="dev${a.importance >= 7 ? " high" : ""}"><span class="dev-ico">!</span>` +
+        `<div><div>${lines}${esc(a.header)}</div>` +
+        (a.details ? `<div class="dev-det">${esc(a.details)}</div>` : "") +
+        `</div></div>`
+      );
+    })
+    .join("");
+  host.style.display = "";
+}
+
+/** How late the recommended route already is, straight from realtime. */
+function delayChip(plan) {
+  const late = plan.legs.filter((l) => l.type === "transit" && l.delay > 0);
+  if (!late.length) return "";
+  const worst = Math.max(...late.map((l) => l.delay));
+  return `<span class="tag late">${esc(late[0].line)} ${worst} min sen</span>`;
 }
 
 /** Next line 80 departure from a pier, optionally limited to one sailing direction. */
@@ -264,6 +333,8 @@ function tags(plan) {
   if (plan.requiresBike) out.push('<span class="tag bike">cykel · plats ej garanterad</span>');
   if (plan.untested) out.push('<span class="tag untested">oprövad</span>');
   if (plan.uncalibrated) out.push('<span class="tag">tider ej uppmätta</span>');
+  const late = delayChip(plan);
+  if (late) out.push(late);
   const weather = weatherTag(plan);
   if (weather) out.push(weather);
   return out.length ? `<div class="chip-row">${out.join("")}</div>` : "";
@@ -522,6 +593,7 @@ function render(se) {
   }
 
   const best = ranked.find((p) => !p.broken);
+  renderAlerts(best);
   renderBoats(se, direction);
   renderWeather(se);
   renderBest(se, ranked, direction, best ? nextLike(best, destination, planCtx) : null);
@@ -574,8 +646,10 @@ async function boot() {
     return;
   }
   const forNow = () => {
+    const direction = currentDirection(window.nowSE());
     refreshWeather();
-    return refresh(currentDirection(window.nowSE()));
+    refreshAlerts(direction);
+    return refresh(direction);
   };
   await forNow();
   setInterval(forNow, REFRESH_MS);
