@@ -15,69 +15,77 @@
       "type": "stop",
       "site_id": 1441,
       "gid": 9091001000001441,
-      "lat": 59.31431,
-      "lon": 18.10767,
-      "note": "Närmast bostaden. Bara buss 55 - men 55 gar hela vagen till Krukmakargatan och Tanto."
+      "lat": 59.31305,
+      "lon": 18.108577,
+      "note": "Närmast bostaden. Bara buss 55 - men 55 gar hela vagen till Krukmakargatan och Tanto.",
+      "coord_note": "Koordinat fran SL:s sites-API, inte uppskattad."
     },
     "henriksdalsviadukten": {
       "label": "Henriksdalsviadukten",
       "type": "stop",
       "site_id": 1447,
       "gid": 9091001000001447,
-      "lat": 59.31217,
-      "lon": 18.10688,
-      "note": "Buss 53, 71 och 402."
+      "lat": 59.311431,
+      "lon": 18.108205,
+      "note": "Buss 53, 71 och 402.",
+      "coord_note": "Koordinat fran SL:s sites-API, inte uppskattad."
     },
     "henriksdal": {
       "label": "Henriksdal",
       "type": "stop",
       "site_id": 9432,
       "gid": 9091001000009432,
-      "lat": 59.31145,
-      "lon": 18.10741,
-      "note": "Navet: ett tjugotal Nacka- och Varmdobussar mot Slussen, plus 53, 55, 71 och 402."
+      "lat": 59.311541,
+      "lon": 18.107527,
+      "note": "Navet: ett tjugotal Nacka- och Varmdobussar mot Slussen, plus 53, 55, 71 och 402.",
+      "coord_note": "Koordinat fran SL:s sites-API, inte uppskattad."
     },
     "slussen": {
       "label": "Slussen",
       "type": "stop",
       "site_id": 9192,
       "gid": 9091001000009192,
-      "lat": 59.31955,
-      "lon": 18.07193
+      "lat": 59.320318,
+      "lon": 18.072453,
+      "coord_note": "Koordinat fran SL:s sites-API, inte uppskattad."
     },
     "stockholm_city": {
       "label": "Stockholm City",
       "type": "stop",
       "site_id": 1080,
       "gid": 9091001000001080,
-      "lat": 59.33125,
-      "lon": 18.05918
+      "lat": 59.331003,
+      "lon": 18.059292,
+      "coord_note": "Koordinat fran SL:s sites-API, inte uppskattad."
     },
     "krukmakargatan": {
       "label": "Krukmakargatan",
       "type": "stop",
       "site_id": 1336,
       "gid": 9091001000001336,
-      "lat": 59.31648,
-      "lon": 18.05553,
-      "note": "Buss 55 stannar har. Narmaste hallplats till Globala gymnasiet fran ost."
+      "lat": 59.318106,
+      "lon": 18.060257,
+      "note": "Buss 55 stannar har. Narmaste hallplats till Globala gymnasiet fran ost.",
+      "coord_note": "Koordinat fran SL:s sites-API, inte uppskattad."
     },
     "zinkensdamm": {
       "label": "Zinkensdamm",
       "type": "stop",
       "site_id": 9296,
       "gid": 9091001000009296,
-      "lat": 59.31721,
-      "lon": 18.04968,
-      "note": "Buss 4, 66, 74 och tunnelbana. 7 min gang till Globala gymnasiet enligt anvandaren."
+      "lat": 59.317578,
+      "lon": 18.050279,
+      "note": "Buss 4, 66, 74 och tunnelbana. 7 min gang till Globala gymnasiet enligt anvandaren.",
+      "coord_note": "Koordinat fran SL:s sites-API, inte uppskattad."
     },
     "nacka_gymnasium": {
       "label": "Nacka gymnasium",
       "type": "stop",
       "site_id": 4063,
       "gid": 9091001000004063,
-      "lat": 59.31017,
-      "lon": 18.16412
+      "lat": 59.310762,
+      "lon": 18.151718,
+      "coord_note": "Koordinat fran SL:s sites-API, inte uppskattad."
     },
     "globala_gymnasiet": {
       "label": "Globala gymnasiet",
@@ -89,9 +97,9 @@
     "nackagymnasiet": {
       "label": "Nacka gymnasium (skolan)",
       "type": "place",
-      "lat": 59.31017,
-      "lon": 18.16412,
-      "note": "Dotterns skola."
+      "lat": 59.310762,
+      "lon": 18.151718,
+      "note": "Dotterns skola. Koordinaten satt till hallplatsen Nacka gymnasium, som ligger vid skolan. Min forsta gissning lag 700 m fel."
     }
   },
   "destination_aliases": {},

@@ -15,7 +15,7 @@ const VERSION = new URL(import.meta.url).search;
 // engine at /js/ takes two steps up. The data layer's fetch resolves against the
 // *document* (/autobus/), so its default "data/" already lands in our own data.
 const BASE = "../../js/";
-const [{ loadData, destinationsFor, DataError }, { departures }, engine, wx, wxScore, wxPhrase] =
+const [{ loadData, destinationsFor, DataError }, { departures, deviations }, engine, wx, wxScore, wxPhrase] =
   await Promise.all([
     import(`${BASE}data-layer.js${VERSION}`),
     import(`${BASE}api-sl.js${VERSION}`),
@@ -35,6 +35,10 @@ let feeds = new Map();
 let lastFetch = 0;
 let fetching = false;
 let forecast = null;
+// Service messages from SL: roadworks, diversions, cancelled runs. Separate from
+// the per-departure delay, which rides along on each departure as expected minus
+// scheduled and is already shown on the leg.
+let alerts = [];
 
 let chosenDestination = null;
 let chosenDirection = null;
@@ -109,6 +113,32 @@ async function refresh() {
   }
 }
 
+/**
+ * Disruptions for the stops we use.
+ *
+ * Buses only — the app plans nothing else, and a metro message would just be
+ * noise. Like the weather, a failure here costs the alerts and nothing more.
+ */
+async function refreshAlerts() {
+  if (!data) return;
+  try {
+    alerts = await deviations(requiredSites(), ["BUS"]);
+  } catch (e) {
+    console.warn(`avvikelser: ${e.message}`);
+  }
+}
+
+/** The lines a plan actually rides, for matching a disruption against it. */
+function planLines(plan) {
+  return new Set(plan.legs.filter((l) => l.type === "transit" && l.line).map((l) => String(l.line)));
+}
+
+/** Disruptions touching a plan's own lines. A message with no line scope hits everything. */
+function alertsFor(plan) {
+  const lines = planLines(plan);
+  return alerts.filter((a) => !a.lines.length || a.lines.some((l) => lines.has(String(l))));
+}
+
 /** Weather is an addition, never a dependency: failure costs the forecast only. */
 async function refreshWeather() {
   if (!data) return;
@@ -148,6 +178,51 @@ function renderWeather(se) {
     )
     .join("");
   host.style.display = lines.length ? "" : "none";
+}
+
+/**
+ * Disruptions that touch the route being shown.
+ *
+ * Only those on its own lines: from Henriksdal twenty lines run to Slussen, and
+ * a message about one of the nineteen you are not taking is noise. A message
+ * without a line scope hits the whole area and is always shown.
+ */
+function renderAlerts(plan) {
+  const host = el("aAlerts");
+  if (!host) return;
+  const list = plan ? alertsFor(plan) : alerts;
+  if (!list.length) {
+    host.innerHTML = "";
+    host.style.display = "none";
+    return;
+  }
+  host.innerHTML = list
+    .slice(0, 3)
+    .map((a) => {
+      const lines = a.lines.length ? `<span class="al-lines">${esc(a.lines.slice(0, 6).join(", "))}</span>` : "";
+      return (
+        `<div class="alert${a.importance >= 7 ? " high" : ""}">` +
+        `<span class="al-ico">!</span><div class="al-body">` +
+        `<div class="al-head">${lines}${esc(a.header)}</div>` +
+        (a.details ? `<div class="al-det">${esc(a.details)}</div>` : "") +
+        `</div></div>`
+      );
+    })
+    .join("");
+  host.style.display = "";
+}
+
+/**
+ * How late the bus already is, straight from realtime.
+ *
+ * Separate from a disruption message: this is the minutes SL has already put on
+ * this particular run, and it is the number that moves your leave time.
+ */
+function delayChip(plan) {
+  const late = plan.legs.filter((l) => l.type === "transit" && l.delay > 0);
+  if (!late.length) return "";
+  const worst = Math.max(...late.map((l) => l.delay));
+  return `<span class="chip late">buss ${esc(late[0].line)} ${worst} min sen</span>`;
 }
 
 /** The weather on a route: symbol and minutes outdoors, no verdict. */
@@ -212,7 +287,7 @@ function renderBest(se, plans, direction) {
     `<div class="meta">Framme <b>${toClock(best.arrive)}</b> · ${best.travelMinutes} min dörr till dörr` +
     (best.waiting ? ` · ${Math.round(best.waiting)} min väntan vid byte` : "") +
     `</div>` +
-    `<div class="chips">${weatherChip(best)}</div>` +
+    `<div class="chips">${delayChip(best)}${weatherChip(best)}</div>` +
     `</div>`;
 }
 
@@ -325,6 +400,7 @@ function render(se) {
     console.warn(`väder: bedömningen misslyckades (${e.message})`);
   }
 
+  renderAlerts(ranked.find((p) => !p.broken));
   renderBest(se, ranked, direction);
   renderRest(se, ranked);
 
@@ -349,11 +425,12 @@ async function boot() {
     render(window.nowSE());
     return;
   }
-  await Promise.all([refresh(), refreshWeather()]);
+  await Promise.all([refresh(), refreshWeather(), refreshAlerts()]);
   render(window.nowSE());
   setInterval(() => {
     refresh();
     refreshWeather();
+    refreshAlerts();
   }, REFRESH_MS);
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden) refresh();

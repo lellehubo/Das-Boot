@@ -54,6 +54,17 @@
   .wx-when{flex:none;font-size:10px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink3);min-width:82px;}
   .wx-text{font-size:12.5px;color:var(--ink);line-height:1.35;}
 
+  .alert{display:flex;gap:10px;align-items:flex-start;background:var(--ambers);
+         border:1px solid rgba(224,169,85,0.34);border-radius:14px;padding:11px 13px;margin-bottom:8px;}
+  .alert.high{background:var(--hots);border-color:rgba(232,85,47,0.4);}
+  .al-ico{flex:none;width:18px;height:18px;border-radius:50%;background:var(--amber);color:#1a1206;
+          font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+  .alert.high .al-ico{background:var(--hot);color:#fff;}
+  .al-head{font-size:12.5px;font-weight:650;color:var(--ink);line-height:1.35;}
+  .al-lines{display:inline-block;font-size:10.5px;font-weight:800;color:var(--ink2);
+            background:var(--track);border-radius:5px;padding:1px 5px;margin-right:6px;vertical-align:1px;}
+  .al-det{font-size:11.5px;color:var(--ink2);line-height:1.45;margin-top:3px;}
+  .chip.late{background:var(--hots);border-color:rgba(232,85,47,0.4);color:var(--hotl);}
   .card{background:linear-gradient(180deg,var(--ct),var(--cb));border:1px solid var(--bd);
         border-radius:19px;padding:16px 16px 14px;box-shadow:var(--sh);}
   .lbl{font-size:10.5px;font-weight:700;letter-spacing:0.11em;text-transform:uppercase;color:var(--ink3);}
@@ -115,6 +126,7 @@
   <button type="button" data-dir="to_home">Hem</button>
 </div>
 
+<div id="aAlerts" style="display:none"></div>
 <div id="aWeather" style="display:none"></div>
 <div id="aBest"></div>
 <div id="aRest"></div>
@@ -122,7 +134,7 @@
 
 <script>
   // Bumpa vid ändring i js/ för att bryta modulcachen.
-  const APP_VERSION = "2026-08-30a";
+  const APP_VERSION = "2026-08-30b";
 
   // ---- Svensk tid, oavsett enhetens tidszon ----
   const TZ = "Europe/Stockholm";
