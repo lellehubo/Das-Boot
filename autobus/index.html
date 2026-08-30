@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101014">
+<title>Das Autobus</title>
+<style>
+  /* Das Autobus har egen identitet: varmare och rakare än Das Boot, med
+     bussarnas röda som accent i stället för vattnets blå. Samma motor under,
+     annan yta. */
+  :root{
+    --bg:#101014; --bg-2:#16161c; --card:#1b1b22; --ct:#1e1e26; --cb:#17171d;
+    --bd:rgba(255,255,255,0.09); --track:rgba(255,255,255,0.05); --chi:rgba(255,255,255,0.11);
+    --ink:#f2f0ee; --ink2:#a8a5a2; --ink3:#6f6c6a;
+    --hot:#e8552f; --hotl:#ff9c7d; --hots:rgba(232,85,47,0.14);
+    --go:#3fb37f; --amber:#e0a955; --amberlt:#ecc78c; --ambers:rgba(224,169,85,0.13);
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    --sh:0 2px 14px rgba(0,0,0,0.4);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+       padding:18px 15px calc(28px + env(safe-area-inset-bottom));max-width:520px;margin:0 auto;
+       -webkit-font-smoothing:antialiased;}
+
+  header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+  .date-line{font-size:10.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);}
+  .clock{font-size:33px;font-weight:800;letter-spacing:-0.03em;line-height:1.05;font-variant-numeric:tabular-nums;}
+  .clock .sec{font-size:16px;color:var(--ink3);font-weight:600;}
+  .brand{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:800;letter-spacing:0.1em;
+         text-transform:uppercase;color:var(--hotl);background:var(--hots);border:1px solid rgba(232,85,47,0.3);
+         padding:6px 11px;border-radius:999px;}
+  .brand svg{width:13px;height:13px;}
+
+  /* Destinationerna är fyra, valda för hand — inte styrda av kalendern som i
+     Das Boot, eftersom familjen ska åt olika håll samma morgon. */
+  .dests{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:11px;}
+  .dests button{font-family:var(--sans);font-size:13px;font-weight:650;color:var(--ink2);
+    background:var(--card);border:1px solid var(--bd);border-radius:13px;padding:12px 10px;
+    cursor:pointer;transition:background .15s,color .15s,border-color .15s;letter-spacing:-0.01em;text-align:left;}
+  .dests button.active{background:var(--hots);color:var(--hotl);border-color:rgba(232,85,47,0.42);}
+
+  .seg{display:flex;background:var(--track);border:1px solid var(--bd);border-radius:13px;padding:3px;gap:3px;margin-bottom:12px;}
+  .seg button{flex:1;font-family:var(--sans);font-size:13px;font-weight:650;color:var(--ink2);
+    background:transparent;border:none;padding:10px 8px;border-radius:10px;cursor:pointer;transition:color .15s,background .15s;}
+  .seg button.active{background:var(--chi);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,0.3);}
+
+  #aWeather{display:flex;flex-direction:column;gap:1px;background:var(--card);border:1px solid var(--bd);
+            border-radius:15px;overflow:hidden;margin-bottom:12px;}
+  .wx-line{display:flex;align-items:center;gap:10px;padding:10px 13px;}
+  .wx-line + .wx-line{border-top:1px solid var(--bd);}
+  .wx-ico{flex:none;display:flex;color:var(--ink2);}
+  .wx-icon{width:20px;height:20px;}
+  .wx-when{flex:none;font-size:10px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink3);min-width:82px;}
+  .wx-text{font-size:12.5px;color:var(--ink);line-height:1.35;}
+
+  .card{background:linear-gradient(180deg,var(--ct),var(--cb));border:1px solid var(--bd);
+        border-radius:19px;padding:16px 16px 14px;box-shadow:var(--sh);}
+  .lbl{font-size:10.5px;font-weight:700;letter-spacing:0.11em;text-transform:uppercase;color:var(--ink3);}
+  .time{font-size:46px;font-weight:800;letter-spacing:-0.035em;line-height:1.02;margin:3px 0 2px;font-variant-numeric:tabular-nums;}
+  .cd{font-size:14px;font-weight:650;color:var(--ink2);margin-bottom:11px;}
+  .cd.soon{color:var(--amberlt);}
+  .cd.now{color:var(--hotl);}
+  .name{font-size:14px;font-weight:700;letter-spacing:-0.01em;margin-bottom:9px;}
+  .why{font-size:12.5px;color:var(--ink2);line-height:1.62;padding-top:9px;border-top:1px solid var(--bd);}
+  .why b{color:var(--ink);font-weight:650;}
+  .muted{color:var(--ink3);}
+  .meta{font-size:11.5px;color:var(--ink3);margin-top:9px;}
+  .meta b{color:var(--ink2);}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:650;color:var(--ink2);
+        background:var(--track);border:1px solid var(--bd);border-radius:999px;padding:5px 10px;}
+  .chip .wx-icon{width:13px;height:13px;}
+  .chip.wx-caution{background:var(--ambers);border-color:rgba(224,169,85,0.34);color:var(--amberlt);}
+  .chip.wx-avoid{background:var(--hots);border-color:rgba(232,85,47,0.4);color:var(--hotl);}
+
+  #aRest{margin-top:13px;}
+  .rest-head{font-size:10.5px;font-weight:700;letter-spacing:0.11em;text-transform:uppercase;
+             color:var(--ink3);margin:0 2px 7px;}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:11px;
+       background:var(--card);border:1px solid var(--bd);border-radius:13px;padding:11px 13px;margin-bottom:6px;}
+  .row-name{font-size:12.5px;font-weight:650;letter-spacing:-0.01em;}
+  .row-why{font-size:11px;color:var(--ink3);margin-top:2px;}
+  .row-why.pending{color:var(--amberlt);}
+  .row-r{text-align:right;flex:none;}
+  .row-time{font-size:14px;font-weight:750;font-variant-numeric:tabular-nums;}
+  .row-sub{font-size:10.5px;color:var(--ink3);margin-top:1px;}
+  .row.broken .row-name{color:var(--ink3);}
+
+  .note{font-size:11px;color:var(--ink3);text-align:center;line-height:1.5;margin-top:16px;}
+  .err{background:var(--hots);border:1px solid rgba(232,85,47,0.35);color:var(--hotl);
+       font-size:12.5px;line-height:1.5;padding:12px 14px;border-radius:14px;white-space:pre-wrap;}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="date-line" id="aDate">–</div>
+    <div class="clock" id="aClock">–</div>
+  </div>
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="5" width="18" height="12" rx="2"/><path d="M3 11h18"/>
+      <circle cx="7.5" cy="19" r="1.6"/><circle cx="16.5" cy="19" r="1.6"/>
+    </svg>
+    Das Autobus
+  </div>
+</header>
+
+<div class="dests" id="aDest"></div>
+
+<div class="seg" id="aDirSeg">
+  <button type="button" data-dir="to_work">Dit</button>
+  <button type="button" data-dir="to_home">Hem</button>
+</div>
+
+<div id="aWeather" style="display:none"></div>
+<div id="aBest"></div>
+<div id="aRest"></div>
+<div class="note" id="aNote"></div>
+
+<script>
+  // Bumpa vid ändring i js/ för att bryta modulcachen.
+  const APP_VERSION = "2026-08-30a";
+
+  // ---- Svensk tid, oavsett enhetens tidszon ----
+  const TZ = "Europe/Stockholm";
+  const SE_T = new Intl.DateTimeFormat("sv-SE",{timeZone:TZ,hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+  const SE_D = new Intl.DateTimeFormat("sv-SE",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"});
+  const SE_W = new Intl.DateTimeFormat("en-US",{timeZone:TZ,weekday:"short"});
+  const WDMAP = {Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+  const WEEKDAYS = ["söndag","måndag","tisdag","onsdag","torsdag","fredag","lördag"];
+  const MONTHS = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
+
+  function nowSE(){
+    const d = new Date();
+    const g = function(parts,type){ return +parts.find(function(p){ return p.type===type; }).value; };
+    const t = SE_T.formatToParts(d), dp = SE_D.formatToParts(d);
+    const h = g(t,"hour")%24, mi = g(t,"minute"), s = g(t,"second");
+    const y = g(dp,"year"), mo = g(dp,"month"), da = g(dp,"day");
+    const iso = y+"-"+String(mo).padStart(2,"0")+"-"+String(da).padStart(2,"0");
+    return { h:h, mi:mi, s:s, y:y, mo:mo, d:da, wd:WDMAP[SE_W.format(d)], iso:iso, min:h*60+mi+s/60 };
+  }
+
+  // Bussarna har ingen egen tidtabellsfil att slå upp dagtyp i — realtiden är
+  // hela sanningen här. Motorn vill ändå ha ett värde, så veckodagen får räcka.
+  function dayType(se){ return (se.wd === 0 || se.wd === 6) ? "helg" : "mtor"; }
+
+  window.nowSE = nowSE;
+  window.WEEKDAYS = WEEKDAYS;
+  window.MONTHS = MONTHS;
+  window.dayType = dayType;
+  window.autobus = null;
+
+  function tick(){ if (window.autobus) window.autobus.render(nowSE()); }
+  setInterval(tick, 1000);
+
+  (function(){
+    const s = document.createElement("script");
+    s.type = "module"; s.src = "js/view-autobus.js?v=" + APP_VERSION;
+    document.body.appendChild(s);
+  })();
+</script>
+</body>
+</html>

@@ -48,23 +48,47 @@ function boatRuns(ctx, direction, board, target) {
   };
 }
 
+/**
+ * The lines a leg will accept.
+ *
+ * Usually one, but a leg can name several when any of them does the job — from
+ * Henriksdal some twenty routes all end at Slussen, and the traveller wants the
+ * first one out, not twenty near-identical scenarios to scroll past. The single
+ * `line` form stays valid and is what every boat leg uses.
+ */
+function legLines(leg) {
+  if (Array.isArray(leg.lines) && leg.lines.length) return leg.lines;
+  return leg.line == null ? [] : [leg.line];
+}
+
 function transitCandidates(ctx, leg, fromId, toId, notBefore, isTransfer) {
   const fromNode = ctx.data.node(fromId);
   if (!fromNode) return { error: NO_RUN, reason: `Okänd hållplats ${fromId}` };
   const feed = ctx.departures.get(fromNode.site_id);
   if (!feed) return { error: NO_RUN, reason: `Inga avgångar hämtade för ${fromNode.label}` };
+  const accepted = new Set(legLines(leg));
+  // Some lines cannot be told apart by direction_code: bus 402 leaves Henriksdal
+  // both towards Nacka Forum and towards Medborgarplatsen under code 1, and only
+  // the destination separates them. `towards` names the destinations that count
+  // as our way; without it the code is the only filter, as before.
+  const towards = Array.isArray(leg.towards) && leg.towards.length
+    ? new Set(leg.towards.map((t) => t.toLowerCase()))
+    : null;
 
   // Changing services needs slack; walking from home to the first boat does not.
   const buffer = isTransfer ? ctx.weights.hard_constraints.min_transfer_buffer_minutes : 0;
   const earliest = notBefore + buffer;
 
   const isBoat = leg.mode === "SHIP";
-  // Which timetable column to read depends on which way the boat is going.
-  const direction = ctx.data.lineSequences.get(leg.line)
-    ? sequenceDirection(ctx, leg.line, fromId, toId)
-    : null;
-  const arrivalFor = isBoat ? boatRuns(ctx, direction, fromId, toId) : null;
-  const wantDirection = requiredDirectionCode(ctx, leg.line, fromId, toId);
+  // Timetable column and required direction are both per line, so they are
+  // resolved for whichever line a departure happens to be on.
+  const arrivalForLine = (line) => {
+    if (!isBoat) return null;
+    const direction = ctx.data.lineSequences.get(line)
+      ? sequenceDirection(ctx, line, fromId, toId)
+      : null;
+    return boatRuns(ctx, direction, fromId, toId);
+  };
 
   const out = [];
   let sawCancelled = false;
@@ -73,11 +97,17 @@ function transitCandidates(ctx, leg, fromId, toId, notBefore, isTransfer) {
   let lastUsable = null;
 
   for (const d of feed.departures) {
-    if (d.line !== leg.line || d.mode !== leg.mode) continue;
+    if (!accepted.has(d.line) || d.mode !== leg.mode) continue;
     // A service running the other way from this stop is a different journey.
     // Only skip when the feed actually states a direction; a missing one is not
     // evidence of the wrong way.
-    if (wantDirection != null && d.directionCode != null && d.directionCode !== wantDirection) continue;
+    if (towards) {
+      if (!d.destination || !towards.has(String(d.destination).toLowerCase())) continue;
+    } else {
+      const wantDirection = requiredDirectionCode(ctx, d.line, fromId, toId);
+      if (wantDirection != null && d.directionCode != null && d.directionCode !== wantDirection) continue;
+    }
+    const arrivalFor = arrivalForLine(d.line);
     const scheduled = d.scheduled;
     if (!scheduled) continue;
 
@@ -259,7 +289,9 @@ export function planScenario(scenario, destination, ctx) {
       from,
       to,
       mode: leg.mode,
-      line: leg.line,
+      // The line actually travelled, which for a multi-line leg is whichever
+      // service turned up first — leg.line is empty in that case.
+      line: pick.line ?? leg.line,
       wait: transfers > 0 ? wait : 0,
       start: pick.departs,
       end: pick.arrives,

@@ -1,0 +1,289 @@
+{
+  "schema_version": 1,
+  "destinations": [
+    {
+      "id": "slussen",
+      "label": "Slussen",
+      "node": "slussen",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "stockholm_city",
+      "label": "Stockholm City",
+      "node": "stockholm_city",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "globala_gymnasiet",
+      "label": "Globala gymnasiet",
+      "node": "globala_gymnasiet",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "nackagymnasiet",
+      "label": "Nacka gymnasium",
+      "node": "nackagymnasiet",
+      "valid_from": null,
+      "valid_to": null
+    }
+  ],
+  "note": "Das Autobus. Fyra mal, valjs i UI:t i stallet for pa datum - till skillnad fran Das Boot dar destinationen foljer kalendern. Ett ben kan namna flera linjer med lines nar vilken som helst duger. towards listar destinationer sa som de star pa bussens skylt, inte resmalet: en 55 mot Slussen ar skyltad Tanto. Anvand towards bara nar riktningskod och hallplatssekvens inte skiljer hallen at.",
+  "scenarios": [
+    {
+      "id": "slussen_henriksdal",
+      "label": "Buss från Henriksdal till Slussen",
+      "label_home": "Buss från Slussen till Henriksdal",
+      "destinations": [
+        "slussen"
+      ],
+      "requires_bike": false,
+      "priority": 1,
+      "priority_home": 1,
+      "legs": [
+        {
+          "type": "walk",
+          "from": "home",
+          "to": "henriksdal"
+        },
+        {
+          "type": "transit",
+          "mode": "BUS",
+          "lines": [
+            "53",
+            "55",
+            "401",
+            "402",
+            "409",
+            "414",
+            "422",
+            "433",
+            "434",
+            "436",
+            "438",
+            "440",
+            "442",
+            "443",
+            "444",
+            "471",
+            "474",
+            "428X",
+            "429X",
+            "430X"
+          ],
+          "from": "henriksdal",
+          "to": "slussen"
+        }
+      ],
+      "note": "Ett tjugotal linjer duger, sa forsta bussen ut vinner. Riktningen kommer fran hallplatssekvenserna: towards provades forst men bryter hemresan, eftersom bussarna hem ar skyltade Alta, Orminge och Hemmesta - inte Henriksdal."
+    },
+    {
+      "id": "slussen_danviken",
+      "label": "Buss 55 från Danviken till Slussen",
+      "label_home": "Buss 55 från Slussen till Danviken",
+      "destinations": [
+        "slussen"
+      ],
+      "requires_bike": false,
+      "priority": 2,
+      "priority_home": 2,
+      "legs": [
+        {
+          "type": "walk",
+          "from": "home",
+          "to": "danviken"
+        },
+        {
+          "type": "transit",
+          "mode": "BUS",
+          "line": "55",
+          "from": "danviken",
+          "to": "slussen"
+        }
+      ],
+      "note": "Kortare promenad hemifran men bara en linje, sa glesare."
+    },
+    {
+      "id": "city_53",
+      "label": "Buss 53 till Stockholm City",
+      "label_home": "Buss 53 hem från Stockholm City",
+      "destinations": [
+        "stockholm_city"
+      ],
+      "requires_bike": false,
+      "priority": 1,
+      "priority_home": 1,
+      "legs": [
+        {
+          "type": "walk",
+          "from": "home",
+          "to": "henriksdal"
+        },
+        {
+          "type": "transit",
+          "mode": "BUS",
+          "line": "53",
+          "from": "henriksdal",
+          "to": "stockholm_city"
+        }
+      ],
+      "note": "53 ar enda direktlinjen till Stockholm City."
+    },
+    {
+      "id": "city_53_viadukten",
+      "label": "Buss 53 från Henriksdalsviadukten",
+      "label_home": "Buss 53 hem till Henriksdalsviadukten",
+      "destinations": [
+        "stockholm_city"
+      ],
+      "requires_bike": false,
+      "priority": 2,
+      "priority_home": 2,
+      "legs": [
+        {
+          "type": "walk",
+          "from": "home",
+          "to": "henriksdalsviadukten"
+        },
+        {
+          "type": "transit",
+          "mode": "BUS",
+          "line": "53",
+          "from": "henriksdalsviadukten",
+          "to": "stockholm_city"
+        }
+      ]
+    },
+    {
+      "id": "globala_55",
+      "label": "Buss 55 till Krukmakargatan, gå därifrån",
+      "label_home": "Gå till Krukmakargatan, buss 55 hem",
+      "destinations": [
+        "globala_gymnasiet"
+      ],
+      "requires_bike": false,
+      "priority": 1,
+      "priority_home": 1,
+      "legs": [
+        {
+          "type": "walk",
+          "from": "home",
+          "to": "danviken"
+        },
+        {
+          "type": "transit",
+          "mode": "BUS",
+          "line": "55",
+          "from": "danviken",
+          "to": "krukmakargatan"
+        },
+        {
+          "type": "walk",
+          "from": "krukmakargatan",
+          "to": "$destination"
+        }
+      ],
+      "note": "Direktlinje hela vagen: 55 gar Danviken till Krukmakargatan utan byte."
+    },
+    {
+      "id": "globala_55_henriksdal",
+      "label": "Buss 55 från Henriksdal till Krukmakargatan",
+      "label_home": "Krukmakargatan, buss 55 till Henriksdal",
+      "destinations": [
+        "globala_gymnasiet"
+      ],
+      "requires_bike": false,
+      "priority": 2,
+      "priority_home": 2,
+      "legs": [
+        {
+          "type": "walk",
+          "from": "home",
+          "to": "henriksdal"
+        },
+        {
+          "type": "transit",
+          "mode": "BUS",
+          "line": "55",
+          "from": "henriksdal",
+          "to": "krukmakargatan"
+        },
+        {
+          "type": "walk",
+          "from": "krukmakargatan",
+          "to": "$destination"
+        }
+      ]
+    },
+    {
+      "id": "nacka_402",
+      "label": "Buss 402 till Nacka gymnasium",
+      "label_home": "Buss 402 hem från Nacka gymnasium",
+      "destinations": [
+        "nackagymnasiet"
+      ],
+      "requires_bike": false,
+      "priority": 1,
+      "priority_home": 1,
+      "legs": [
+        {
+          "type": "walk",
+          "from": "home",
+          "to": "henriksdal"
+        },
+        {
+          "type": "transit",
+          "mode": "BUS",
+          "line": "402",
+          "from": "henriksdal",
+          "to": "nacka_gymnasium",
+          "towards": [
+            "Nacka Forum"
+          ]
+        },
+        {
+          "type": "walk",
+          "from": "nacka_gymnasium",
+          "to": "$destination"
+        }
+      ],
+      "note": "402 ar enda linjen som nar Nacka gymnasium. Riktningen filtreras pa destination, inte pa riktningskod: 402 lamnar Henriksdal bade mot Nacka Forum och mot Medborgarplatsen under kod 1."
+    },
+    {
+      "id": "nacka_402_viadukten",
+      "label": "Buss 402 från Henriksdalsviadukten",
+      "label_home": "Buss 402 hem till Henriksdalsviadukten",
+      "destinations": [
+        "nackagymnasiet"
+      ],
+      "requires_bike": false,
+      "priority": 2,
+      "priority_home": 2,
+      "legs": [
+        {
+          "type": "walk",
+          "from": "home",
+          "to": "henriksdalsviadukten"
+        },
+        {
+          "type": "transit",
+          "mode": "BUS",
+          "line": "402",
+          "from": "henriksdalsviadukten",
+          "to": "nacka_gymnasium",
+          "towards": [
+            "Nacka Forum"
+          ]
+        },
+        {
+          "type": "walk",
+          "from": "nacka_gymnasium",
+          "to": "$destination"
+        }
+      ],
+      "note": "Riktningen filtreras pa destination, inte pa riktningskod: 402 lamnar Henriksdal bade mot Nacka Forum och mot Medborgarplatsen under kod 1."
+    }
+  ]
+}

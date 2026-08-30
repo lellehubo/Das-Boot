@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "unit": "minutes",
+  "note": "Das Autobus. Nastan allt ar uppskattat - bara Zinkensdamm->Globala ar uppmatt. Satt calibrated:true nar en tid mats.",
+  "defaults": {
+    "walk_kmh": 4.8,
+    "bike_kmh": 16.0
+  },
+  "transit_note": "Bussarnas restider ar uppskattade och behover matas mot verkligheten.",
+  "legs": [
+    {
+      "from": "home",
+      "to": "danviken",
+      "walk": 3,
+      "calibrated": false,
+      "note": "Narmast bostaden."
+    },
+    {
+      "from": "home",
+      "to": "henriksdalsviadukten",
+      "walk": 5,
+      "calibrated": false
+    },
+    {
+      "from": "home",
+      "to": "henriksdal",
+      "walk": 6,
+      "calibrated": false,
+      "note": "Navet, dar nastan alla Nackabussar stannar."
+    },
+    {
+      "from": "danviken",
+      "to": "slussen",
+      "transit": 9,
+      "calibrated": false,
+      "note": "Buss 55."
+    },
+    {
+      "from": "henriksdal",
+      "to": "slussen",
+      "transit": 8,
+      "calibrated": false,
+      "note": "Alla Nackabussar. Kort tur over Danvikstull."
+    },
+    {
+      "from": "henriksdalsviadukten",
+      "to": "slussen",
+      "transit": 9,
+      "calibrated": false
+    },
+    {
+      "from": "henriksdal",
+      "to": "stockholm_city",
+      "transit": 20,
+      "calibrated": false,
+      "note": "Buss 53 via Slussen och Gamla stan."
+    },
+    {
+      "from": "henriksdalsviadukten",
+      "to": "stockholm_city",
+      "transit": 21,
+      "calibrated": false,
+      "note": "Buss 53."
+    },
+    {
+      "from": "danviken",
+      "to": "krukmakargatan",
+      "transit": 17,
+      "calibrated": false,
+      "note": "Buss 55 over Slussen och Hornsgatan."
+    },
+    {
+      "from": "henriksdal",
+      "to": "krukmakargatan",
+      "transit": 18,
+      "calibrated": false,
+      "note": "Buss 55."
+    },
+    {
+      "from": "henriksdal",
+      "to": "nacka_gymnasium",
+      "transit": 12,
+      "calibrated": false,
+      "note": "Buss 402."
+    },
+    {
+      "from": "henriksdalsviadukten",
+      "to": "nacka_gymnasium",
+      "transit": 11,
+      "calibrated": false,
+      "note": "Buss 402."
+    },
+    {
+      "from": "krukmakargatan",
+      "to": "globala_gymnasiet",
+      "walk": 7,
+      "calibrated": false,
+      "note": "Uppskattad."
+    },
+    {
+      "from": "zinkensdamm",
+      "to": "globala_gymnasiet",
+      "walk": 7,
+      "calibrated": true,
+      "note": "Uppmatt av anvandaren 2026-08-30."
+    },
+    {
+      "from": "nacka_gymnasium",
+      "to": "nackagymnasiet",
+      "walk": 2,
+      "calibrated": false
+    }
+  ]
+}

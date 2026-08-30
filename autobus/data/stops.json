@@ -1,0 +1,283 @@
+{
+  "schema_version": 1,
+  "note": "Das Autobus: bussar fran Henriksdalsomradet. Delar motor med Das Boot men har egen data.",
+  "nodes": {
+    "home": {
+      "label": "Hästholmsvägen 29",
+      "short_label": "hemma",
+      "type": "place",
+      "lat": 59.3143,
+      "lon": 18.1111,
+      "note": "Samma bostad som Das Boot utgår från. Gångtiderna i leg-times.json är det som faktiskt används."
+    },
+    "danviken": {
+      "label": "Danviken",
+      "type": "stop",
+      "site_id": 1441,
+      "gid": 9091001000001441,
+      "lat": 59.31431,
+      "lon": 18.10767,
+      "note": "Närmast bostaden. Bara buss 55 - men 55 gar hela vagen till Krukmakargatan och Tanto."
+    },
+    "henriksdalsviadukten": {
+      "label": "Henriksdalsviadukten",
+      "type": "stop",
+      "site_id": 1447,
+      "gid": 9091001000001447,
+      "lat": 59.31217,
+      "lon": 18.10688,
+      "note": "Buss 53, 71 och 402."
+    },
+    "henriksdal": {
+      "label": "Henriksdal",
+      "type": "stop",
+      "site_id": 9432,
+      "gid": 9091001000009432,
+      "lat": 59.31145,
+      "lon": 18.10741,
+      "note": "Navet: ett tjugotal Nacka- och Varmdobussar mot Slussen, plus 53, 55, 71 och 402."
+    },
+    "slussen": {
+      "label": "Slussen",
+      "type": "stop",
+      "site_id": 9192,
+      "gid": 9091001000009192,
+      "lat": 59.31955,
+      "lon": 18.07193
+    },
+    "stockholm_city": {
+      "label": "Stockholm City",
+      "type": "stop",
+      "site_id": 1080,
+      "gid": 9091001000001080,
+      "lat": 59.33125,
+      "lon": 18.05918
+    },
+    "krukmakargatan": {
+      "label": "Krukmakargatan",
+      "type": "stop",
+      "site_id": 1336,
+      "gid": 9091001000001336,
+      "lat": 59.31648,
+      "lon": 18.05553,
+      "note": "Buss 55 stannar har. Narmaste hallplats till Globala gymnasiet fran ost."
+    },
+    "zinkensdamm": {
+      "label": "Zinkensdamm",
+      "type": "stop",
+      "site_id": 9296,
+      "gid": 9091001000009296,
+      "lat": 59.31721,
+      "lon": 18.04968,
+      "note": "Buss 4, 66, 74 och tunnelbana. 7 min gang till Globala gymnasiet enligt anvandaren."
+    },
+    "nacka_gymnasium": {
+      "label": "Nacka gymnasium",
+      "type": "stop",
+      "site_id": 4063,
+      "gid": 9091001000004063,
+      "lat": 59.31017,
+      "lon": 18.16412
+    },
+    "globala_gymnasiet": {
+      "label": "Globala gymnasiet",
+      "type": "place",
+      "lat": 59.316851,
+      "lon": 18.047196,
+      "note": "Sonens skola. Koordinaten fran anvandaren."
+    },
+    "nackagymnasiet": {
+      "label": "Nacka gymnasium (skolan)",
+      "type": "place",
+      "lat": 59.31017,
+      "lon": 18.16412,
+      "note": "Dotterns skola."
+    }
+  },
+  "destination_aliases": {},
+  "line_sequences": {
+    "55": {
+      "note": "Buss 55, hallplatserna i ordning vasterut mot Tanto.",
+      "stops": [
+        "danviken",
+        "slussen",
+        "krukmakargatan"
+      ],
+      "forward_direction_code": 1,
+      "direction_note": "dc 1 ar mot Tanto, alltsa in mot stan. 2 ar mot Henriksdalsberget."
+    },
+    "53": {
+      "note": "Buss 53, hallplatserna i ordning in mot stan.",
+      "stops": [
+        "henriksdal",
+        "henriksdalsviadukten",
+        "slussen",
+        "stockholm_city"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar mot Karolinska institutet, via Slussen och Stockholm City. 1 ar mot Henriksdalsberget."
+    },
+    "401": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "402": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "409": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "414": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "422": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "433": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "434": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "436": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "438": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "440": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "442": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "443": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "444": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "471": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "474": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "428X": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "429X": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    },
+    "430X": {
+      "note": "Nackabuss. Bara de tva hallplatser appen anvander.",
+      "stops": [
+        "henriksdal",
+        "slussen"
+      ],
+      "forward_direction_code": 2,
+      "direction_note": "dc 2 ar in mot Slussen, 1 ar ut mot Nacka och Varmdo. Verifierat vid bada andarna 2026-08-30."
+    }
+  }
+}
