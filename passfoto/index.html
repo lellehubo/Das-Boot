@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#5A3418">
+<meta name="description" content="En fotoautomat som gör fyra passfoton av en selfie.">
+<title>Passfotoautomaten</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  /* The whole booth is CSS: teak from stacked gradients, steel from hard light
+     stops, and one lamp whose brightness every other surface reacts to. No
+     texture images, no framework, no build step. */
+
+  /* Registered so the lamp can fade instead of jump. Without support for
+     @property the value still changes, it just changes at once. */
+  @property --lamp { syntax:'<number>'; inherits:true; initial-value:0.06; }
+
+  :root{
+    --teak-dark:#5A3418;
+    --teak-mid:#8B5426;
+    --teak-light:#B7793C;
+    --steel:#B9BCBB;
+    --steel-shadow:#6E7271;
+    --guide-cream:#F0E9D8;
+    --lamp-glow:#FBF3DE;
+    --button-green:#2E9E4A;
+
+    --grotesk:'Helvetica Neue',Helvetica,'Segoe UI',Roboto,Arial,sans-serif;
+
+    --lamp:0.06;                       /* 0–1, set by the state machine */
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:#241608;
+    background-image:radial-gradient(120% 90% at 50% 0%, #3a2210 0%, #1b1108 70%);
+    color:var(--guide-cream);
+    font-family:var(--grotesk);
+    -webkit-font-smoothing:antialiased;
+    min-height:100dvh;
+    display:flex;
+    justify-content:center;
+    padding:clamp(10px,3vw,28px) clamp(8px,3vw,24px) calc(28px + env(safe-area-inset-bottom));
+  }
+  .stage{width:100%;max-width:420px;display:flex;flex-direction:column;gap:18px}
+
+  /* ───────────────────────────── the booth ───────────────────────────── */
+
+  .booth{
+    position:relative;
+    border-radius:14px;
+    padding:0 0 20px;
+    overflow:hidden;
+    isolation:isolate;
+    transition:--lamp .45s ease;
+    background-color:var(--teak-mid);
+    /* Three grain layers at different frequencies, then a vignette. */
+    background-image:
+      repeating-linear-gradient(91deg, rgba(90,52,24,.55) 0 1px, transparent 1px 5px),
+      repeating-linear-gradient(90deg, rgba(183,121,60,.20) 0 2px, transparent 2px 13px),
+      repeating-linear-gradient(89deg, rgba(90,52,24,.34) 0 3px, transparent 3px 27px),
+      radial-gradient(140% 60% at 50% 4%, rgba(183,121,60,.22), transparent 62%),
+      radial-gradient(120% 100% at 50% 52%, transparent 42%, rgba(90,52,24,.9) 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(183,121,60,.5),
+      inset 0 -2px 6px rgba(35,20,8,.7),
+      0 30px 60px -30px rgba(0,0,0,.9);
+  }
+
+  /* The light falling down over bezel and panel. The only thing that moves
+     when the lamp changes. */
+  .spill{
+    position:absolute;inset:0;pointer-events:none;z-index:3;
+    background:linear-gradient(180deg,
+      rgba(251,243,222,calc(var(--lamp)*.42)) 0%,
+      rgba(251,243,222,calc(var(--lamp)*.20)) 26%,
+      rgba(251,243,222,calc(var(--lamp)*.06)) 52%,
+      transparent 74%);
+  }
+
+  /* ───────────────────────────── lamp bar ───────────────────────────── */
+
+  .lamp-bar{
+    position:relative;
+    margin:12px 14px 0;
+    height:54px;
+    border-radius:7px;
+    padding:5px;
+    background:linear-gradient(180deg,#d3d6d5 0%,var(--steel) 30%,#8f9593 72%,var(--steel-shadow) 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.8), 0 4px 10px -4px rgba(0,0,0,.7);
+  }
+  .lamp-glass{
+    position:relative;
+    height:100%;
+    border-radius:4px;
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+    background:linear-gradient(180deg,
+      rgba(251,243,222,calc(.10 + var(--lamp)*.90)),
+      rgba(251,243,222,calc(.04 + var(--lamp)*.62)));
+    box-shadow:
+      inset 0 0 18px rgba(251,243,222,calc(var(--lamp)*.85)),
+      inset 0 1px 0 rgba(255,255,255,.35);
+  }
+  .lamp-glass::before{                 /* frosting */
+    content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(90deg, rgba(90,52,24,.09) 0 1px, transparent 1px 6px);
+  }
+  .count{
+    position:relative;
+    font-size:26px;font-weight:600;letter-spacing:.22em;text-indent:.22em;
+    color:rgba(90,52,24,.82);
+    opacity:0;transition:opacity .18s ease;
+  }
+  .booth[data-state="countdown"] .count{opacity:1}
+
+  /* ────────────────────────────── bezel ────────────────────────────── */
+
+  .bezel{
+    position:relative;
+    margin:16px 14px 0;
+    padding:12px;
+    border-radius:10px;
+    background:linear-gradient(158deg,#dcdfde 0%,var(--steel) 16%,#9aa09e 36%,#c9cdcc 52%,var(--steel) 68%,#8e9492 86%,#b2b6b5 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.85),
+      inset 0 -2px 4px rgba(110,114,113,.95),
+      0 12px 24px -12px rgba(0,0,0,.75);
+  }
+  .screw{
+    position:absolute;width:9px;height:9px;border-radius:50%;
+    background:radial-gradient(circle at 34% 30%, #e2e5e4, #9aa09e 60%, var(--steel-shadow) 100%);
+    box-shadow:inset 0 -1px 1px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.5);
+  }
+  .screw::after{
+    content:"";position:absolute;left:1.5px;right:1.5px;top:50%;height:1px;
+    background:var(--steel-shadow);transform:translateY(-50%) rotate(28deg);
+  }
+  .screw.tl{top:6px;left:6px}.screw.tr{top:6px;right:6px}
+  .screw.bl{bottom:6px;left:6px}.screw.br{bottom:6px;right:6px}
+
+  /* The aperture is 35×45, the same shape the capture is cropped to. */
+  .aperture{
+    position:relative;
+    aspect-ratio:35/45;
+    border-radius:4px;
+    overflow:hidden;
+    background:#1d1a16;
+    box-shadow:inset 0 0 0 1px rgba(110,114,113,.9), inset 0 4px 14px rgba(0,0,0,.8);
+  }
+  #video,#still{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;display:none;background:#1d1a16;
+  }
+  #video{transform:scaleX(-1)}          /* mirrored preview, unmirrored file */
+  .booth[data-state="live"] #video,
+  .booth[data-state="countdown"] #video{display:block}
+  .booth[data-state="developing"] #still,
+  .booth[data-state="result"] #still{display:block}
+
+  .guide{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .4s ease}
+  .booth[data-state="live"] .guide,
+  .booth[data-state="countdown"] .guide{opacity:.85}
+  .booth[data-state="countdown"] .guide{animation:pulse 1s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:.5}}
+
+  .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+  .flash.firing{animation:expose .34s ease-out}
+  @keyframes expose{0%{opacity:0}12%{opacity:.96}100%{opacity:0}}
+
+  /* Developing: one band travelling down the frozen frame. */
+  .sweep{position:absolute;inset:0;opacity:0;pointer-events:none;overflow:hidden}
+  .booth[data-state="developing"] .sweep{opacity:1}
+  .sweep::after{
+    content:"";position:absolute;left:0;right:0;height:22%;
+    background:linear-gradient(180deg,transparent,rgba(251,243,222,.20),transparent);
+    animation:travel 2.4s linear infinite;
+  }
+  @keyframes travel{0%{top:-24%}100%{top:100%}}
+
+  /* ────────────────────────── pictogram plate ────────────────────────── */
+
+  .plate{
+    display:flex;align-items:center;gap:14px;
+    margin:14px 14px 0;padding:9px 12px;border-radius:6px;
+    background:linear-gradient(172deg,#cbcfce 0%,var(--steel) 42%,#a4a9a8 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.8), inset 0 -1px 2px rgba(110,114,113,.8), 0 5px 12px -7px rgba(0,0,0,.7);
+  }
+  .picto{display:flex;align-items:center;gap:7px;flex:1}
+  .picto svg{flex:none}
+  /* Engraved caps: the only type style inside the booth. */
+  .picto span,.sound-btn,.legend{
+    font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.26em;
+  }
+  .picto span{color:var(--steel-shadow);text-shadow:0 1px 0 rgba(255,255,255,.75)}
+  .sound-btn{
+    flex:none;border:0;cursor:pointer;padding:5px 8px;border-radius:4px;
+    font-family:inherit;letter-spacing:.2em;
+    color:var(--steel-shadow);text-shadow:0 1px 0 rgba(255,255,255,.7);
+    background:linear-gradient(180deg,#c6cac9,#a2a7a6);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.7), 0 1px 2px rgba(0,0,0,.3);
+  }
+  .sound-btn[aria-pressed="false"]{opacity:.55;box-shadow:inset 0 1px 3px rgba(0,0,0,.35)}
+
+  /* ───────────────────────────── the shutter ───────────────────────────── */
+
+  .controls{display:flex;flex-direction:column;align-items:center;gap:9px;margin-top:20px}
+  .ring{
+    padding:9px;border-radius:50%;
+    background:linear-gradient(160deg,#dcdfde,var(--steel) 40%,#8e9492 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 3px rgba(110,114,113,.9), 0 8px 18px -8px rgba(0,0,0,.8);
+  }
+  .shutter{
+    display:block;width:70px;height:70px;border-radius:50%;border:0;padding:0;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;
+    background:radial-gradient(circle at 38% 28%, #57c973 0%, var(--button-green) 52%, #1a6a31 100%);
+    box-shadow:inset 0 -4px 8px rgba(0,0,0,.35), inset 0 3px 6px rgba(255,255,255,.35), 0 4px 10px -3px rgba(0,0,0,.6);
+    transition:transform .09s ease, filter .3s ease;
+  }
+  .shutter:active{transform:translateY(2px) scale(.98)}
+  .shutter:focus-visible{outline:3px solid var(--lamp-glow);outline-offset:4px}
+  .booth[data-state="idle"] .shutter{filter:saturate(.45) brightness(.72)}
+  .shutter[disabled]{cursor:default;filter:saturate(.55) brightness(.74)}
+  .legend{
+    text-indent:.3em;
+    color:rgba(240,233,216,.62);
+    text-shadow:0 1px 0 rgba(35,20,8,.7);
+  }
+
+  /* ────────────────────── everything outside the panel ────────────────────── */
+  /* Lowercase and tighter, so the booth keeps its own voice. */
+
+  .status{margin:0;font-size:13px;line-height:1.45;color:rgba(240,233,216,.72);text-align:center}
+  .error{
+    margin:0;padding:11px 13px;border-radius:8px;font-size:13px;line-height:1.5;
+    color:#F0E9D8;background:rgba(120,40,26,.35);border:1px solid rgba(240,233,216,.22);
+  }
+  .error[hidden]{display:none}
+
+  .strip{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:8px;
+    padding:8px;border-radius:3px;
+    background:var(--guide-cream);
+    box-shadow:0 14px 30px -16px rgba(0,0,0,.9);
+  }
+  .strip[hidden]{display:none}
+  .strip[data-count="1"]{grid-template-columns:1fr;max-width:58%;margin:0 auto}
+  .frame{position:relative;margin:0;overflow:hidden;background:#2a1c0e;aspect-ratio:35/45}
+  .frame img{display:block;width:100%;height:100%;object-fit:cover}
+  .frame button.open{
+    position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;
+  }
+  .frame button.open:focus-visible{outline:3px solid var(--lamp-glow);outline-offset:-3px}
+  .frame .save{
+    position:absolute;right:5px;bottom:5px;
+    display:grid;place-items:center;width:30px;height:30px;border-radius:50%;
+    background:rgba(20,12,4,.66);color:var(--guide-cream);text-decoration:none;
+    font-size:14px;line-height:1;backdrop-filter:blur(3px);
+  }
+  .note{margin:0;font-size:12px;line-height:1.5;color:rgba(240,233,216,.55);text-align:center}
+
+  /* ──────────────────── original beside the result ──────────────────── */
+
+  .review{
+    position:fixed;inset:0;z-index:20;display:none;
+    background:rgba(20,12,4,.97);
+    backdrop-filter:blur(6px);
+    padding:18px 16px calc(18px + env(safe-area-inset-bottom));
+    overflow:auto;
+  }
+  .review[data-open="1"]{display:block}
+  .review .inner{max-width:420px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .pair figure{margin:0}
+  .pair img{display:block;width:100%;aspect-ratio:35/45;object-fit:cover;border-radius:4px;background:#2a1c0e}
+  .pair figcaption{margin-top:6px;font-size:11px;letter-spacing:.06em;color:rgba(240,233,216,.6)}
+  .review .buttons{display:flex;gap:10px}
+  .review a.primary,.review button.secondary{
+    flex:1;text-align:center;padding:12px;border-radius:8px;font:inherit;font-size:14px;
+    cursor:pointer;text-decoration:none;border:1px solid rgba(240,233,216,.25);
+  }
+  .review a.primary{background:var(--button-green);color:#fff;border-color:transparent}
+  .review button.secondary{background:transparent;color:var(--guide-cream)}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<main class="stage">
+
+  <div class="booth" id="booth" data-state="idle">
+    <div class="lamp-bar">
+      <div class="lamp-glass"><span class="count" id="count" aria-hidden="true"></span></div>
+    </div>
+
+    <div class="bezel">
+      <i class="screw tl"></i><i class="screw tr"></i><i class="screw bl"></i><i class="screw br"></i>
+      <div class="aperture">
+        <video id="video" playsinline autoplay muted></video>
+        <img id="still" alt="Bilden som skickades till framkallning">
+        <svg class="guide" viewBox="0 0 350 450" fill="none" aria-hidden="true"
+             stroke="#F0E9D8" stroke-width="1.6" vector-effect="non-scaling-stroke">
+          <!-- Crown at 45, chin at 369: 72 % of the height, which is the crop
+               the prompt asks the model for. -->
+          <ellipse cx="175" cy="207" rx="103" ry="162"/>
+          <path d="M30 450c14-42 60-70 145-70s131 28 145 70"/>
+          <path d="M175 26v398M74 191h202" stroke-opacity=".4"/>
+          <path d="M175 172v38M156 191h38"/>
+          <path d="M143 45h64M143 369h64" stroke-opacity=".7"/>
+        </svg>
+        <div class="sweep" aria-hidden="true"></div>
+        <div class="flash" id="flash" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="plate">
+      <span class="picto">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E7271" stroke-width="1.4">
+          <circle cx="12" cy="7" r="4"/><path d="M4 22c1.6-4.6 4.4-7 8-7s6.4 2.4 8 7"/><path d="M12 2v20" stroke-dasharray="2 3"/>
+        </svg>
+        <span>Posture</span>
+      </span>
+      <span class="picto">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E7271" stroke-width="1.4">
+          <circle cx="12" cy="13" r="5"/><path d="M12 2v3M4 5l2 2M20 5l-2 2M2 13h3M19 13h3"/>
+        </svg>
+        <span>Lighting</span>
+      </span>
+      <button class="sound-btn" id="soundBtn" type="button" aria-pressed="true">Ljud</button>
+    </div>
+
+    <div class="controls">
+      <div class="ring">
+        <button class="shutter" id="shutter" type="button" aria-label="Starta kameran"></button>
+      </div>
+      <span class="legend" id="legend">Start</span>
+    </div>
+
+    <div class="spill" aria-hidden="true"></div>
+  </div>
+
+  <p class="status" id="status" role="status" aria-live="polite">Tryck för att starta kameran.</p>
+  <p class="error" id="error" role="alert" hidden></p>
+
+  <div class="strip" id="strip" hidden></div>
+
+  <p class="note" id="note" hidden></p>
+
+  <p class="note" id="disclaimer">
+    Bilderna skickas till Googles bildmodell för framkallning och sparas
+    ingenstans, men ai-behandlade foton godtas inte av alla myndigheter
+    – kolla kraven för ditt dokument först.
+  </p>
+</main>
+
+<div class="review" id="review" role="dialog" aria-modal="true" aria-label="Jämför original och resultat">
+  <div class="inner">
+    <div class="pair">
+      <figure><img id="reviewBefore" alt="Originalbilden"><figcaption>Original</figcaption></figure>
+      <figure><img id="reviewAfter" alt="Det framkallade passfotot"><figcaption>Framkallat</figcaption></figure>
+    </div>
+    <p class="note">Titta på ögonavstånd, näsbredd och hakans form. Flyttar de sig är bilden inte du.</p>
+    <div class="buttons">
+      <a class="primary" id="reviewSave" download="passfoto.png" href="#">Ladda ner</a>
+      <button class="secondary" id="reviewClose" type="button">Stäng</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+// The booth has five states and shows one at a time: idle, live, countdown,
+// developing, result. Everything below is either moving between them or doing
+// the one thing that state is for.
+//
+// The proxy holds the API key and the prompt. Leave BUILTIN_PROXY empty and the
+// app still works as a camera: it hands back the raw shot instead of a strip,
+// which is what step four of the build order needs.
+
+const BUILTIN_PROXY = "";     // set at deploy, or pass ?proxy=https://… once
+
+const SHOTS = 4;              // frames in the strip
+const RATIO = 35 / 45;        // passport shape, the same one the guide draws
+const MAX_HEIGHT = 1800;      // ceiling on what is sent, keeps the call small
+const TIMEOUT = 120000;       // four images take their time
+
+const el = (id) => document.getElementById(id);
+const booth = el("booth"), video = el("video"), still = el("still");
+const shutter = el("shutter"), legend = el("legend"), statusLine = el("status");
+const errorBox = el("error"), strip = el("strip"), note = el("note"), count = el("count");
+const review = el("review");
+
+let state = "idle";
+let stream = null;
+let original = null;          // data URL of what was sent
+let soundOn = true;
+
+/* ───────────────────────────── the states ───────────────────────────── */
+
+const LEGENDS = {
+  idle: "Start", live: "Ta bild", countdown: "Ta bild",
+  developing: "Framkallar", result: "Ta om"
+};
+const LABELS = {
+  idle: "Starta kameran", live: "Ta bild", countdown: "Nedräkning pågår",
+  developing: "Framkallar", result: "Ta om bilden"
+};
+const LAMP = {
+  idle: 0.06, live: 0.34, countdown: 0.72, developing: 0.22, result: 0.3
+};
+
+function setState(next) {
+  state = next;
+  booth.dataset.state = next;
+  legend.textContent = LEGENDS[next];
+  lamp(LAMP[next]);
+  shutter.disabled = (next === "countdown" || next === "developing");
+  shutter.setAttribute("aria-label", LABELS[next]);
+}
+
+function lamp(value) { booth.style.setProperty("--lamp", String(value)); }
+
+function say(text) { statusLine.textContent = text; }
+
+function showError(text) { errorBox.textContent = text; errorBox.hidden = false; }
+function clearError() { errorBox.hidden = true; errorBox.textContent = ""; }
+
+function showNote(text) { note.textContent = text || ""; note.hidden = !text; }
+
+/* ─────────────────────────────── sound ─────────────────────────────── */
+// A small mechanical click, built in WebAudio. Nothing to load, and it can be
+// switched off from the plate.
+
+let audio = null;
+function audioContext() {
+  if (!audio) {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return null;
+    audio = new Ctx();
+  }
+  if (audio.state === "suspended") audio.resume();
+  return audio;
+}
+
+function blip({ pitch = 1800, length = 0.045, level = 0.16 } = {}) {
+  if (!soundOn) return;
+  const ctx = audioContext();
+  if (!ctx) return;
+  const frames = Math.floor(ctx.sampleRate * length);
+  const buffer = ctx.createBuffer(1, frames, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < frames; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / frames, 6);
+  const source = ctx.createBufferSource(); source.buffer = buffer;
+  const band = ctx.createBiquadFilter();
+  band.type = "bandpass"; band.frequency.value = pitch; band.Q.value = 5;
+  const gain = ctx.createGain(); gain.gain.value = level;
+  source.connect(band); band.connect(gain); gain.connect(ctx.destination);
+  source.start();
+}
+
+const tick = () => blip({ pitch: 2100, length: 0.035, level: 0.14 });
+const clack = () => {
+  blip({ pitch: 900, length: 0.07, level: 0.26 });
+  setTimeout(() => blip({ pitch: 420, length: 0.09, level: 0.2 }), 55);
+};
+
+el("soundBtn").addEventListener("click", (e) => {
+  soundOn = !soundOn;
+  e.currentTarget.setAttribute("aria-pressed", String(soundOn));
+  if (soundOn) tick();
+});
+
+/* ─────────────────────────────── camera ─────────────────────────────── */
+
+async function startCamera() {
+  clearError();
+  if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    showError("Kameran kräver en säker anslutning. Öppna sidan över https, inte via file:// eller http.");
+    return;
+  }
+  say("Startar kameran …");
+  const wanted = { video: { facingMode: "user", width: { ideal: 1440 }, height: { ideal: 1920 } }, audio: false };
+  try {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia(wanted);
+    } catch (e) {
+      // Ask for the resolution, settle for whatever the device has.
+      if (e && (e.name === "OverconstrainedError" || e.name === "ConstraintNotSatisfiedError")) {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+      } else throw e;
+    }
+    video.srcObject = stream;
+    await video.play();
+    setState("live");
+    say("Lägg ansiktet i ovalen och axlarna längs linjen. Tryck när du är klar.");
+  } catch (e) {
+    setState("idle");
+    say("Kameran är inte igång.");
+    showError(cameraError(e));
+  }
+}
+
+// Every message says what happened and what to do about it.
+function cameraError(e) {
+  const name = (e && e.name) || "";
+  if (name === "NotAllowedError" || name === "PermissionDeniedError")
+    return "Du nekade kameran. Tillåt kamera för den här sidan i webbläsarens inställningar och ladda om sidan.";
+  if (name === "NotFoundError" || name === "DevicesNotFoundError")
+    return "Ingen kamera hittades. Öppna sidan på en enhet med framkamera.";
+  if (name === "NotReadableError" || name === "TrackStartError")
+    return "Kameran används redan av en annan app. Stäng den appen och tryck igen.";
+  if (name === "SecurityError")
+    return "Webbläsaren blockerar kameran här. Öppna sidan direkt över https, inte i en inbäddad vy.";
+  return "Kameran gick inte att starta: " + (name || "okänt fel") + ". Ladda om sidan och försök igen.";
+}
+
+function cameraLive() {
+  return !!stream && stream.getVideoTracks().some((t) => t.readyState === "live");
+}
+
+/* ────────────────────────── countdown and flash ────────────────────────── */
+
+function countdown() {
+  setState("countdown");
+  say("Håll huvudet stilla.");
+  clearError();
+  return new Promise((done) => {
+    let n = 3;
+    count.textContent = String(n);
+    tick();
+    lamp(0.6);
+    const timer = setInterval(() => {
+      n -= 1;
+      if (n === 0) {
+        clearInterval(timer);
+        count.textContent = "";
+        done();
+        return;
+      }
+      count.textContent = String(n);
+      tick();
+      lamp(0.6 + (3 - n) * 0.18);
+    }, 1000);
+  });
+}
+
+function expose() {
+  const white = el("flash");
+  white.classList.remove("firing");
+  void white.offsetWidth;                 // restart the animation
+  white.classList.add("firing");
+  lamp(1);
+  clack();
+  setTimeout(() => lamp(LAMP.developing), 320);
+}
+
+/* ─────────────────────────── capture and crop ─────────────────────────── */
+
+// The same geometry as object-fit: cover, so the guide and the crop frame
+// exactly the same thing — what you see is what is sent.
+function cropRect(width, height, ratio) {
+  let w, h;
+  if (width / height > ratio) { h = height; w = Math.round(height * ratio); }
+  else { w = width; h = Math.round(width / ratio); }
+  return { x: Math.round((width - w) / 2), y: Math.round((height - h) / 2), w, h };
+}
+
+function capture() {
+  const width = video.videoWidth, height = video.videoHeight;
+  if (!width || !height) throw new Error("empty video frame");
+  const r = cropRect(width, height, RATIO);
+  const scale = r.h > MAX_HEIGHT ? MAX_HEIGHT / r.h : 1;
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(r.w * scale);
+  canvas.height = Math.round(r.h * scale);
+  // The preview is mirrored, the saved frame is not.
+  canvas.getContext("2d").drawImage(video, r.x, r.y, r.w, r.h, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL("image/jpeg", 0.92);
+}
+
+/* ──────────────────────────────── the run ──────────────────────────────── */
+
+async function shoot() {
+  await countdown();
+
+  let shot;
+  try {
+    expose();
+    shot = capture();
+  } catch (e) {
+    setState("live");
+    say("Försök igen.");
+    showError("Bilden gick inte att frysa. Kameran hann inte leverera en ruta – tryck en gång till.");
+    return;
+  }
+
+  original = shot;
+  still.src = shot;
+  setState("developing");
+  say("Framkallar …");
+  strip.hidden = true;
+  strip.innerHTML = "";
+  showNote("");
+
+  const url = proxyUrl();
+  if (!url) {
+    setState("result");
+    say("Bilden är tagen.");
+    drawStrip([]);
+    showError("Framkallningen är inte inkopplad, så du får råbilden. Sätt proxyns adress i BUILTIN_PROXY, eller öppna sidan en gång med ?proxy=https://din-proxy/api/passfoto.");
+    return;
+  }
+
+  try {
+    const images = await develop(url, shot);
+    setState("result");
+    say("Klart. Tappa på en bild för att jämföra med originalet.");
+    drawStrip(images);
+    if (images.length < SHOTS) {
+      showNote(images.length + " av " + SHOTS + " kom tillbaka. Tryck Ta om för fler.");
+    }
+  } catch (e) {
+    setState("result");
+    say("Bilden är tagen, men inte framkallad.");
+    drawStrip([]);
+    showError(e && e.shown ? e.shown : "Något gick fel i framkallningen. Tryck Ta om och försök igen.");
+  }
+}
+
+function proxyUrl() {
+  let saved = "";
+  try {
+    const given = new URLSearchParams(location.search).get("proxy");
+    if (given) {
+      const u = new URL(given, location.href);
+      if (u.protocol === "https:") localStorage.setItem("passfoto-proxy", u.href);
+    }
+    saved = localStorage.getItem("passfoto-proxy") || "";
+  } catch (e) { /* private mode, never mind */ }
+  return saved || BUILTIN_PROXY;
+}
+
+// Errors that carry the sentence the panel should show.
+function failure(text) { const e = new Error(text); e.shown = text; return e; }
+
+async function develop(url, dataUrl) {
+  const base64 = dataUrl.slice(dataUrl.indexOf(",") + 1);
+  const abort = new AbortController();
+  const timer = setTimeout(() => abort.abort(), TIMEOUT);
+  let res;
+  try {
+    res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: base64 }),
+      signal: abort.signal
+    });
+  } catch (e) {
+    if (e && e.name === "AbortError")
+      throw failure("Framkallningen tog för lång tid. Tryck Ta om, så görs ett nytt försök.");
+    throw failure("Automaten når inte framkallningen. Kolla nätet, eller att proxyn är igång och släpper in den här adressen.");
+  } finally {
+    clearTimeout(timer);
+  }
+
+  if (!res.ok) throw failure(messageFor(res.status, await errorCode(res)));
+
+  let data;
+  try { data = await res.json(); }
+  catch (e) { throw failure("Framkallningen svarade något oläsbart. Tryck Ta om."); }
+
+  const images = Array.isArray(data && data.images) ? data.images.filter(Boolean) : [];
+  if (!images.length)
+    throw failure("Framkallningen gav inga bilder tillbaka. Tryck Ta om, och prova med jämnare ljus om det upprepas.");
+  return images.slice(0, SHOTS);
+}
+
+async function errorCode(res) {
+  try { const d = await res.json(); return (d && d.error && d.error.code) || ""; }
+  catch (e) { return ""; }
+}
+
+function messageFor(httpStatus, code) {
+  if (httpStatus === 429) return "Du har framkallat många bilder den senaste timmen. Vänta en stund och tryck Ta om.";
+  if (httpStatus === 413) return "Bilden blev för stor för proxyn. Ladda om sidan, den tar en mindre bild nästa gång.";
+  if (code === "refused") return "Modellen ville inte framkalla den här bilden. Prova med rakare huvud, jämnare ljus och en neutral bakgrund.";
+  if (code === "misconfigured") return "Proxyn saknar sin api-nyckel. Sätt GEMINI_API_KEY i proxyns miljövariabler.";
+  if (httpStatus === 403) return "Proxyn släpper inte in den här adressen. Lägg till sidans domän i proxyns CORS-lista.";
+  if (httpStatus >= 500) return "Framkallningen svarade inte just nu. Vänta en stund och tryck Ta om.";
+  return "Framkallningen nekade anropet (" + httpStatus + "). Tryck Ta om.";
+}
+
+/* ─────────────────────────────── the strip ─────────────────────────────── */
+
+function drawStrip(images) {
+  strip.innerHTML = "";
+  const items = images.length
+    ? images.map((b, i) => ({ url: "data:image/png;base64," + b, name: "passfoto-" + (i + 1) + ".png" }))
+    : [{ url: original, name: "passfoto-original.jpg" }];
+
+  items.forEach((item, i) => {
+    const frame = document.createElement("figure");
+    frame.className = "frame";
+
+    const img = document.createElement("img");
+    img.src = item.url;
+    img.alt = images.length ? "Passfoto " + (i + 1) : "Bilden du tog";
+
+    const open = document.createElement("button");
+    open.type = "button";
+    open.className = "open";
+    open.setAttribute("aria-label", "Jämför " + img.alt.toLowerCase() + " med originalet");
+    open.addEventListener("click", () => openReview(item.url, item.name));
+
+    const save = document.createElement("a");
+    save.className = "save";
+    save.href = item.url;
+    save.download = item.name;
+    save.textContent = "↓";
+    save.setAttribute("aria-label", "Ladda ner " + img.alt.toLowerCase());
+
+    frame.append(img, open, save);
+    strip.append(frame);
+  });
+
+  strip.dataset.count = String(items.length);
+  strip.hidden = false;
+  strip.scrollIntoView({ behavior: "smooth", block: "end" });
+}
+
+/* ───────────────────── original beside the result ───────────────────── */
+// Identity drift is the one failure the app cannot detect for you, so the
+// comparison is one tap away rather than buried.
+
+function openReview(url, name) {
+  el("reviewBefore").src = original || "";
+  el("reviewAfter").src = url;
+  const save = el("reviewSave");
+  save.href = url;
+  save.download = name;
+  review.dataset.open = "1";
+  el("reviewClose").focus();
+}
+
+function closeReview() { review.dataset.open = "0"; }
+
+el("reviewClose").addEventListener("click", closeReview);
+review.addEventListener("click", (e) => { if (e.target === review) closeReview(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeReview(); });
+
+/* ────────────────────────────── the button ────────────────────────────── */
+
+shutter.addEventListener("click", () => {
+  audioContext();                          // only a gesture may wake it
+  if (state === "idle") { startCamera(); return; }
+  if (state === "live") { shoot(); return; }
+  if (state === "result") {
+    strip.hidden = true;
+    strip.innerHTML = "";
+    showNote("");
+    clearError();
+    if (!cameraLive()) { setState("idle"); startCamera(); return; }
+    setState("live");
+    say("Lägg ansiktet i ovalen och axlarna längs linjen. Tryck när du är klar.");
+  }
+});
+
+// Let go of the camera when the page is put away.
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && stream && state === "live") {
+    stream.getTracks().forEach((t) => t.stop());
+    stream = null;
+    setState("idle");
+    say("Kameran pausades. Tryck för att starta den igen.");
+  }
+});
+
+setState("idle");
+
+// Safari on iOS will not download a data URL. Say so before they wonder.
+if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+  el("disclaimer").insertAdjacentHTML(
+    "beforebegin",
+    '<p class="note">På iphone: håll fingret på en bild och välj Spara bild.</p>'
+  );
+}
+</script>
+</body>
+</html>
