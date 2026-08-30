@@ -111,8 +111,17 @@ function validate(data, legIndex) {
         transfers++;
         if (weights.hard_constraints.blocked_modes.includes(leg.mode))
           problems.push(`${at}: trafikslaget ${leg.mode} är blockerat`);
-        else if (allowed[leg.mode] && !allowed[leg.mode].includes(leg.line))
-          problems.push(`${at}: linje ${leg.line} (${leg.mode}) saknas i allowed-listan`);
+        else if (allowed[leg.mode]) {
+          // A leg may name one line or several; every one of them has to be
+          // approved, or an unvetted route sneaks in behind a vetted one.
+          const lines = Array.isArray(leg.lines) && leg.lines.length
+            ? leg.lines
+            : leg.line == null ? [] : [leg.line];
+          if (!lines.length) problems.push(`${at}: benet saknar linje`);
+          for (const line of lines)
+            if (!allowed[leg.mode].includes(line))
+              problems.push(`${at}: linje ${line} (${leg.mode}) saknas i allowed-listan`);
+        }
 
         // Boat legs get per-departure arrivals from boat-legs.json. Everything
         // else needs a ride time here, or the engine silently drops the leg.

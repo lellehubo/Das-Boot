@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "note": "Das Autobus. Bara bussar - tunnelbana, tag, sparvagn och bat ar blockerade med flit.",
+  "hard_constraints": {
+    "blocked_modes": [
+      "METRO",
+      "TRAIN",
+      "TRAM",
+      "SHIP"
+    ],
+    "blocked_leg_rules": [],
+    "allowed_bus_lines": [
+      "53",
+      "55",
+      "401",
+      "402",
+      "409",
+      "414",
+      "422",
+      "433",
+      "434",
+      "436",
+      "438",
+      "440",
+      "442",
+      "443",
+      "444",
+      "471",
+      "474",
+      "428X",
+      "429X",
+      "430X"
+    ],
+    "allowed_bus_lines_note": "Linjer som faktiskt gar fran nagon av hemmahallplatserna till ett av malen. 53 nar Stockholm City, 55 nar Krukmakargatan, 402 nar Nacka gymnasium, resten gar till Slussen.",
+    "allowed_tram_lines": [],
+    "allowed_ship_lines": [],
+    "max_total_minutes": 75,
+    "min_transfer_buffer_minutes": 4,
+    "max_transfers": 1
+  },
+  "weather": {
+    "source": "SMHI SNOW1gv1",
+    "endpoint": "https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/{lon}/lat/{lat}/data.json",
+    "endpoint_note": "Den gamla pmp3g-version-2 stängdes 31 mars 2026 och ger 404. Strukturen är platt: timeSeries[].data{} i stället för parameters-array, och time i stället för validTime. Koordinater med högst sex decimaler, longitud före latitud.",
+    "fallback_endpoint": "https://api.open-meteo.com/v1/metno?latitude={lat}&longitude={lon}&hourly=temperature_2m,precipitation,precipitation_probability,wind_speed_10m,wind_gusts_10m&wind_speed_unit=ms&timezone=UTC",
+    "fallback_note": "Slås på först sedan SMHI misslyckats två gånger. wind_speed_unit=ms är inte valfritt — Open-Meteo svarar annars i km/h och alla vindtrösklar blir tysta fel. Saknar ensemblespridning, så konfidensen blir unknown.",
+    "attribution": {
+      "smhi": "SMHI",
+      "open-meteo": "MET Norway via Open-Meteo",
+      "note": "CC BY 4.0 kräver källangivelse. Datalagret exponerar source och referenceTime på varje prognos så UI kan rendera den."
+    },
+    "cache_ttl_minutes": 30,
+    "stale_after_hours": 6,
+    "read_window": "derived",
+    "read_window_note": "Fönstret härleds ur planens egna exponerade ben, som redan har start och slut i minuter in på dygnet. Aldrig för klockan nu, och inga fasta morgontimmar — motorn vet exakt när man cyklar.",
+    "return_window_hours": {
+      "from": 16,
+      "to": 18
+    },
+    "return_window_note": "Det enda fasta fönstret som blir kvar. På morgonen är eftermiddagens avgång inte vald än, men cykeln står kvar på jobbet, så hemresans väder måste vägas in ändå. Se inheritance.",
+    "exposed_leg_types": [
+      "bike",
+      "walk"
+    ],
+    "exposed_leg_note": "Båtben räknas inte som exponerade. Man kan sitta inne.",
+    "min_exposed_minutes_to_apply": 8,
+    "max_trusted_step_hours": 3,
+    "max_trusted_step_note": "SMHI:s steg vidgas till sex och tolv timmar bortom ungefär två dygn. En nederbördssannolikhet över ett halvdygn säger ingenting om en promenad på en kvart, så bortom den här bredden får sannolikheten på sin höjd ge caution. Mängd, byvind och halka är fortfarande giltiga — de mäter något annat än chansen att just du blir blöt. I praktiken planerar appen bara innevarande dygn, så det här är ett skyddsnät, inte ett vardagsfall.",
+    "inheritance": {
+      "applies_to_leg_types": [
+        "bike"
+      ],
+      "note": "Morgonens cykelbedömning är den strängaste av morgonens och eftermiddagens, eftersom cykeln står kvar på jobbet hela dagen. Promenaden ärver inte — man lämnar inga skor på jobbet."
+    },
+    "thresholds": {
+      "precip_probability_avoid": 40,
+      "precip_probability_caution": 20,
+      "precip_mm_per_h_avoid": 0.5,
+      "precip_mm_per_h_caution": 0.2,
+      "gust_avoid": 12,
+      "gust_caution": 9,
+      "thunder_probability_caution": 20,
+      "ice_temp_max": 2,
+      "note": "Nederbörden jämförs alltid som mm/h, efter att varje prognossteg dividerats med sitt eget intervall. SMHI:s steg är en timme långa de första dygnen och vidgas sedan till sex och tolv."
+    },
+    "spread": {
+      "medium_ratio": 0.5,
+      "high_ratio": 1.5,
+      "escalates_clear_to_caution": true,
+      "note": "Kvoten mäter skurighet, inte modellosäkerhet: låg median men hög max är utspridda skurar. Därför skärper hög spridning bedömningen i stället för att mjuka upp den. Den lyfter clear till caution, men aldrig caution till avoid — att avråda ska kräva att det faktiskt är sannolikt. Källa utan spridning ger unknown, som inte skärper något: frånvaro av information är inte bevis för skurar."
+    },
+    "penalty_note": "Behålls som mått på hur illa det är, inte som rangordning. Vädret sorterar inte om listan langre - ordningen ar anvandarens priority i scenarios.json.",
+    "day_windows": {
+      "morning": {
+        "from": 6,
+        "to": 12,
+        "label": "Förmiddag"
+      },
+      "afternoon": {
+        "from": 12,
+        "to": 18,
+        "label": "Eftermiddag"
+      }
+    },
+    "day_windows_note": "Fasta fönster för översikten högst upp. Ersatte de härledda fönstren 2026-08-21: han vill se dagens väder i stort, inte en prognos skräddarsydd per resväg. Benens egna fönster används fortfarande för ikonen vid varje väg.",
+    "penalty": {
+      "avoid": 2,
+      "caution": 1,
+      "clear": 0
+    }
+  }
+}

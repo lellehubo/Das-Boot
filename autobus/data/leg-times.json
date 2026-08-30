@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "unit": "minutes",
+  "note": "Das Autobus. Bussarnas restider ar uppmatta ur SL:s journey-id 2026-08-30 genom att para samma tur vid bada hallplatserna. Gangtiderna ar fortfarande uppskattade utom Zinkensdamm->Globala.",
+  "defaults": {
+    "walk_kmh": 4.8,
+    "bike_kmh": 16.0
+  },
+  "transit_note": "Bussarnas restider ar uppskattade och behover matas mot verkligheten.",
+  "legs": [
+    {
+      "from": "home",
+      "to": "danviken",
+      "walk": 3,
+      "calibrated": false,
+      "note": "Narmast bostaden."
+    },
+    {
+      "from": "home",
+      "to": "henriksdalsviadukten",
+      "walk": 5,
+      "calibrated": false
+    },
+    {
+      "from": "home",
+      "to": "henriksdal",
+      "walk": 6,
+      "calibrated": false,
+      "note": "Navet, dar nastan alla Nackabussar stannar."
+    },
+    {
+      "from": "danviken",
+      "to": "slussen",
+      "transit": 13,
+      "calibrated": true,
+      "note": "Buss 55. Uppmatt 13 min ur SL:s journey-id 2026-08-30 (uppskattningen var 9)."
+    },
+    {
+      "from": "henriksdal",
+      "to": "slussen",
+      "transit": 11,
+      "calibrated": true,
+      "note": "Buss 53, och Nackabussarna gar samma stracka. Uppmatt 11 min ur SL:s journey-id 2026-08-30 (uppskattningen var 8)."
+    },
+    {
+      "from": "henriksdalsviadukten",
+      "to": "slussen",
+      "transit": 11,
+      "calibrated": true,
+      "note": "Buss 53. Uppmatt 11 min ur SL:s journey-id 2026-08-30 (uppskattningen var 9)."
+    },
+    {
+      "from": "henriksdal",
+      "to": "stockholm_city",
+      "transit": 21,
+      "calibrated": true,
+      "note": "Buss 53. Uppmatt 21 min ur SL:s journey-id 2026-08-30 (uppskattningen var 20)."
+    },
+    {
+      "from": "henriksdalsviadukten",
+      "to": "stockholm_city",
+      "transit": 21,
+      "calibrated": true,
+      "note": "Buss 53. Uppmatt 21 min ur SL:s journey-id 2026-08-30 (uppskattningen var 21)."
+    },
+    {
+      "from": "danviken",
+      "to": "krukmakargatan",
+      "transit": 17,
+      "calibrated": true,
+      "note": "Buss 55. Uppmatt 17 min ur SL:s journey-id 2026-08-30 (uppskattningen var 17)."
+    },
+    {
+      "from": "henriksdal",
+      "to": "krukmakargatan",
+      "transit": 14,
+      "calibrated": true,
+      "note": "Buss 55. Uppmatt 14 min ur SL:s journey-id 2026-08-30 (uppskattningen var 18)."
+    },
+    {
+      "from": "henriksdal",
+      "to": "nacka_gymnasium",
+      "transit": 10,
+      "calibrated": true,
+      "note": "Buss 402. Uppmatt 10 min ur SL:s journey-id 2026-08-30 (uppskattningen var 12)."
+    },
+    {
+      "from": "henriksdalsviadukten",
+      "to": "nacka_gymnasium",
+      "transit": 10,
+      "calibrated": true,
+      "note": "Buss 402. Uppmatt 10 min ur SL:s journey-id 2026-08-30 (uppskattningen var 11)."
+    },
+    {
+      "from": "krukmakargatan",
+      "to": "globala_gymnasiet",
+      "walk": 9,
+      "calibrated": false,
+      "note": "754 m fagelvag enligt SL:s koordinat. Uppskattad till 9 min - inte uppmatt."
+    },
+    {
+      "from": "zinkensdamm",
+      "to": "globala_gymnasiet",
+      "walk": 7,
+      "calibrated": true,
+      "note": "Uppmatt av anvandaren 2026-08-30."
+    },
+    {
+      "from": "nacka_gymnasium",
+      "to": "nackagymnasiet",
+      "walk": 2,
+      "calibrated": false,
+      "note": "Hallplatsen ligger vid skolan. Uppskattad."
+    }
+  ]
+}

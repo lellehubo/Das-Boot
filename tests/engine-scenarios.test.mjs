@@ -567,3 +567,62 @@ test("hemresan leder med en väg som faktiskt börjar kort", () => {
     `hemresan ska inte inledas med en lång promenad, fick ${första.minutes} min`
   );
 });
+
+test("ett ben kan namnge flera linjer, och planen bär den som faktiskt gick", () => {
+  // Das Autobus behöver det: från Henriksdal går ett tjugotal linjer till
+  // Slussen och resenären vill ha första bussen ut, inte tjugo scenarier.
+  const flera = {
+    id: "flera_linjer",
+    label: "Vilken buss som helst",
+    priority: 1,
+    destinations: [TEGEL.id],
+    legs: [
+      { type: "walk", from: "home", to: "saltsjoqvarn" },
+      { type: "transit", mode: "SHIP", lines: ["80", "82"], from: "saltsjoqvarn", to: "allmanna_grand" },
+      { type: "walk", from: "allmanna_grand", to: "$destination" },
+    ],
+  };
+  const plan = planScenario(flera, TEGEL, ctxAt("07:00"));
+  assert.ok(!plan.broken, `skulle planeras: ${plan.broken?.reason}`);
+  // Benet ska bära linjen som gick, inte scenariots önskelista.
+  assert.equal(plan.legs[1].line, "80");
+});
+
+test("ett ben utan matchande linje i listan bryts, det plockar inte vad som helst", () => {
+  const fel = {
+    id: "fel_linjer",
+    label: "Linjer som inte går här",
+    priority: 1,
+    destinations: [TEGEL.id],
+    legs: [
+      { type: "walk", from: "home", to: "saltsjoqvarn" },
+      { type: "transit", mode: "SHIP", lines: ["99"], from: "saltsjoqvarn", to: "allmanna_grand" },
+      { type: "walk", from: "allmanna_grand", to: "$destination" },
+    ],
+  };
+  assert.ok(planScenario(fel, TEGEL, ctxAt("07:00")).broken);
+});
+
+test("towards filtrerar på bussens skylt", () => {
+  const feedMed = feed({
+    1442: [
+      { line: "80", mode: "SHIP", scheduled: "07:16", destination: "Ropsten" },
+      { line: "80", mode: "SHIP", scheduled: "07:27", destination: "Nybroplan" },
+    ],
+  });
+  const bara = {
+    id: "med_towards",
+    label: "Bara mot Ropsten",
+    priority: 1,
+    destinations: [TEGEL.id],
+    legs: [
+      { type: "walk", from: "home", to: "saltsjoqvarn" },
+      { type: "transit", mode: "SHIP", line: "80", towards: ["Ropsten"], from: "saltsjoqvarn", to: "frihamnen_pier" },
+      { type: "walk", from: "frihamnen_pier", to: "$destination" },
+    ],
+  };
+  const ctx = { data, weights, boatLegs, dayType: "mtor", now: toMinutes("07:00"), departures: feedMed };
+  const plan = planScenario(bara, TEGEL, ctx);
+  assert.ok(!plan.broken, `skulle planeras: ${plan.broken?.reason}`);
+  assert.equal(toClock(plan.legs[1].start), "07:16", "bara turen mot Ropsten godtas");
+});
