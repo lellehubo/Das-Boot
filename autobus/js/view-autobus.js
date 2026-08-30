@@ -39,6 +39,7 @@ let forecast = null;
 // the per-departure delay, which rides along on each departure as expected minus
 // scheduled and is already shown on the leg.
 let alerts = [];
+let rankOpen = false;
 
 let chosenDestination = null;
 let chosenDirection = null;
@@ -199,12 +200,12 @@ function renderAlerts(plan) {
   host.innerHTML = list
     .slice(0, 3)
     .map((a) => {
-      const lines = a.lines.length ? `<span class="al-lines">${esc(a.lines.slice(0, 6).join(", "))}</span>` : "";
+      const lines = a.lines.length ? `<span class="dev-lines">${esc(a.lines.slice(0, 6).join(", "))}</span>` : "";
       return (
-        `<div class="alert${a.importance >= 7 ? " high" : ""}">` +
-        `<span class="al-ico">!</span><div class="al-body">` +
-        `<div class="al-head">${lines}${esc(a.header)}</div>` +
-        (a.details ? `<div class="al-det">${esc(a.details)}</div>` : "") +
+        `<div class="dev${a.importance >= 7 ? " high" : ""}">` +
+        `<span class="dev-ico">!</span><div>` +
+        `<div>${lines}${esc(a.header)}</div>` +
+        (a.details ? `<div class="dev-det">${esc(a.details)}</div>` : "") +
         `</div></div>`
       );
     })
@@ -222,7 +223,7 @@ function delayChip(plan) {
   const late = plan.legs.filter((l) => l.type === "transit" && l.delay > 0);
   if (!late.length) return "";
   const worst = Math.max(...late.map((l) => l.delay));
-  return `<span class="chip late">buss ${esc(late[0].line)} ${worst} min sen</span>`;
+  return `<span class="tag late">${esc(late[0].line)} ${worst} min sen</span>`;
 }
 
 /** The weather on a route: symbol and minutes outdoors, no verdict. */
@@ -236,9 +237,15 @@ function weatherChip(plan) {
   if (!said && minutes == null) return "";
   const level = verdict.level === "clear" ? "" : ` wx-${verdict.level}`;
   return (
-    `<span class="chip wx-route${level}" title="${esc(said ? said.text : "")}">` +
+    `<span class="tag wx-route${level}" title="${esc(said ? said.text : "")}">` +
     `${said ? wxPhrase.iconSvg(said.icon) : ""}${minutes != null ? `${Math.round(minutes)} min ute` : ""}</span>`
   );
+}
+
+/** The chips under the card, in Das Boot's own row. */
+function tags(plan) {
+  const out = [delayChip(plan), weatherChip(plan)].filter(Boolean);
+  return out.length ? `<div class="chip-row">${out.join("")}</div>` : "";
 }
 
 /** Each leg in order, so the card shows the whole trip and not just the bus. */
@@ -248,8 +255,8 @@ function summarise(plan) {
       const to = esc(data.node(l.to)?.label ?? l.to);
       if (l.type === "walk") return `Gå ${l.minutes} min till ${to}`;
       const late = l.delay > 0 ? ` <b>+${l.delay}</b>` : "";
-      const held = l.wait > 0 ? ` <span class="muted">(${l.wait} min väntan)</span>` : "";
-      const towards = l.destination ? ` <span class="muted">mot ${esc(l.destination)}</span>` : "";
+      const held = l.wait > 0 ? ` <span class="rank-sub">(${l.wait} min väntan)</span>` : "";
+      const towards = l.destination ? ` <span class="rank-sub">mot ${esc(l.destination)}</span>` : "";
       return `<b>Buss ${esc(l.line)} ${toClock(l.start)}</b>${late}${towards} → ${to} ${toClock(l.end)}${held}`;
     })
     .join("<br>");
@@ -267,9 +274,9 @@ function renderBest(se, plans, direction) {
   if (!best) {
     const reason = plans[0]?.broken?.reason || "Inga vägar kunde planeras";
     host.innerHTML =
-      `<div class="card"><div class="lbl">Ingen buss fungerar nu</div>` +
-      `<div class="why">${esc(reason)}</div>` +
-      `<div class="meta">Pröva en annan destination, eller igen om en stund.</div></div>`;
+      `<div class="leave"><div class="leave-lbl">Ingen buss fungerar nu</div>` +
+      `<div class="leave-why">${esc(reason)}</div>` +
+      `<div class="leave-meta">Pröva en annan destination, eller igen om en stund.</div></div>`;
     return;
   }
   const diff = best.leaveAt - se.min;
@@ -278,55 +285,79 @@ function renderBest(se, plans, direction) {
   const where = direction === TO_HOME ? "från " + esc(currentDestination().label) : "hemifrån";
 
   host.innerHTML =
-    `<div class="card">` +
-    `<div class="lbl">${verb} ${where}</div>` +
-    `<div class="time">${toClock(best.leaveAt)}</div>` +
-    `<div class="cd${cls}">${diff <= 0.2 ? `${verb.toLowerCase()} nu` : fmtCountdown(diff)}</div>` +
-    `<div class="name">${esc(best.label)}</div>` +
-    `<div class="why">${summarise(best)}</div>` +
-    `<div class="meta">Framme <b>${toClock(best.arrive)}</b> · ${best.travelMinutes} min dörr till dörr` +
+    `<div class="leave">` +
+    `<div class="leave-lbl">${verb} ${where}</div>` +
+    `<div class="leave-time">${toClock(best.leaveAt)}</div>` +
+    `<div class="leave-cd${cls}">${diff <= 0.2 ? `${verb.toLowerCase()} nu` : fmtCountdown(diff)}</div>` +
+    `<div class="leave-name">${esc(best.label)}</div>` +
+    `<div class="leave-why">${summarise(best)}</div>` +
+    `<div class="leave-meta">Framme <b>${toClock(best.arrive)}</b> · ${best.travelMinutes} min dörr till dörr` +
     (best.waiting ? ` · ${Math.round(best.waiting)} min väntan vid byte` : "") +
     `</div>` +
-    `<div class="chips">${delayChip(best)}${weatherChip(best)}</div>` +
+    `${tags(best)}` +
     `</div>`;
 }
 
+/**
+ * The alternatives, in Das Boot's collapsible panel and with its row markup.
+ *
+ * Same shape as the boat app on purpose: two apps that behave differently for no
+ * reason are two apps to learn.
+ */
 function renderRest(se, plans) {
-  const host = el("aRest");
+  const body = el("aRankBody");
   const rest = plans.slice(1);
   if (!rest.length) {
-    host.innerHTML = "";
+    body.innerHTML = '<div class="rank"><div class="rank-name">Inga andra vägar.</div></div>';
     return;
   }
-  host.innerHTML =
-    `<div class="rest-head">Övriga vägar</div>` +
-    rest
-      .map((plan) => {
-        if (plan.broken) {
-          const pending = plan.broken.code === engine.PENDING;
-          return (
-            `<div class="row broken"><div class="row-l">` +
-            `<div class="row-name">${esc(plan.label)}</div>` +
-            `<div class="row-why${pending ? " pending" : ""}">${esc(plan.broken.reason)}</div>` +
-            `</div><div class="row-r">${pending ? "snart" : "–"}</div></div>`
-          );
-        }
-        const bus = plan.legs.find((l) => l.type === "transit");
+  body.innerHTML = rest
+    .map((plan) => {
+      if (plan.broken) {
+        const pending = plan.broken.code === engine.PENDING;
         return (
-          `<div class="row"><div class="row-l">` +
-          `<div class="row-name">${weatherChip(plan) ? "" : ""}${esc(plan.label)}</div>` +
-          `<div class="row-why">${bus ? `buss ${esc(bus.line)} ${toClock(bus.start)}` : ""}` +
-          ` · ${plan.travelMinutes} min</div>` +
-          `</div><div class="row-r"><div class="row-time">${toClock(plan.leaveAt)}</div>` +
-          `<div class="row-sub">framme ${toClock(plan.arrive)}</div></div></div>`
+          `<div class="rank broken"><div class="rank-l">` +
+          `<div class="rank-name">${esc(plan.label)}</div>` +
+          `<div class="rank-reason${pending ? " pending" : ""}">${esc(plan.broken.reason)}</div>` +
+          `</div><div class="rank-r"><div class="rank-arr">${pending ? "snart" : "–"}</div></div></div>`
         );
-      })
-      .join("");
+      }
+      const diff = plan.leaveAt - se.min;
+      const bus = plan.legs.find((l) => l.type === "transit");
+      return (
+        `<div class="rank"><div class="rank-l">` +
+        `<div class="rank-name">${rankWeather(plan)}${esc(plan.label)}</div>` +
+        `<div class="rank-sub">${bus ? `buss ${esc(bus.line)} ${toClock(bus.start)} · ` : ""}` +
+        `${plan.travelMinutes} min${rankExposure(plan)}</div>` +
+        `</div><div class="rank-r">` +
+        `<div class="rank-leave">${toClock(plan.leaveAt)}</div>` +
+        `<div class="rank-arr">framme ${toClock(plan.arrive)} · ${fmtCountdown(diff)}</div>` +
+        `</div></div>`
+      );
+    })
+    .join("");
+  if (rankOpen) body.style.maxHeight = body.scrollHeight + "px";
+}
+
+/** Same small symbol the card carries, so the list can be read down. */
+function rankWeather(plan) {
+  const summary = plan.weather?.window;
+  if (!summary) return "";
+  const said = wxPhrase.describeWindow(summary, { localMinutesOf: wxScore.localMinutesOf });
+  if (!said) return "";
+  return `<span class="rank-wx" title="${esc(said.text)}">${wxPhrase.iconSvg(said.icon)}</span>`;
+}
+
+function rankExposure(plan) {
+  const minutes = plan.weather?.exposure?.minutes;
+  return minutes == null ? "" : ` · ${Math.round(minutes)} min ute`;
 }
 
 function renderDestinations() {
   const host = el("aDest");
   const active = currentDestination();
+  const badge = el("aDestText");
+  if (badge) badge.textContent = active.label;
   host.innerHTML = data.scenarios.destinations
     .map(
       (d) =>
@@ -359,11 +390,11 @@ function render(se) {
     `<span class="sec">:${String(se.s).padStart(2, "0")}</span>`;
 
   if (loadError) {
-    el("aBest").innerHTML = `<div class="err">${esc(loadError)}</div>`;
+    el("aBest").innerHTML = `<div class="jobbet-err">${esc(loadError)}</div>`;
     return;
   }
   if (!data) {
-    el("aBest").innerHTML = '<div class="card"><div class="lbl">Laddar…</div></div>';
+    el("aBest").innerHTML = '<div class="leave"><div class="leave-lbl">Laddar…</div></div>';
     return;
   }
 
@@ -445,6 +476,14 @@ for (const button of document.querySelectorAll("#aDirSeg button")) {
     render(se);
   });
 }
+
+el("aRankHead").addEventListener("click", () => {
+  rankOpen = !rankOpen;
+  const body = el("aRankBody");
+  el("aRank").classList.toggle("open", rankOpen);
+  el("aRankHead").setAttribute("aria-expanded", rankOpen ? "true" : "false");
+  body.style.maxHeight = rankOpen ? body.scrollHeight + "px" : "0";
+});
 
 window.autobus = { render };
 boot();
