@@ -297,6 +297,12 @@
   .dest-grid button.active{color:var(--ink);border-color:var(--bdh);background:var(--chi);}
   .dest-grid button.active::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;
     background:var(--red);margin-right:7px;vertical-align:1px;}
+  .findme-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .findme-hint{font-size:11.5px;color:var(--ink3);line-height:1.3;}
+  .findme.loading{opacity:0.55;}
+  .findme.unconfirmed{border-color:rgba(230,51,42,0.4);}
+  .boatcard.none .btime{color:var(--ink3);font-size:15px;}
+  .bcd.soon{color:var(--redb);}
   #aAlerts{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
   .dev-lines{display:inline-block;font-size:10.5px;font-weight:800;color:var(--ink2);
     background:var(--track);border-radius:5px;padding:1px 5px;margin-right:6px;vertical-align:1px;}
@@ -323,7 +329,17 @@
   </div>
 </header>
 
+<div class="findme-row">
+  <button class="findme" id="aFindme" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+    <span id="aFindmeTxt">Hitta mig</span>
+  </button>
+  <span class="findme-hint" id="aNearest"></span>
+</div>
+
 <div class="dest-grid" id="aDest"></div>
+
+<div class="boats" id="aStops"></div>
 
 <div class="from-toggle">
   <div class="seg" id="aDirSeg">
@@ -346,7 +362,7 @@
 
 <script>
   // Bumpa vid ändring i js/ för att bryta modulcachen.
-  const APP_VERSION = "2026-08-30c";
+  const APP_VERSION = "2026-08-30d";
 
   // ---- Svensk tid, oavsett enhetens tidszon ----
   const TZ = "Europe/Stockholm";

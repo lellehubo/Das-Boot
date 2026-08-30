@@ -40,6 +40,11 @@ let forecast = null;
 // scheduled and is already shown on the leg.
 let alerts = [];
 let rankOpen = false;
+// Var man står. Avgör vilken hållplats som är närmast, vilket i sin tur avgör
+// vilken väg som är rimlig: står man redan vid Henriksdal är promenaden till
+// Danviken bortkastad.
+let lastPos = null;
+let nearestStopId = null;
 
 let chosenDestination = null;
 let chosenDirection = null;
@@ -127,6 +132,58 @@ async function refreshAlerts() {
   } catch (e) {
     console.warn(`avvikelser: ${e.message}`);
   }
+}
+
+const HOME_STOPS = ["danviken", "henriksdalsviadukten", "henriksdal"];
+
+function haversine(a, b, c, d) {
+  const R = 6371000;
+  const rad = (x) => (x * Math.PI) / 180;
+  const x =
+    Math.sin(rad(c - a) / 2) ** 2 +
+    Math.cos(rad(a)) * Math.cos(rad(c)) * Math.sin(rad(d - b) / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(x));
+}
+
+/** Closest of the three home stops to a position, with the distance. */
+function nearestHomeStop(lat, lon) {
+  let best = null;
+  for (const id of HOME_STOPS) {
+    const node = data.node(id);
+    if (!node?.lat) continue;
+    const m = haversine(lat, lon, node.lat, node.lon);
+    if (!best || m < best.metres) best = { id, metres: m, label: node.label };
+  }
+  return best;
+}
+
+/**
+ * Where we are, and which stop that makes closest.
+ *
+ * Silent by design: a refused or failed lookup leaves the app exactly as it was,
+ * because every route still works without knowing where you stand. The position
+ * only adds a hint, it never decides.
+ */
+function locate({ silent = true } = {}) {
+  if (!navigator.geolocation || !data) return;
+  const btn = el("aFindme");
+  if (btn) btn.classList.add("loading");
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      if (btn) btn.classList.remove("loading");
+      lastPos = { lat: pos.coords.latitude, lon: pos.coords.longitude, ts: Date.now() };
+      const near = nearestHomeStop(lastPos.lat, lastPos.lon);
+      // Beyond a couple of kilometres you are not at any of them, and saying so
+      // is better than pointing at the least wrong one.
+      nearestStopId = near && near.metres < 2000 ? near.id : null;
+      render(window.nowSE());
+    },
+    () => {
+      if (btn) btn.classList.remove("loading");
+      if (!silent && btn) btn.classList.add("unconfirmed");
+    },
+    { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
+  );
 }
 
 /** The lines a plan actually rides, for matching a disruption against it. */
@@ -242,6 +299,60 @@ function weatherChip(plan) {
   );
 }
 
+/**
+ * Next departure from each of the two stops worth watching.
+ *
+ * The one nearest you first when the position is known, else Danviken, which is
+ * closest to the door. Gives the view the same weight at the top that Das Boot's
+ * boat cards do, and answers the question you actually have standing in the
+ * hallway: is there one soon enough to bother.
+ *
+ * Only lines the app actually plans with. Twenty-five routes leave Henriksdal
+ * and most go to Värmdö — a card announcing the 25M to Saltsjöbaden answers a
+ * question nobody asked.
+ */
+function stopCards(se) {
+  const order = nearestStopId
+    ? [nearestStopId, ...HOME_STOPS.filter((s) => s !== nearestStopId)]
+    : HOME_STOPS;
+  return order.slice(0, 2).map((id) => {
+    const node = data.node(id);
+    const feed = node && feeds.get(node.site_id);
+    const ours = new Set(data.weights.hard_constraints.allowed_bus_lines || []);
+    let best = null;
+    if (feed) {
+      for (const d of feed.departures) {
+        if (d.mode !== "BUS" || d.cancelled || !d.scheduled) continue;
+        if (ours.size && !ours.has(String(d.line))) continue;
+        const departs = toMinutes(d.expected || d.scheduled);
+        const diff = departs - se.min;
+        if (diff < -1) continue;
+        if (!best || diff < best.diff)
+          best = { diff, departs, line: d.line, destination: d.destination };
+      }
+    }
+    return { id, label: node?.label ?? id, here: id === nearestStopId, best };
+  });
+}
+
+function renderStops(se) {
+  const host = el("aStops");
+  if (!host) return;
+  host.innerHTML = stopCards(se)
+    .map(({ label, here, best }) => {
+      const head = `<div class="bdir">${here ? "&#9679; " : ""}${esc(label)}</div>`;
+      if (!best)
+        return `<div class="boatcard none">${head}<div class="btime">–</div>` +
+               `<div class="bcd">ingen avgång</div></div>`;
+      const soon = best.diff < 6 ? " soon" : "";
+      return (
+        `<div class="boatcard">${head}<div class="btime">${toClock(best.departs)}</div>` +
+        `<div class="bcd${soon}">${fmtCountdown(best.diff)} · ${esc(best.line)} mot ${esc(best.destination)}</div></div>`
+      );
+    })
+    .join("");
+}
+
 /** The chips under the card, in Das Boot's own row. */
 function tags(plan) {
   const out = [delayChip(plan), weatherChip(plan)].filter(Boolean);
@@ -353,17 +464,31 @@ function rankExposure(plan) {
   return minutes == null ? "" : ` · ${Math.round(minutes)} min ute`;
 }
 
-function renderDestinations() {
+function renderNearest() {
+  const hint = el("aNearest");
+  if (!hint) return;
+  if (!lastPos) { hint.textContent = ""; return; }
+  if (!nearestStopId) { hint.textContent = "Du verkar inte vara hemma."; return; }
+  const near = nearestHomeStop(lastPos.lat, lastPos.lon);
+  const min = Math.max(1, Math.round(near.metres / 80));
+  hint.textContent = near.metres < 120
+    ? `Du står vid ${near.label}.`
+    : `Närmast ${near.label}, ~${min} min gång.`;
+}
+
+/**
+ * The destination buttons, built once.
+ *
+ * Rebuilding them on every clock tick tore them out from under a finger
+ * mid-press — Playwright reported the element detaching between resolve and
+ * click, and a thumb would hit the same race. Only the active class moves after
+ * the first build, which is what Das Boot's direction toggle does.
+ */
+function buildDestinations() {
   const host = el("aDest");
-  const active = currentDestination();
-  const badge = el("aDestText");
-  if (badge) badge.textContent = active.label;
+  if (!host || host.dataset.built === "1") return;
   host.innerHTML = data.scenarios.destinations
-    .map(
-      (d) =>
-        `<button type="button" data-dest="${esc(d.id)}"` +
-        `${d.id === active.id ? ' class="active"' : ""}>${esc(d.label)}</button>`
-    )
+    .map((d) => `<button type="button" data-dest="${esc(d.id)}">${esc(d.label)}</button>`)
     .join("");
   for (const button of host.querySelectorAll("button")) {
     button.addEventListener("click", () => {
@@ -374,6 +499,16 @@ function renderDestinations() {
       render(window.nowSE());
     });
   }
+  host.dataset.built = "1";
+}
+
+function renderDestinations() {
+  buildDestinations();
+  const active = currentDestination();
+  const badge = el("aDestText");
+  if (badge) badge.textContent = active.label;
+  for (const button of el("aDest").querySelectorAll("button"))
+    button.classList.toggle("active", button.dataset.dest === active.id);
 }
 
 function renderDirection(direction) {
@@ -431,6 +566,8 @@ function render(se) {
     console.warn(`väder: bedömningen misslyckades (${e.message})`);
   }
 
+  renderStops(se);
+  renderNearest();
   renderAlerts(ranked.find((p) => !p.broken));
   renderBest(se, ranked, direction);
   renderRest(se, ranked);
@@ -458,6 +595,7 @@ async function boot() {
   }
   await Promise.all([refresh(), refreshWeather(), refreshAlerts()]);
   render(window.nowSE());
+  locate();
   setInterval(() => {
     refresh();
     refreshWeather();
@@ -476,6 +614,14 @@ for (const button of document.querySelectorAll("#aDirSeg button")) {
     render(se);
   });
 }
+
+el("aFindme").addEventListener("click", () => locate({ silent: false }));
+
+document.addEventListener("visibilitychange", () => {
+  // Ny position när appen kommer i förgrunden, men inte oftare än var tolfte
+  // sekund — man hinner inte byta hållplats snabbare än så.
+  if (!document.hidden && (!lastPos || Date.now() - lastPos.ts > 12000)) locate();
+});
 
 el("aRankHead").addEventListener("click", () => {
   rankOpen = !rankOpen;
