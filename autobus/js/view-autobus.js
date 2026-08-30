@@ -353,6 +353,69 @@ function renderStops(se) {
     .join("");
 }
 
+/** First transit leg of a plan — the departure "the next one" refers to. */
+function firstRide(plan) {
+  return plan.legs.find((l) => l.type === "transit") || null;
+}
+
+/**
+ * The next couple of departures on the same route.
+ *
+ * Each one is found by replanning as if you had left a minute too late, which
+ * rules out the departure just offered and lets the engine pick the following
+ * one. Deriving them rather than reading further down the feed keeps every rule
+ * that makes a plan valid — transfer buffers, direction, which runs reach the
+ * target — and re-derives the leave time backwards from the later bus instead of
+ * assuming the walk is unchanged.
+ *
+ * Stops early at the end of the day, or if a replan lands on the same departure.
+ */
+function laterDepartures(plan, destination, ctx, count = 2) {
+  const scenario = data.scenarios.scenarios.find((s) => s.id === plan.id);
+  if (!scenario || plan.leaveAt == null) return [];
+  const out = [];
+  let current = plan;
+  for (let i = 0; i < count; i++) {
+    const ride = firstRide(current);
+    if (!ride) break;
+    let later = null;
+    try {
+      later = engine.planScenario(scenario, destination, { ...ctx, now: current.leaveAt + 1 });
+    } catch (e) {
+      console.warn(`senare avgångar: ${e.message}`);
+      break;
+    }
+    if (!later || later.broken || later.leaveAt == null) break;
+    const laterRide = firstRide(later);
+    if (!laterRide || laterRide.start <= ride.start) break;
+    out.push(later);
+    current = later;
+  }
+  return out;
+}
+
+/**
+ * The follow-up departures, kept quiet under the card.
+ *
+ * Two of them, because one answers "can I make the next" and two answer "how
+ * bad is it if I miss both" — which is the question you have when you are still
+ * looking for your keys. Absent rather than empty when there is nothing later.
+ */
+function laterRow(later, verb) {
+  if (!later.length) return "";
+  const items = later
+    .map((p) => {
+      const ride = firstRide(p);
+      const what = ride ? ` · ${esc(ride.line)} ${toClock(ride.start)}` : "";
+      return (
+        `<span class="later-item"><b>${toClock(p.leaveAt)}</b>${what}` +
+        `<span class="later-arr">framme ${toClock(p.arrive)}</span></span>`
+      );
+    })
+    .join("");
+  return `<div class="later"><span class="later-lbl">${esc(verb.toLowerCase())} sedan</span>${items}</div>`;
+}
+
 /** The chips under the card, in Das Boot's own row. */
 function tags(plan) {
   const out = [delayChip(plan), weatherChip(plan)].filter(Boolean);
@@ -379,7 +442,7 @@ function departVerb(plan) {
   return first && first.type === "transit" ? "Åk" : "Gå";
 }
 
-function renderBest(se, plans, direction) {
+function renderBest(se, plans, direction, later) {
   const host = el("aBest");
   const best = plans.find((p) => !p.broken);
   if (!best) {
@@ -406,6 +469,7 @@ function renderBest(se, plans, direction) {
     (best.waiting ? ` · ${Math.round(best.waiting)} min väntan vid byte` : "") +
     `</div>` +
     `${tags(best)}` +
+    laterRow(later || [], verb) +
     `</div>`;
 }
 
@@ -539,7 +603,8 @@ function render(se) {
   renderDirection(direction);
   renderWeather(se);
 
-  const plans = planAll(destination, {
+  // Namngiven, eftersom de senare avgångarna planeras om mot samma kontext.
+  const planCtx = {
     data,
     weights: data.weights,
     boatLegs: null,
@@ -547,7 +612,8 @@ function render(se) {
     direction,
     now: se.min,
     departures: feeds,
-  });
+  };
+  const plans = planAll(destination, planCtx);
 
   let ranked = plans;
   try {
@@ -569,7 +635,8 @@ function render(se) {
   renderStops(se);
   renderNearest();
   renderAlerts(ranked.find((p) => !p.broken));
-  renderBest(se, ranked, direction);
+  const best = ranked.find((p) => !p.broken);
+  renderBest(se, ranked, direction, best ? laterDepartures(best, destination, planCtx) : []);
   renderRest(se, ranked);
 
   const age = lastFetch ? Math.round((Date.now() - lastFetch) / 1000) : null;
