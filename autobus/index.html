@@ -349,9 +349,9 @@
   <span class="findme-hint" id="aNearest"></span>
 </div>
 
+<!-- Läsordning: vart, åt vilket håll, och först därefter tiderna. Riktningen
+     avgör vilken hållplats man ens står vid, så den kan inte stå under dem. -->
 <div class="dest-grid" id="aDest"></div>
-
-<div class="boats" id="aStops"></div>
 
 <div class="from-toggle">
   <div class="seg" id="aDirSeg">
@@ -359,6 +359,8 @@
     <button type="button" data-dir="to_home">Hem</button>
   </div>
 </div>
+
+<div class="boats" id="aStops"></div>
 
 <div id="aAlerts" style="display:none"></div>
 <div id="aWeather" style="display:none"></div>
@@ -374,7 +376,7 @@
 
 <script>
   // Bumpa vid ändring i js/ för att bryta modulcachen.
-  const APP_VERSION = "2026-08-30f";
+  const APP_VERSION = "2026-08-31a";
 
   // ---- Svensk tid, oavsett enhetens tidszon ----
   const TZ = "Europe/Stockholm";

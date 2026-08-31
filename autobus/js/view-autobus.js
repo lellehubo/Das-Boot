@@ -300,54 +300,55 @@ function weatherChip(plan) {
 }
 
 /**
- * Next departure from each of the two stops worth watching.
+ * Next departure from each stop you would actually board at.
  *
- * The one nearest you first when the position is known, else Danviken, which is
- * closest to the door. Gives the view the same weight at the top that Das Boot's
- * boat cards do, and answers the question you actually have standing in the
- * hallway: is there one soon enough to bother.
+ * Derived from the plans rather than read off the feed. The feed at Henriksdal
+ * carries every bus in both directions, so picking the soonest gave a 55 towards
+ * Henriksdalsberget as the way to Slussen — the right stop, the wrong way. The
+ * engine has already resolved line, direction and reachability for each route,
+ * so taking the boarding leg it settled on cannot point the wrong way.
  *
- * Only lines the app actually plans with. Twenty-five routes leave Henriksdal
- * and most go to Värmdö — a card announcing the 25M to Saltsjöbaden answers a
- * question nobody asked.
+ * Which stops appear therefore follows the direction for free: going out these
+ * are the stops near home, going home they are the ones at the destination.
  */
-function stopCards(se) {
-  const order = nearestStopId
-    ? [nearestStopId, ...HOME_STOPS.filter((s) => s !== nearestStopId)]
-    : HOME_STOPS;
-  return order.slice(0, 2).map((id) => {
-    const node = data.node(id);
-    const feed = node && feeds.get(node.site_id);
-    const ours = new Set(data.weights.hard_constraints.allowed_bus_lines || []);
-    let best = null;
-    if (feed) {
-      for (const d of feed.departures) {
-        if (d.mode !== "BUS" || d.cancelled || !d.scheduled) continue;
-        if (ours.size && !ours.has(String(d.line))) continue;
-        const departs = toMinutes(d.expected || d.scheduled);
-        const diff = departs - se.min;
-        if (diff < -1) continue;
-        if (!best || diff < best.diff)
-          best = { diff, departs, line: d.line, destination: d.destination };
-      }
-    }
-    return { id, label: node?.label ?? id, here: id === nearestStopId, best };
-  });
+function stopCards(plans) {
+  const byStop = new Map();
+  for (const p of plans) {
+    if (p.broken) continue;
+    const ride = firstRide(p);
+    if (!ride) continue;
+    const cur = byStop.get(ride.from);
+    if (!cur || ride.start < cur.start) byStop.set(ride.from, ride);
+  }
+  const cards = [...byStop.entries()].map(([id, ride]) => ({
+    id,
+    label: data.node(id)?.label ?? id,
+    here: id === nearestStopId,
+    ride,
+  }));
+  // Den man står vid först, annars den som går snarast.
+  cards.sort((a, b) => (b.here ? 1 : 0) - (a.here ? 1 : 0) || a.ride.start - b.ride.start);
+  return cards.slice(0, 2);
 }
 
-function renderStops(se) {
+function renderStops(se, plans) {
   const host = el("aStops");
   if (!host) return;
-  host.innerHTML = stopCards(se)
-    .map(({ label, here, best }) => {
-      const head = `<div class="bdir">${here ? "&#9679; " : ""}${esc(label)}</div>`;
-      if (!best)
-        return `<div class="boatcard none">${head}<div class="btime">–</div>` +
-               `<div class="bcd">ingen avgång</div></div>`;
-      const soon = best.diff < 6 ? " soon" : "";
+  const cards = stopCards(plans);
+  if (!cards.length) {
+    host.innerHTML = `<div class="boatcard none"><div class="bdir">Ingen avgång</div>` +
+                     `<div class="btime">–</div><div class="bcd">inget att stiga på just nu</div></div>`;
+    return;
+  }
+  host.innerHTML = cards
+    .map(({ label, here, ride }) => {
+      const diff = ride.start - se.min;
+      const soon = diff < 6 ? " soon" : "";
+      const late = ride.delay > 0 ? ` <b>+${ride.delay}</b>` : "";
       return (
-        `<div class="boatcard">${head}<div class="btime">${toClock(best.departs)}</div>` +
-        `<div class="bcd${soon}">${fmtCountdown(best.diff)} · ${esc(best.line)} mot ${esc(best.destination)}</div></div>`
+        `<div class="boatcard"><div class="bdir">${here ? "&#9679; " : ""}${esc(label)}</div>` +
+        `<div class="btime">${toClock(ride.start)}</div>` +
+        `<div class="bcd${soon}">${fmtCountdown(diff)} · ${esc(ride.line)}${late} mot ${esc(ride.destination)}</div></div>`
       );
     })
     .join("");
@@ -636,7 +637,7 @@ function render(se) {
     console.warn(`väder: bedömningen misslyckades (${e.message})`);
   }
 
-  renderStops(se);
+  renderStops(se, ranked);
   renderNearest();
   renderAlerts(ranked.find((p) => !p.broken));
   const best = ranked.find((p) => !p.broken);
