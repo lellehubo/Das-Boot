@@ -1,0 +1,10 @@
+# Kopior av tredjepartssidor och råfiler hör inte hemma i ett publikt repo.
+# De återskapas lokalt med: python3 kb/fetch_sources.py --all
+sources-raw/
+sources/self-regulation/
+sources/guidance/
+sources/press/
+sources/cases/mo-men/
+sources/cases/echr/
+sources/notes/*lagennu*.md
+sources/notes/tu-krankande-fotografering.md

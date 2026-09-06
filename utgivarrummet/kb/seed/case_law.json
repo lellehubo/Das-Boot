@@ -1,0 +1,1180 @@
+[
+ {
+  "id": "hd-t-9218-24-vaccindokumentaren",
+  "body": "Högsta domstolen",
+  "date": "2025-12-30",
+  "title": "Vaccindokumentären, T 9218-24",
+  "medium_or_parties": "Granskad person mot staten (SVT-dokumentär)",
+  "outcome": "Skadeståndstalan ogillad",
+  "principle": "Intresseavvägningen mellan rätten till respekt för privatlivet (EKMR art. 8) och yttrandefriheten (art. 10) föll till yttrandefrihetens fördel trots wallraffande och dold kamera. HD: ett mycket stort allmänintresse kan övertrumfa även ett betydande privatlivsingrepp.",
+  "principle_status": "verified-from-source (domstol.se referat)",
+  "provisions": [
+   "sfs-1972-207-skadestandslag::3kap.4§",
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "dold-kamera",
+   "wallraff",
+   "privatliv",
+   "allmänintresse",
+   "dokumentär"
+  ],
+  "source_ids": [
+   "hd-vaccinkrigarna-2025"
+  ],
+  "urls": [
+   "https://www.domstol.se/nyheter/2025/12/kritisk-granskning-av-vaccinmotstandare-stred-inte-mot-europakonventionen/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "tr-stockholm-2023-vaccinkrigarna",
+  "body": "Stockholms tingsrätt",
+  "date": "2023-03",
+  "title": "Vaccinkrigarna, tingsrättens dom (första instans)",
+  "medium_or_parties": "Samma mål som HD T 9218-24",
+  "outcome": "Se sources/cases/hd/tr-vaccinkrigarna-2023.md",
+  "principle": "Fylls i efter läsning av referatet.",
+  "principle_status": "to-read",
+  "provisions": [],
+  "tags": [
+   "dold-kamera",
+   "EKMR"
+  ],
+  "source_ids": [
+   "tr-vaccinkrigarna-2023"
+  ],
+  "urls": [],
+  "notes": ""
+ },
+ {
+  "id": "svea-hovratt-samnytt-dagerlind",
+  "body": "Svea hovrätt (HD: prövningstillstånd, uppgifterna motstridiga)",
+  "date": "2024/2025",
+  "title": "Samnytt: 'Misstänkt jihadist blev journalist på Dagens Nyheter'",
+  "medium_or_parties": "Samhällsnytt, ansvarig utgivare Mats Dagerlind; målsägande DN-journalist",
+  "outcome": "Grovt förtal (yttrandefrihetsbrott), villkorlig dom och 40 dagsböter, skadestånd höjt i hovrätten (enligt press)",
+  "principle": "Gränsen mellan sakpåstående och värdeomdöme, och vad som är försvarligt, vid utpekande av namngiven person som 'misstänkt jihadist'. Detaljerad princip kräver domen.",
+  "principle_status": "secondary (press); HD-läget motstridigt, verifiera",
+  "provisions": [
+   "sfs-1962-700-brottsbalk::5kap.1§",
+   "sfs-1962-700-brottsbalk::5kap.2§"
+  ],
+  "tags": [
+   "förtal",
+   "utpekande",
+   "värdeomdöme",
+   "sakpåstående"
+  ],
+  "source_ids": [
+   "note-hd-2023-2025"
+  ],
+  "urls": [
+   "https://www.journalisten.se/nyheter/hd-provar-fortalsdomen-mot-dagerlind/",
+   "https://www.dagensjuridik.se/nyheter/hd-domer-ansvarig-utgivare-for-grovt-fortal-av-dn-journalist/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "mo-men-2026-02-26-youtubers-mamma-pekades-ut-med-krankande-uppgifter-tv4-kland",
+  "body": "MEN",
+  "date": "2026-02-26",
+  "title": "Youtubers mamma pekades ut med kränkande uppgifter – TV4 klandras",
+  "medium_or_parties": "TV4",
+  "outcome": "klander",
+  "principle": "Dokumentärserien 'Joakim – ett övergivet barn': integritetskränkande uppgifter om huvudpersonens mamma. Inte tillräckligt starkt allmänintresse för intrånget; anmälarens ställning motiverade inte publiciteten.",
+  "principle_status": "secondary (MO-sidans ingress via sökresultat, SVT, TV4)",
+  "provisions": [],
+  "tags": [
+   "privatliv",
+   "sociala-medier"
+  ],
+  "source_ids": [
+   "mo_men_index"
+  ],
+  "urls": [
+   "https://medieombudsmannen.se/beslut/youtubers-mamma-pekades-ut-med-krankande-uppgifter-tv4-klandras/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "mo-men-2025-05-27-tv4-nyheterna-klandras-for-skadligt-utpekande",
+  "body": "MEN",
+  "date": "2025-05-27",
+  "title": "TV4 Nyheterna klandras för skadligt utpekande",
+  "medium_or_parties": "TV4",
+  "outcome": "klander",
+  "principle": "Genrebild på en mamma med barn utan koppling till innehållet, i inslag om familjer med försörjningsstöd. Även om bara en begränsad krets kunde identifiera familjen var sammanhanget så skadligt att klander inte kunde undvikas.",
+  "principle_status": "secondary (Journalisten, tv4.se); koppling mellan rubrik och fall ej verifierad",
+  "provisions": [],
+  "tags": [
+   "namnpublicering"
+  ],
+  "source_ids": [
+   "mo_men_index"
+  ],
+  "urls": [
+   "https://medieombudsmannen.se/beslut/tv4-nyheterna-klandras-for-skadligt-utpekande/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "mo-men-2023-10-23-tv4-klandras-for-brist-pa-mojlighet-till-bemotande-for-linda",
+  "body": "MEN",
+  "date": "2023-10-23",
+  "title": "TV4 klandras för brist på möjlighet till bemötande för Linda Staaf",
+  "medium_or_parties": "TV4",
+  "outcome": "klander",
+  "principle": "",
+  "principle_status": "to-fetch (fulltext hämtas med fetch_sources.py --only mo-men)",
+  "provisions": [],
+  "tags": [
+   "bemötande"
+  ],
+  "source_ids": [
+   "mo_men_index"
+  ],
+  "urls": [
+   "https://medieombudsmannen.se/beslut/tv4-klandras-for-brist-pa-mojlighet-till-bemotande-for-linda-staaf/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "mo-men-2022-11-28-tv4-klandras-for-krankande-utpekande-i-realityprogram",
+  "body": "MEN",
+  "date": "2022-11-28",
+  "title": "TV4 klandras för kränkande utpekande i realityprogram",
+  "medium_or_parties": "TV4",
+  "outcome": "klander",
+  "principle": "",
+  "principle_status": "to-fetch (fulltext hämtas med fetch_sources.py --only mo-men)",
+  "provisions": [],
+  "tags": [
+   "namnpublicering",
+   "privatliv",
+   "realityprogram-tv"
+  ],
+  "source_ids": [
+   "mo_men_index"
+  ],
+  "urls": [
+   "https://medieombudsmannen.se/beslut/tv4-klandras-for-krankande-utpekande-i-realityprogram/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "mo-men-2022-10-24-friande-beslut-angaende-tv4s-granskning-av-en-fastighetsmakl",
+  "body": "MEN",
+  "date": "2022-10-24",
+  "title": "Friande beslut angående TV4:s granskning av en fastighetsmäklare",
+  "medium_or_parties": "TV4",
+  "outcome": "friande",
+  "principle": "",
+  "principle_status": "to-fetch (fulltext hämtas med fetch_sources.py --only mo-men)",
+  "provisions": [],
+  "tags": [
+   "granskning"
+  ],
+  "source_ids": [
+   "mo_men_index"
+  ],
+  "urls": [
+   "https://medieombudsmannen.se/beslut/friande-beslut-angaende-tv4s-granskning-av-en-fastighetsmaklare/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "mo-men-2022-09-21-tv4-frias-for-rapportering-om-fd-fotbollsdomares-underlatenh",
+  "body": "MEN",
+  "date": "2022-09-21",
+  "title": "TV4 frias angående fotbollsdomares underlåtenhet att betala skatt",
+  "medium_or_parties": "TV4",
+  "outcome": "friande",
+  "principle": "",
+  "principle_status": "to-fetch (fulltext hämtas med fetch_sources.py --only mo-men)",
+  "provisions": [],
+  "tags": [
+   "granskning"
+  ],
+  "source_ids": [
+   "mo_men_index"
+  ],
+  "urls": [
+   "https://medieombudsmannen.se/beslut/tv4-frias-for-rapportering-om-fd-fotbollsdomares-underlatenhet-att-betala-skatt/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "mo-men-2022-05-10-mediernas-etiknamnd-klandrar-tv4-for-ett-inslag-i-humorprogr",
+  "body": "MEN",
+  "date": "2022-05-10",
+  "title": "Mediernas Etiknämnd klandrar TV4 för ett inslag i humorprogrammet Parlamentet",
+  "medium_or_parties": "TV4",
+  "outcome": "oklart",
+  "principle": "",
+  "principle_status": "to-fetch (fulltext hämtas med fetch_sources.py --only mo-men)",
+  "provisions": [],
+  "tags": [
+   "opinion",
+   "realityprogram-tv"
+  ],
+  "source_ids": [
+   "mo_men_index"
+  ],
+  "urls": [
+   "https://medieombudsmannen.se/beslut/mediernas-etiknamnd-klandrar-tv4-for-ett-inslag-i-humorprogrammet-parlamentet/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "mo-men-2021-10-11-tv4-klandras-for-utpekande-av-oskyldiga-i-klandervart-samman",
+  "body": "MEN",
+  "date": "2021-10-11",
+  "title": "TV4 klandras för utpekande av oskyldiga i klandervärt sammanhang",
+  "medium_or_parties": "TV4",
+  "outcome": "klander",
+  "principle": "",
+  "principle_status": "to-fetch (fulltext hämtas med fetch_sources.py --only mo-men)",
+  "provisions": [],
+  "tags": [
+   "namnpublicering"
+  ],
+  "source_ids": [
+   "mo_men_index"
+  ],
+  "urls": [
+   "https://medieombudsmannen.se/beslut/tv4-klandras-for-utpekande-av-oskyldiga-i-klandervart-sammanhang/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "mo-men-2021-10-11-tv4-klandras-for-intervju-i-malou-efter-tio",
+  "body": "MEN",
+  "date": "2021-10-11",
+  "title": "TV4 klandras för intervju i Malou efter tio",
+  "medium_or_parties": "TV4",
+  "outcome": "klander",
+  "principle": "",
+  "principle_status": "to-fetch (fulltext hämtas med fetch_sources.py --only mo-men)",
+  "provisions": [],
+  "tags": [],
+  "source_ids": [
+   "mo_men_index"
+  ],
+  "urls": [
+   "https://medieombudsmannen.se/beslut/tv4-klandras-for-intervju-i-malou-efter-tio/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "mo-men-2021-02-25-tv4-klandras-for-publicering-av-larmsamtal",
+  "body": "MEN",
+  "date": "2021-02-25",
+  "title": "TV4 klandras för publicering av larmsamtal",
+  "medium_or_parties": "TV4",
+  "outcome": "klander",
+  "principle": "",
+  "principle_status": "to-fetch (fulltext hämtas med fetch_sources.py --only mo-men)",
+  "provisions": [],
+  "tags": [
+   "larmsamtal-inspelning"
+  ],
+  "source_ids": [
+   "mo_men_index"
+  ],
+  "urls": [
+   "https://medieombudsmannen.se/beslut/tv4-klandras-for-publicering-av-larmsamtal/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "grn-tv4-2024-03-14-1",
+  "body": "Granskningsnämnden",
+  "date": "2024-03-14",
+  "title": "GRN: Nyhetsmorgon (fälld)",
+  "medium_or_parties": "TV4, Nyhetsmorgon",
+  "outcome": "fälld",
+  "principle": "Felaktiga uppgifter om barnarbete och människorättskränkningar vid gruva i Kongo-Kinshasa med EKN-garantier, inför Kalla fakta: Dödsgruvorna. Saklighet.",
+  "principle_status": "secondary (pressmeddelande/press); verifiera i webbdiariet",
+  "provisions": [
+   "sfs-2010-696-radio-och-tv-lag::4kap. (tillståndsvillkor saklighet)"
+  ],
+  "tags": [
+   "saklighet"
+  ],
+  "source_ids": [
+   "note-grn-tv4-2024-2026"
+  ],
+  "urls": [
+   "https://via.tt.se/pressmeddelande/3712193/granskningsnamnden-faller-inslag-i-nyhetsmorgon?publisherId=3235838&lang=sv"
+  ],
+  "notes": "dnr okänt"
+ },
+ {
+  "id": "grn-tv4-2024-2",
+  "body": "Granskningsnämnden",
+  "date": "2024",
+  "title": "GRN: Kalla fakta (friad)",
+  "medium_or_parties": "TV4, Kalla fakta",
+  "outcome": "friad",
+  "principle": "Friande beslut, innehåll ej läst.",
+  "principle_status": "secondary (pressmeddelande/press); verifiera i webbdiariet",
+  "provisions": [
+   "sfs-2010-696-radio-och-tv-lag::4kap. (tillståndsvillkor saklighet)"
+  ],
+  "tags": [
+   "saklighet"
+  ],
+  "source_ids": [
+   "note-grn-tv4-2024-2026"
+  ],
+  "urls": [
+   "https://via.tt.se/pressmeddelande/3626397/granskningsnamnden-friar-tv4s-program-kalla-fakta?publisherId=3235838&lang=sv"
+  ],
+  "notes": "dnr okänt"
+ },
+ {
+  "id": "grn-tv4-2025-02-3",
+  "body": "Granskningsnämnden",
+  "date": "2025-02",
+  "title": "GRN: TV4 Nyheterna (fälld)",
+  "medium_or_parties": "TV4, TV4 Nyheterna",
+  "outcome": "fälld",
+  "principle": "Uppgift att 60 civila dödats i attack mot militärbas i Israel utan visad grund och utan osäkerhetsmarkering. Saklighet.",
+  "principle_status": "secondary (pressmeddelande/press); verifiera i webbdiariet",
+  "provisions": [
+   "sfs-2010-696-radio-och-tv-lag::4kap. (tillståndsvillkor saklighet)"
+  ],
+  "tags": [
+   "saklighet"
+  ],
+  "source_ids": [
+   "note-grn-tv4-2024-2026"
+  ],
+  "urls": [
+   "https://via.tt.se/pressmeddelande/4062870/fem-fallningar-i-granskningsnamnden?publisherId=3235838&lang=sv"
+  ],
+  "notes": "dnr 24/04033"
+ },
+ {
+  "id": "grn-tv4-2025-02-4",
+  "body": "Granskningsnämnden",
+  "date": "2025-02",
+  "title": "GRN: TV4 Nyheterna (fälld)",
+  "medium_or_parties": "TV4, TV4 Nyheterna",
+  "outcome": "fälld",
+  "principle": "Kommentator kallade mordet på två israeliska diplomater antisemitiskt; osakligt.",
+  "principle_status": "secondary (pressmeddelande/press); verifiera i webbdiariet",
+  "provisions": [
+   "sfs-2010-696-radio-och-tv-lag::4kap. (tillståndsvillkor saklighet)"
+  ],
+  "tags": [
+   "saklighet"
+  ],
+  "source_ids": [
+   "note-grn-tv4-2024-2026"
+  ],
+  "urls": [
+   "https://www.journalisten.se/nyheter/tv4-klandras-for-att-ha-kallat-dad-antisemitiskt/"
+  ],
+  "notes": "dnr okänt"
+ },
+ {
+  "id": "grn-tv4-2025-09-5",
+  "body": "Granskningsnämnden",
+  "date": "2025-09",
+  "title": "GRN: TV4 Nyheterna (fälld)",
+  "medium_or_parties": "TV4, TV4 Nyheterna",
+  "outcome": "fälld",
+  "principle": "Sänkta bensinpriser förklarades enbart med råoljepris och dollarkurs; politiska insatser i Sverige nämndes inte. Saklighet.",
+  "principle_status": "secondary (pressmeddelande/press); verifiera i webbdiariet",
+  "provisions": [
+   "sfs-2010-696-radio-och-tv-lag::4kap. (tillståndsvillkor saklighet)"
+  ],
+  "tags": [
+   "saklighet"
+  ],
+  "source_ids": [
+   "note-grn-tv4-2024-2026"
+  ],
+  "urls": [
+   "https://via.tt.se/pressmeddelande/4062870/fem-fallningar-i-granskningsnamnden?publisherId=3235838&lang=sv"
+  ],
+  "notes": "dnr okänt"
+ },
+ {
+  "id": "grn-tv4-2025-6",
+  "body": "Granskningsnämnden",
+  "date": "2025",
+  "title": "GRN: Nyhetsmorgon (två inslag fällda)",
+  "medium_or_parties": "TV4, Nyhetsmorgon",
+  "outcome": "två inslag fällda",
+  "principle": "Innehåll ej läst.",
+  "principle_status": "secondary (pressmeddelande/press); verifiera i webbdiariet",
+  "provisions": [
+   "sfs-2010-696-radio-och-tv-lag::4kap. (tillståndsvillkor saklighet)"
+  ],
+  "tags": [
+   "saklighet"
+  ],
+  "source_ids": [
+   "note-grn-tv4-2024-2026"
+  ],
+  "urls": [
+   "https://via.tt.se/pressmeddelande/4082541/tva-inslag-i-tv4s-nyhetsmorgon-falls?publisherId=3235838&lang=sv"
+  ],
+  "notes": "dnr okänt"
+ },
+ {
+  "id": "grn-tv4-2023-2024-7",
+  "body": "Granskningsnämnden",
+  "date": "2023/2024",
+  "title": "GRN: Långfilmen 48h (fälld)",
+  "medium_or_parties": "TV4, Långfilmen 48h",
+  "outcome": "fälld",
+  "principle": "Kränkande ord i undertext.",
+  "principle_status": "secondary (pressmeddelande/press); verifiera i webbdiariet",
+  "provisions": [
+   "sfs-2010-696-radio-och-tv-lag::4kap. (tillståndsvillkor saklighet)"
+  ],
+  "tags": [
+   "saklighet"
+  ],
+  "source_ids": [
+   "note-grn-tv4-2024-2026"
+  ],
+  "urls": [
+   "https://via.tt.se/pressmeddelande/3345703/granskningsnamndens-senaste-beslut?publisherId=3235838"
+  ],
+  "notes": "dnr 23/00731"
+ },
+ {
+  "id": "jk-2672-17-4-3",
+  "body": "Justitiekanslern",
+  "date": "2018-06",
+  "title": "JK 2672-17-4.3",
+  "medium_or_parties": "",
+  "outcome": "",
+  "principle": "Allmänt åtal för förtal i grundlagsskyddat medium väcks som huvudregel bara i undantagsfall: fällande dom kan förväntas och tydligt allmänt intresse eller starka skäl.",
+  "principle_status": "secondary (sökresultat)",
+  "provisions": [],
+  "tags": [
+   "JK"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://www.jk.se/beslut-och-yttranden/2018/06/2672-17-43/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "jk-6677-18-3-2",
+  "body": "Justitiekanslern",
+  "date": "2019-04",
+  "title": "JK 6677-18-3.2",
+  "medium_or_parties": "",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch",
+  "provisions": [],
+  "tags": [
+   "JK"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://www.jk.se/beslut-och-yttranden/2019/04/6677-18-32/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "jk-8455-12-32",
+  "body": "Justitiekanslern",
+  "date": "2013-01",
+  "title": "JK 8455-12-32",
+  "medium_or_parties": "",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch",
+  "provisions": [],
+  "tags": [
+   "JK"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://www.jk.se/beslut-och-yttranden/2013/01/8455-12-32/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "jk-2024-6987",
+  "body": "Justitiekanslern",
+  "date": "2025-11-13",
+  "title": "JK 2024/6987",
+  "medium_or_parties": "",
+  "outcome": "",
+  "principle": "Allvarlig kritik mot Polismyndigheten för långsam handläggning av förundersökning (relevans för medier oklar).",
+  "principle_status": "secondary",
+  "provisions": [],
+  "tags": [
+   "JK"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://www.jk.se/beslut-och-yttranden/2025/11/20246987/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "jk-2024-7664",
+  "body": "Justitiekanslern",
+  "date": "2025-03",
+  "title": "JK 2024/7664",
+  "medium_or_parties": "",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch",
+  "provisions": [],
+  "tags": [
+   "JK"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://www.jk.se/beslut-och-yttranden/2025/03/20247664/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-von-hannover-1",
+  "body": "Europadomstolen",
+  "date": "2004",
+  "title": "Von Hannover v. Germany (No. 1)",
+  "medium_or_parties": "appno 59320/00",
+  "outcome": "",
+  "principle": "Prinsessan Caroline-malen slog fast att offentliga personers privatliv har skydd aven pa allman plats om handlandet ar av privat karaktar (shopping, promenader). Konsekvens (legacy): Enbart det faktum att en person befinner sig pa allman plats ar inte tillrackligt for att legitimera publicering av privata situationer.",
+  "principle_status": "legacy-unverified (gamla kunskapsbasen, skriven utan källa)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"59320/00\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-von-hannover-2",
+  "body": "Europadomstolen",
+  "date": "2012",
+  "title": "Von Hannover v. Germany (No. 2) [GC]",
+  "medium_or_parties": "appno 40660/08",
+  "outcome": "",
+  "principle": "Prinsessan Caroline-malen slog fast att offentliga personers privatliv har skydd aven pa allman plats om handlandet ar av privat karaktar (shopping, promenader). Konsekvens (legacy): Enbart det faktum att en person befinner sig pa allman plats ar inte tillrackligt for att legitimera publicering av privata situationer.",
+  "principle_status": "legacy-unverified (gamla kunskapsbasen, skriven utan källa)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"40660/08\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-axel-springer",
+  "body": "Europadomstolen",
+  "date": "2012",
+  "title": "Axel Springer AG v. Germany [GC]",
+  "medium_or_parties": "appno 39954/08",
+  "outcome": "",
+  "principle": "Slog fast sexfaktormodellen for avvagning mellan art. 8 och art. 10. Etablerade att nyhetsrapportering om brottsmisstankte kandisar kan vara forsvarbar. Konsekvens (legacy): Ger stod for namnpublicering av offentliga personer vid brottsmisstanke om det finns allmanintresse.",
+  "principle_status": "legacy-unverified (gamla kunskapsbasen, skriven utan källa)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"39954/08\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-couderc",
+  "body": "Europadomstolen",
+  "date": "2015",
+  "title": "Couderc and Hachette Filipacchi v. France [GC]",
+  "medium_or_parties": "appno 40454/07",
+  "outcome": "",
+  "principle": "Publicering av uppgifter om fursten av Monacos utomaktenskapliga barn. Domstolen fann att art. 10 krankts genom att doma tidningen. Konsekvens (legacy): Aven kansliga privatlivsuppgifter kan publiceras om de ror offentliga personers samhallsroll.",
+  "principle_status": "legacy-unverified (gamla kunskapsbasen, skriven utan källa)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"40454/07\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-bedat",
+  "body": "Europadomstolen",
+  "date": "2016",
+  "title": "Bédat v. Switzerland [GC]",
+  "medium_or_parties": "appno 56925/08",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"56925/08\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-haldimann",
+  "body": "Europadomstolen",
+  "date": "2015",
+  "title": "Haldimann and Others v. Switzerland",
+  "medium_or_parties": "appno 21830/09",
+  "outcome": "",
+  "principle": "Dold kamera-fall. Domstolen fann att Schweiz krankt art. 10 genom att doma journalister for dold-kamera-reportage som avslojat missforhallanden. Konsekvens (legacy): Dold kamera ar forsvarbar nar det finns starkt allmanintresse och inga alternativa metoder.",
+  "principle_status": "legacy-unverified (gamla kunskapsbasen, skriven utan källa)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"21830/09\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-pedersen-baadsgaard",
+  "body": "Europadomstolen",
+  "date": "2004",
+  "title": "Pedersen and Baadsgaard v. Denmark [GC]",
+  "medium_or_parties": "appno 49017/99",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"49017/99\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-satakunnan",
+  "body": "Europadomstolen",
+  "date": "2017",
+  "title": "Satakunnan Markkinapörssi Oy and Satamedia Oy v. Finland [GC]",
+  "medium_or_parties": "appno 931/13",
+  "outcome": "",
+  "principle": "Galler gransdragningen mellan journalistiskt undantag fran dataskydd och ratten till privatliv. Storskalig publicering av skatteinformation bedomdes inte som renodlad journalistik. Konsekvens (legacy): Journalistundantaget fran GDPR ar inte automatiskt -- bedoms fran fall till fall.",
+  "principle_status": "legacy-unverified (gamla kunskapsbasen, skriven utan källa)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"931/13\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-fuchsmann",
+  "body": "Europadomstolen",
+  "date": "2017",
+  "title": "Fuchsmann v. Germany",
+  "medium_or_parties": "appno 71233/13",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"71233/13\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-delfi",
+  "body": "Europadomstolen",
+  "date": "2015",
+  "title": "Delfi AS v. Estonia [GC]",
+  "medium_or_parties": "appno 64569/09",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"64569/09\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-magyar-jeti",
+  "body": "Europadomstolen",
+  "date": "2018",
+  "title": "Magyar Jeti Zrt v. Hungary",
+  "medium_or_parties": "appno 11257/16",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"11257/16\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-jersild",
+  "body": "Europadomstolen",
+  "date": "1994",
+  "title": "Jersild v. Denmark",
+  "medium_or_parties": "appno 15890/89",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"15890/89\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-bladet-tromso",
+  "body": "Europadomstolen",
+  "date": "1999",
+  "title": "Bladet Tromsø and Stensaas v. Norway [GC]",
+  "medium_or_parties": "appno 21980/93",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"21980/93\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-egeland-hanseid",
+  "body": "Europadomstolen",
+  "date": "2009",
+  "title": "Egeland and Hanseid v. Norway",
+  "medium_or_parties": "appno 34438/04",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"34438/04\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-goodwin",
+  "body": "Europadomstolen",
+  "date": "1996",
+  "title": "Goodwin v. United Kingdom [GC]",
+  "medium_or_parties": "appno 17488/90",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"17488/90\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-sanoma",
+  "body": "Europadomstolen",
+  "date": "2010",
+  "title": "Sanoma Uitgevers B.V. v. the Netherlands [GC]",
+  "medium_or_parties": "appno 38224/03",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"38224/03\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-stoll",
+  "body": "Europadomstolen",
+  "date": "2007",
+  "title": "Stoll v. Switzerland [GC]",
+  "medium_or_parties": "appno 69698/01",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"69698/01\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-mosley",
+  "body": "Europadomstolen",
+  "date": "2011",
+  "title": "Mosley v. United Kingdom",
+  "medium_or_parties": "appno 48009/08",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"48009/08\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-lillo-stenberg",
+  "body": "Europadomstolen",
+  "date": "2014",
+  "title": "Lillo-Stenberg and Sæther v. Norway",
+  "medium_or_parties": "appno 13258/09",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"13258/09\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-morice",
+  "body": "Europadomstolen",
+  "date": "2015",
+  "title": "Morice v. France [GC]",
+  "medium_or_parties": "appno 29369/10",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"29369/10\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-perincek",
+  "body": "Europadomstolen",
+  "date": "2015",
+  "title": "Perinçek v. Switzerland [GC]",
+  "medium_or_parties": "appno 27510/08",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"27510/08\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-standard-verlags-2",
+  "body": "Europadomstolen",
+  "date": "2009",
+  "title": "Standard Verlags GmbH v. Austria (No. 2)",
+  "medium_or_parties": "appno 21277/05",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"21277/05\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-gillberg",
+  "body": "Europadomstolen",
+  "date": "2012",
+  "title": "Gillberg v. Sweden [GC]",
+  "medium_or_parties": "appno 41723/06",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"41723/06\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-diamant-salihu",
+  "body": "Europadomstolen",
+  "date": "2016",
+  "title": "Diamant Salihu and Others v. Sweden (dec.)",
+  "medium_or_parties": "appno 33628/15",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch (HUDOC via fetch_sources.py)",
+  "provisions": [
+   "EKMR art. 8",
+   "EKMR art. 10"
+  ],
+  "tags": [
+   "EKMR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://hudoc.echr.coe.int/eng#{\"appno\":[\"33628/15\"]}"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-arlewin",
+  "body": "Europadomstolen",
+  "date": "2016-03-01",
+  "title": "Arlewin v. Sweden",
+  "medium_or_parties": "appno 22302/10; tv-program sänt via Storbritannien",
+  "outcome": "Kränkning av art. 6",
+  "principle": "Sverige var skyldigt att ge klaganden möjlighet att få sin förtalstalan om innehållet i ett tv-program prövad i svensk domstol.",
+  "principle_status": "secondary (regeringens referat via sökresultat)",
+  "provisions": [],
+  "tags": [
+   "EKMR",
+   "jurisdiktion",
+   "tv"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://www.regeringen.se/internationella-mr-granskningar-av-sverige/2016/03/europadomstolens-dom-2016-03-01-i-malet-arlewin-mot-sverige/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "echr-pihl",
+  "body": "Europadomstolen",
+  "date": "2017-02-07",
+  "title": "Pihl v. Sweden (dec.)",
+  "medium_or_parties": "appno 74742/14; kommentar på blogg",
+  "outcome": "Avvisad, ingen kränkning",
+  "principle": "Svenska domstolar gjorde en riktig avvägning mellan klagandens art. 8-rätt och bloggens art. 10-rätt.",
+  "principle_status": "secondary (regeringens referat via sökresultat)",
+  "provisions": [],
+  "tags": [
+   "EKMR",
+   "kommentarsfält",
+   "UGC"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://www.regeringen.se/internationella-mr-granskningar-av-sverige/2018/10/europadomstolens-beslut-2017-02-07-i-malet-pihl-mot-sverige/"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "cjeu-c-73-07-satamedia",
+  "body": "EU-domstolen",
+  "date": "",
+  "title": "EU-domstolen C-73/07 Satakunnan Markkinapörssi och Satamedia (journalistiska ändamål)",
+  "medium_or_parties": "",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch",
+  "provisions": [
+   "gdpr-2016-679::art85"
+  ],
+  "tags": [
+   "GDPR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://eur-lex.europa.eu/legal-content/SV/TXT/HTML/?uri=CELEX:62007CJ0073"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "cjeu-c-345-17-buivids",
+  "body": "EU-domstolen",
+  "date": "",
+  "title": "EU-domstolen C-345/17 Buivids (video av polisförhör, journalistiskt ändamål)",
+  "medium_or_parties": "",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch",
+  "provisions": [
+   "gdpr-2016-679::art85"
+  ],
+  "tags": [
+   "GDPR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://eur-lex.europa.eu/legal-content/SV/TXT/HTML/?uri=CELEX:62017CJ0345"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "cjeu-c-131-12-google-spain",
+  "body": "EU-domstolen",
+  "date": "",
+  "title": "EU-domstolen C-131/12 Google Spain (rätten att bli glömd)",
+  "medium_or_parties": "",
+  "outcome": "",
+  "principle": "",
+  "principle_status": "to-fetch",
+  "provisions": [
+   "gdpr-2016-679::art85"
+  ],
+  "tags": [
+   "GDPR"
+  ],
+  "source_ids": [],
+  "urls": [
+   "https://eur-lex.europa.eu/legal-content/SV/TXT/HTML/?uri=CELEX:62012CJ0131"
+  ],
+  "notes": ""
+ }
+]
