@@ -72,10 +72,15 @@
     "read_window": "derived",
     "read_window_note": "Fönstret härleds ur planens egna exponerade ben, som redan har start och slut i minuter in på dygnet. Aldrig för klockan nu, och inga fasta morgontimmar — motorn vet exakt när man cyklar.",
     "return_window_hours": {
-      "from": 16,
+      "from": 15,
       "to": 18
     },
-    "return_window_note": "Det enda fasta fönstret som blir kvar. På morgonen är eftermiddagens avgång inte vald än, men cykeln står kvar på jobbet, så hemresans väder måste vägas in ändå. Se inheritance.",
+    "return_window_note": "15–18 sedan 2026-10-12, var 16–18. Det enda fasta fönstret som blir kvar. På morgonen är eftermiddagens avgång inte vald än, men cykeln står kvar på jobbet, så hemresans väder måste vägas in ändå. Se inheritance.",
+    "outgoing_window_hours": {
+      "from": 7,
+      "to": 10
+    },
+    "outgoing_window_note": "Morgonens cykelfönster för kortet om cykeln, läst vid hemmet. Visas bredvid hemresan 15–18 så båda prognoserna syns före beslutet. Lagt till 2026-10-12.",
     "exposed_leg_types": [
       "bike",
       "walk"

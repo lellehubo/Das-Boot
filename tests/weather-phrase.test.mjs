@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { describeWindow, iconSvg, SYMBOLS } from "../js/weather-phrase.js";
+import { describeWindow, describeBikeOutlook, iconSvg, SYMBOLS } from "../js/weather-phrase.js";
 
 // The view passes the real zone-aware helper; a fixed one keeps these tests
 // independent of where they run.
@@ -122,4 +122,58 @@ test("inget fönster ger ingen beskrivning i stället för att kasta", () => {
 test("ikonen är giltig svg och okänt namn faller tillbaka", () => {
   assert.match(iconSvg("sun"), /^<svg class="wx-icon"/);
   assert.match(iconSvg("finns-inte"), /^<svg class="wx-icon"/);
+});
+
+// --- the morning card about the ride home ---------------------------------
+
+const outlook = (level, over = {}, extra = {}) => ({
+  level,
+  reasons: [],
+  window: summary({ fromMin: 900, toMin: 1080, ...over }),
+  fromMin: 900,
+  toMin: 1080,
+  turnsAtMin: null,
+  ...extra,
+});
+
+test("rubriken säger hur vädret är, inte vad han ska göra", () => {
+  const heads = ["clear", "caution", "avoid"].map(
+    (l) => describeBikeOutlook(outlook(l), opts).headline
+  );
+  assert.deepEqual(heads, ["Bra cykelväder hem", "Tveksamt cykelväder hem", "Dåligt cykelväder hem"]);
+  for (const h of heads) assert.doesNotMatch(h, /avråd|låt bli|ta inte/i);
+});
+
+test("dåligt väder från fyra säger tiden och fönstret", () => {
+  const d = describeBikeOutlook(
+    outlook("avoid", { maxPrecipProbability: 85, maxPrecipMmPerH: 2.4, symbolCodes: [20] }, { turnsAtMin: 960 }),
+    opts
+  );
+  assert.equal(d.when, "Hemresan 15–18");
+  assert.equal(d.text, "Nästan säkert regn, kraftigt");
+  assert.deepEqual(d.notes, ["Uppehåll till ca 16"]);
+  assert.equal(d.icon, "rain");
+});
+
+test("spretig prognos och halka sägs öppet", () => {
+  const d = describeBikeOutlook(
+    outlook("avoid", { confidence: "low" }, { reasons: [{ kind: "ice", temperature: 0 }] }),
+    opts
+  );
+  assert.ok(d.notes.includes("Risk för halka"));
+  assert.ok(d.notes.some((n) => n.startsWith("Prognosen spretar")));
+});
+
+test("ingen bedömning ger inget kort", () => {
+  assert.equal(describeBikeOutlook(null, opts), null);
+});
+
+test("morgonraden säger dit och sitt eget fönster", () => {
+  const d = describeBikeOutlook(
+    { ...outlook("caution"), fromMin: 420, toMin: 600 },
+    opts,
+    "to_work"
+  );
+  assert.equal(d.when, "Till jobbet 07–10");
+  assert.equal(d.headline, "Tveksamt cykelväder dit");
 });
