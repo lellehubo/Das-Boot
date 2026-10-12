@@ -290,6 +290,47 @@ export function verdictForPlan(plan, { weather, isoDate, forecast, returnForecas
 }
 
 /**
+ * The afternoon ride home, graded at breakfast.
+ *
+ * The same return window and the same thresholds the inheritance rule uses, so
+ * the morning card and the icon on the bike route can never disagree. What it
+ * adds is when the weather turns: "rain from four" leaves an early boat home,
+ * "rain all afternoon" does not. Found by grading each hour on its own with
+ * verdictOf, rather than with a second set of rules that could drift.
+ *
+ * Returns null when the forecast does not reach the window.
+ */
+export function bikeOutlook(returnForecast, isoDate, weather) {
+  const back = weather.return_window_hours;
+  if (!back || !returnForecast) return null;
+  const fromMin = back.from * 60;
+  const toMin = back.to * 60;
+  const whole = verdictOf(summariseWindow(returnForecast, isoDate, fromMin, toMin), weather);
+  if (!whole) return null;
+
+  let turnsAtMin = null;
+  if (whole.level !== CLEAR) {
+    for (let m = fromMin; m < toMin; m += 60) {
+      const hour = verdictOf(summariseWindow(returnForecast, isoDate, m, m + 60), weather);
+      if (hour && hour.level !== CLEAR) {
+        turnsAtMin = m;
+        break;
+      }
+    }
+  }
+
+  return {
+    level: whole.level,
+    reasons: whole.reasons,
+    window: whole.window,
+    fromMin,
+    toMin,
+    // Bad from the first hour is not a turn, it is the afternoon.
+    turnsAtMin: turnsAtMin != null && turnsAtMin > fromMin ? turnsAtMin : null,
+  };
+}
+
+/**
  * Weather verdicts for every plan, keyed by plan id.
  * Broken plans are skipped: there is no point grading a boat that is cancelled.
  */
@@ -323,6 +364,19 @@ export function applyWeather(plans, verdicts, weather) {
     const verdict = verdicts.get(plan.id) || null;
     return { ...plan, weather: verdict, weatherPenalty: verdict ? scale[verdict.level] ?? 0 : 0 };
   });
+}
+
+/**
+ * The user's own order, with the bike routes moved to the back.
+ *
+ * Only ever called because he pressed the button: the weather still has no vote
+ * in the ranking, he does. Nothing is dropped — on a day the boats fail the bike
+ * may still be the only way — and both halves keep their relative order.
+ *
+ * Pure: returns a new array.
+ */
+export function bikeLast(plans) {
+  return [...plans.filter((p) => !p.requiresBike), ...plans.filter((p) => p.requiresBike)];
 }
 
 /**

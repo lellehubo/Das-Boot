@@ -23,6 +23,8 @@ import {
   applyWeather,
   exposureOf,
   instantOf,
+  bikeOutlook,
+  bikeLast,
   CLEAR,
   CAUTION,
   AVOID,
@@ -222,7 +224,7 @@ test("torr morgon plus blöt eftermiddag ger avoid på morgoncykeln, med inherit
   });
   assert.equal(verdict.level, AVOID);
   assert.ok(verdict.inheritedFrom, "eftermiddagen ska pekas ut som orsak");
-  assert.equal(verdict.inheritedFrom.fromMin, 16 * 60);
+  assert.equal(verdict.inheritedFrom.fromMin, weather.return_window_hours.from * 60);
 });
 
 test("blöt morgon plus torr eftermiddag ger avoid på morgonen men clear på hemresan", () => {
@@ -363,4 +365,59 @@ test("inget alternativ försvinner, inte ens i hällregn", () => {
     direction: "to_work",
   };
   assert.equal(applyWeather(plans, verdictsFor(plans, ctx), weather).length, 2);
+});
+
+// --- the morning card about the ride home ---------------------------------
+
+test("hemresans fönster är 15–18", () => {
+  assert.deepEqual(weather.return_window_hours, { from: 15, to: 18 });
+});
+
+test("torr eftermiddag ger clear och ingen omslagstid", () => {
+  const o = bikeOutlook(forecastOf(hours(DAY, 14, 19, DRY)), DAY, weather);
+  assert.equal(o.level, CLEAR);
+  assert.equal(o.turnsAtMin, null);
+});
+
+test("regn från 16 ger avoid och säger när det slår om", () => {
+  const f = forecastOf([...hours(DAY, 14, 16, DRY), ...hours(DAY, 16, 19, RAIN)]);
+  const o = bikeOutlook(f, DAY, weather);
+  assert.equal(o.level, AVOID);
+  assert.equal(o.turnsAtMin, 16 * 60);
+});
+
+test("regn hela eftermiddagen är inget omslag", () => {
+  const o = bikeOutlook(forecastOf(hours(DAY, 14, 19, RAIN)), DAY, weather);
+  assert.equal(o.level, AVOID);
+  assert.equal(o.turnsAtMin, null);
+});
+
+test("regn klockan 15 räknas nu, det gjorde det inte med 16–18", () => {
+  const f = forecastOf([...hours(DAY, 14, 15, DRY), ...hours(DAY, 15, 16, RAIN), ...hours(DAY, 16, 19, DRY)]);
+  assert.equal(bikeOutlook(f, DAY, weather).level, AVOID);
+});
+
+test("kortet och cykelvägens ikon är överens", () => {
+  const f = forecastOf([...hours(DAY, 6, 15, DRY), ...hours(DAY, 15, 19, { windGust: 10 })]);
+  const o = bikeOutlook(f, DAY, weather);
+  const v = verdictForPlan(bikeCommute, {
+    weather, isoDate: DAY, forecast: f, returnForecast: f, direction: "to_work",
+  });
+  assert.equal(o.level, CAUTION);
+  assert.equal(v.level, o.level);
+});
+
+test("utan prognos för eftermiddagen blir det inget kort", () => {
+  assert.equal(bikeOutlook(forecastOf(hours(DAY, 6, 10, DRY)), DAY, weather), null);
+  assert.equal(bikeOutlook(null, DAY, weather), null);
+});
+
+test("bikeLast flyttar cykelvägarna bakåt men tappar ingen och behåller ordningen", () => {
+  const a = { id: "a", requiresBike: true };
+  const b = { id: "b", requiresBike: false };
+  const c = { id: "c", requiresBike: true };
+  const d = { id: "d", requiresBike: false };
+  const input = [a, b, c, d];
+  assert.deepEqual(bikeLast(input).map((p) => p.id), ["b", "d", "a", "c"]);
+  assert.deepEqual(input.map((p) => p.id), ["a", "b", "c", "d"]);
 });

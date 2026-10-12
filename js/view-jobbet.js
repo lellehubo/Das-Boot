@@ -42,6 +42,34 @@ let alerts = [];
 let chosenDirection = null;
 let chosenOn = null;
 
+// "Visa vägar utan cykel", pressed in the morning when the ride home looks bad.
+// Kept as the date it was pressed, in localStorage, because the point is that it
+// still holds at four o'clock when the app has long since been closed: the bike
+// is at home, and the bike routes home are not routes. Lapses at midnight.
+const NO_BIKE_KEY = "dasboot-nobike";
+
+function noBikeToday(se) {
+  try {
+    return localStorage.getItem(NO_BIKE_KEY) === se.iso;
+  } catch (e) {
+    return false;
+  }
+}
+
+function setNoBike(se, on) {
+  try {
+    if (on) localStorage.setItem(NO_BIKE_KEY, se.iso);
+    else localStorage.removeItem(NO_BIKE_KEY);
+  } catch (e) {
+    // Private mode: the choice lasts until the next reload, which is still a choice.
+  }
+  noBikeFallback = on ? se.iso : null;
+}
+
+// Used only when storage throws, so the button still works in a private window.
+let noBikeFallback = null;
+const noBikeActive = (se) => noBikeToday(se) || noBikeFallback === se.iso;
+
 function currentDirection(se) {
   return chosenDirection && chosenOn === se.iso ? chosenDirection : defaultDirection(se.min);
 }
@@ -328,6 +356,59 @@ function renderWeather(se) {
   host.style.display = lines.length ? "" : "none";
 }
 
+/**
+ * The ride home, judged at breakfast, plus the one choice that follows from it.
+ *
+ * Shown going to work, since that is when the bike is still at home to leave.
+ * Going home it appears only to say the bike was left behind and offer to undo
+ * it. The headline names the weather and the level tints the card; the decision
+ * stays with him, which is why the alternative is a button and not a reorder.
+ */
+function renderOutlook(se, direction, plans, outlook) {
+  const host = el("jBike");
+  if (!host) return;
+  const skipping = noBikeActive(se);
+  const hasBike = plans.some((p) => p.requiresBike && !p.broken);
+  const hasOther = plans.some((p) => !p.requiresBike && !p.broken);
+
+  let said = null;
+  if (direction === TO_WORK && outlook) {
+    try {
+      said = wxPhrase.describeBikeOutlook(outlook, { localMinutesOf: wxScore.localMinutesOf });
+    } catch (e) {
+      console.warn(`väder: hemresans bedömning misslyckades (${e.message})`);
+    }
+  }
+
+  if (!said && !skipping) {
+    host.style.display = "none";
+    host.innerHTML = "";
+    return;
+  }
+
+  let button = "";
+  if (skipping)
+    button = `<button class="bk-btn undo" data-act="bike-on">Ångra, visa min vanliga ordning</button>`;
+  else if (said && said.level !== "clear" && hasBike && hasOther)
+    button = `<button class="bk-btn" data-act="bike-off">Visa vägar utan cykel</button>`;
+
+  const level = said ? said.level : "clear";
+  const head = said
+    ? `<div class="bk-top"><span class="bk-ico">${wxPhrase.iconSvg(said.icon)}</span>` +
+      `<div class="bk-l"><div class="bk-when">Hemresan ${esc(said.when)}</div>` +
+      `<div class="bk-head">${esc(said.headline)}</div></div></div>` +
+      (said.text ? `<div class="bk-text">${esc(said.text)}</div>` : "") +
+      (said.notes.length ? `<div class="bk-notes">${said.notes.map(esc).join(" · ")}</div>` : "")
+    : "";
+  const skipNote = skipping
+    ? `<div class="bk-skip">Cykeln stannar hemma idag. Vägar utan cykel visas först.</div>`
+    : "";
+
+  host.className = `bike-outlook bk-${level}`;
+  host.innerHTML = head + skipNote + button;
+  host.style.display = "";
+}
+
 function tags(plan) {
   const out = [];
   if (plan.requiresBike) out.push('<span class="tag bike">cykel · plats ej garanterad</span>');
@@ -592,10 +673,22 @@ function render(se) {
     console.warn(`väder: bedömningen misslyckades (${e.message})`);
   }
 
+  let outlook = null;
+  if (direction === TO_WORK) {
+    try {
+      outlook = wxScore.bikeOutlook(forecasts.work, se.iso, data.weights.weather);
+    } catch (e) {
+      console.warn(`väder: hemresans bedömning misslyckades (${e.message})`);
+    }
+  }
+  // His choice, not the weather's: only the button reorders.
+  if (noBikeActive(se)) ranked = wxScore.bikeLast(ranked);
+
   const best = ranked.find((p) => !p.broken);
   renderAlerts(best);
   renderBoats(se, direction);
   renderWeather(se);
+  renderOutlook(se, direction, ranked, outlook);
   renderBest(se, ranked, direction, best ? nextLike(best, destination, planCtx) : null);
   renderRank(se, ranked);
 
@@ -670,6 +763,14 @@ for (const button of document.querySelectorAll("#jDirSeg button")) {
     render(se);
   });
 }
+
+el("jBike")?.addEventListener("click", (event) => {
+  const act = event.target.closest("[data-act]")?.dataset.act;
+  if (!act) return;
+  const se = window.nowSE();
+  setNoBike(se, act === "bike-off");
+  render(se);
+});
 
 el("jRankHead").addEventListener("click", () => {
   rankOpen = !rankOpen;

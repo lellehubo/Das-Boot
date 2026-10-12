@@ -184,3 +184,40 @@ function fallbackIcon(summary) {
   if (summary.maxPrecipProbability >= 15) return "showers";
   return "cloud";
 }
+
+/** Headline per level. Says what the weather is, never what to do about it. */
+const OUTLOOK_HEADLINE = {
+  clear: "Bra cykelväder hem",
+  caution: "Tveksamt cykelväder hem",
+  avoid: "Dåligt cykelväder hem",
+};
+
+const hh = (minutes) => String(Math.floor(minutes / 60)).padStart(2, "0");
+
+/**
+ * The morning card about the ride home: a headline, the afternoon in one
+ * sentence, and whatever qualifies it.
+ *
+ * Ice is said separately because describeWindow names what falls, not what lies
+ * on the road. Low confidence is said out loud because "maybe showers" and
+ * "certain rain" call for different decisions, and hiding the difference would
+ * make the forecast sound surer than it is.
+ */
+export function describeBikeOutlook(outlook, { localMinutesOf }) {
+  if (!outlook) return null;
+  const said = describeWindow(outlook.window, { localMinutesOf });
+  const notes = [];
+  if (outlook.turnsAtMin != null) notes.push(`Uppehåll till ca ${hh(outlook.turnsAtMin)}`);
+  if (outlook.reasons.some((r) => r.kind === "ice")) notes.push("Risk för halka");
+  if (outlook.window.confidence === "low") notes.push("Prognosen spretar, skurar kan komma eller utebli");
+  if (outlook.reasons.some((r) => r.coarse)) notes.push("Grov prognos, långt fram");
+  if (outlook.window.stale) notes.push("Senast kända prognos");
+  return {
+    level: outlook.level,
+    icon: said ? said.icon : "cloud",
+    when: `${hh(outlook.fromMin)}–${hh(outlook.toMin)}`,
+    headline: OUTLOOK_HEADLINE[outlook.level] || OUTLOOK_HEADLINE.clear,
+    text: said ? said.text : "",
+    notes,
+  };
+}
