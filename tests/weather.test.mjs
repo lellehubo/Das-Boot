@@ -421,3 +421,17 @@ test("bikeLast flyttar cykelvägarna bakåt men tappar ingen och behåller ordni
   assert.deepEqual(bikeLast(input).map((p) => p.id), ["b", "d", "a", "c"]);
   assert.deepEqual(input.map((p) => p.id), ["a", "b", "c", "d"]);
 });
+
+test("morgonfönstret 07–10 bedöms med samma regler, mot sin egen prognos", () => {
+  assert.deepEqual(weather.outgoing_window_hours, { from: 7, to: 10 });
+  const f = forecastOf([...hours(DAY, 6, 8, DRY), ...hours(DAY, 8, 11, RAIN)]);
+  const o = bikeOutlook(f, DAY, weather, weather.outgoing_window_hours);
+  assert.equal(o.level, AVOID);
+  assert.equal(o.fromMin, 7 * 60);
+  assert.equal(o.turnsAtMin, 8 * 60);
+});
+
+test("när morgonen har passerat når prognosen inte fönstret, och raden faller bort", () => {
+  const f = forecastOf(hours(DAY, 11, 19, DRY));
+  assert.equal(bikeOutlook(f, DAY, weather, weather.outgoing_window_hours), null);
+});

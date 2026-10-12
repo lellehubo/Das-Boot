@@ -149,7 +149,7 @@ test("dåligt väder från fyra säger tiden och fönstret", () => {
     outlook("avoid", { maxPrecipProbability: 85, maxPrecipMmPerH: 2.4, symbolCodes: [20] }, { turnsAtMin: 960 }),
     opts
   );
-  assert.equal(d.when, "15–18");
+  assert.equal(d.when, "Hemresan 15–18");
   assert.equal(d.text, "Nästan säkert regn, kraftigt");
   assert.deepEqual(d.notes, ["Uppehåll till ca 16"]);
   assert.equal(d.icon, "rain");
@@ -166,4 +166,14 @@ test("spretig prognos och halka sägs öppet", () => {
 
 test("ingen bedömning ger inget kort", () => {
   assert.equal(describeBikeOutlook(null, opts), null);
+});
+
+test("morgonraden säger dit och sitt eget fönster", () => {
+  const d = describeBikeOutlook(
+    { ...outlook("caution"), fromMin: 420, toMin: 600 },
+    opts,
+    "to_work"
+  );
+  assert.equal(d.when, "Till jobbet 07–10");
+  assert.equal(d.headline, "Tveksamt cykelväder dit");
 });

@@ -185,11 +185,15 @@ function fallbackIcon(summary) {
   return "cloud";
 }
 
-/** Headline per level. Says what the weather is, never what to do about it. */
+/** Headline per level and leg. Says what the weather is, never what to do about it. */
 const OUTLOOK_HEADLINE = {
-  clear: "Bra cykelväder hem",
-  caution: "Tveksamt cykelväder hem",
-  avoid: "Dåligt cykelväder hem",
+  clear: "Bra cykelväder",
+  caution: "Tveksamt cykelväder",
+  avoid: "Dåligt cykelväder",
+};
+const LEG = {
+  to_work: { label: "Till jobbet", suffix: "dit" },
+  to_home: { label: "Hemresan", suffix: "hem" },
 };
 
 const hh = (minutes) => String(Math.floor(minutes / 60)).padStart(2, "0");
@@ -203,9 +207,10 @@ const hh = (minutes) => String(Math.floor(minutes / 60)).padStart(2, "0");
  * "certain rain" call for different decisions, and hiding the difference would
  * make the forecast sound surer than it is.
  */
-export function describeBikeOutlook(outlook, { localMinutesOf }) {
+export function describeBikeOutlook(outlook, { localMinutesOf }, leg = "to_home") {
   if (!outlook) return null;
   const said = describeWindow(outlook.window, { localMinutesOf });
+  const which = LEG[leg] || LEG.to_home;
   const notes = [];
   if (outlook.turnsAtMin != null) notes.push(`Uppehåll till ca ${hh(outlook.turnsAtMin)}`);
   if (outlook.reasons.some((r) => r.kind === "ice")) notes.push("Risk för halka");
@@ -215,8 +220,8 @@ export function describeBikeOutlook(outlook, { localMinutesOf }) {
   return {
     level: outlook.level,
     icon: said ? said.icon : "cloud",
-    when: `${hh(outlook.fromMin)}–${hh(outlook.toMin)}`,
-    headline: OUTLOOK_HEADLINE[outlook.level] || OUTLOOK_HEADLINE.clear,
+    when: `${which.label} ${hh(outlook.fromMin)}–${hh(outlook.toMin)}`,
+    headline: `${OUTLOOK_HEADLINE[outlook.level] || OUTLOOK_HEADLINE.clear} ${which.suffix}`,
     text: said ? said.text : "",
     notes,
   };

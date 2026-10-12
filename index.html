@@ -288,11 +288,12 @@
   .bk-top{display:flex;align-items:center;gap:12px;}
   .bk-ico{flex:none;display:flex;color:var(--ink2);}
   .bk-ico .wx-icon{width:34px;height:34px;}
-  .bk-clear .bk-ico{color:var(--green);}
-  .bk-caution .bk-ico{color:var(--amberlt);}
-  .bk-avoid .bk-ico{color:var(--redb);}
+  .bk-row + .bk-row{margin-top:12px;padding-top:12px;border-top:1px solid var(--bd);}
+  .bk-row.bk-clear .bk-ico{color:var(--green);}
+  .bk-row.bk-caution .bk-ico{color:var(--amberlt);}
+  .bk-row.bk-avoid .bk-ico{color:var(--redb);}
   .bk-when{font-size:10.5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink3);}
-  .bk-head{font-size:19px;font-weight:700;line-height:1.2;color:var(--ink);}
+  .bk-head{font-size:17px;font-weight:700;line-height:1.2;color:var(--ink);}
   .bk-text{margin-top:8px;font-size:14px;line-height:1.4;color:var(--ink);}
   .bk-notes{margin-top:4px;font-size:12.5px;line-height:1.4;color:var(--ink2);}
   .bk-skip{margin-top:8px;font-size:13px;line-height:1.4;color:var(--ink2);}
@@ -460,7 +461,7 @@
 </div>
 
 <script>
-  const APP_VERSION = "2026-10-12a"; // bumpa vid ändring i js/ för att bryta modulcachen
+  const APP_VERSION = "2026-10-12b"; // bumpa vid ändring i js/ för att bryta modulcachen
 
   // ---- Verifierade avgångar från Saltsjöqvarn (HH:MM) ----
   // Utlästa ur SL:s tryckta tidtabeller med tools/extract-timetable.py och

@@ -357,55 +357,76 @@ function renderWeather(se) {
 }
 
 /**
- * The ride home, judged at breakfast, plus the one choice that follows from it.
+ * The day's two rides on the bike, judged at breakfast, plus the one choice
+ * that follows from them.
  *
- * Shown going to work, since that is when the bike is still at home to leave.
- * Going home it appears only to say the bike was left behind and offer to undo
- * it. The headline names the weather and the level tints the card; the decision
- * stays with him, which is why the alternative is a button and not a reorder.
+ * Shown going to work, since that is when the bike is still at home to leave:
+ * the ride there 07-10 at home, the ride back 15-18 at the office. Going home
+ * it appears only to say the bike was left behind and offer to undo it. Each
+ * headline names the weather and the card takes the tint of the worse ride; the
+ * decision stays with him, which is why the alternative is a button and not a
+ * reorder.
  */
-function renderOutlook(se, direction, plans, outlook) {
+const LEVEL_ORDER = { clear: 0, caution: 1, avoid: 2 };
+
+function outlookRow(said) {
+  return (
+    `<div class="bk-row bk-${said.level}">` +
+    `<div class="bk-top"><span class="bk-ico">${wxPhrase.iconSvg(said.icon)}</span>` +
+    `<div class="bk-l"><div class="bk-when">${esc(said.when)}</div>` +
+    `<div class="bk-head">${esc(said.headline)}</div></div></div>` +
+    (said.text ? `<div class="bk-text">${esc(said.text)}</div>` : "") +
+    (said.notes.length ? `<div class="bk-notes">${said.notes.map(esc).join(" · ")}</div>` : "") +
+    `</div>`
+  );
+}
+
+function renderOutlook(se, direction, plans, outlooks) {
   const host = el("jBike");
   if (!host) return;
   const skipping = noBikeActive(se);
   const hasBike = plans.some((p) => p.requiresBike && !p.broken);
   const hasOther = plans.some((p) => !p.requiresBike && !p.broken);
 
-  let said = null;
-  if (direction === TO_WORK && outlook) {
-    try {
-      said = wxPhrase.describeBikeOutlook(outlook, { localMinutesOf: wxScore.localMinutesOf });
-    } catch (e) {
-      console.warn(`väder: hemresans bedömning misslyckades (${e.message})`);
+  const rows = [];
+  if (direction === TO_WORK) {
+    for (const { leg, outlook } of outlooks) {
+      try {
+        const said = wxPhrase.describeBikeOutlook(
+          outlook,
+          { localMinutesOf: wxScore.localMinutesOf },
+          leg
+        );
+        if (said) rows.push(said);
+      } catch (e) {
+        console.warn(`väder: cykelbedömningen (${leg}) misslyckades (${e.message})`);
+      }
     }
   }
 
-  if (!said && !skipping) {
+  if (!rows.length && !skipping) {
     host.style.display = "none";
     host.innerHTML = "";
     return;
   }
 
+  const level = rows.reduce(
+    (worst, r) => (LEVEL_ORDER[r.level] > LEVEL_ORDER[worst] ? r.level : worst),
+    "clear"
+  );
+
   let button = "";
   if (skipping)
     button = `<button class="bk-btn undo" data-act="bike-on">Ångra, visa min vanliga ordning</button>`;
-  else if (said && said.level !== "clear" && hasBike && hasOther)
+  else if (level !== "clear" && hasBike && hasOther)
     button = `<button class="bk-btn" data-act="bike-off">Visa vägar utan cykel</button>`;
 
-  const level = said ? said.level : "clear";
-  const head = said
-    ? `<div class="bk-top"><span class="bk-ico">${wxPhrase.iconSvg(said.icon)}</span>` +
-      `<div class="bk-l"><div class="bk-when">Hemresan ${esc(said.when)}</div>` +
-      `<div class="bk-head">${esc(said.headline)}</div></div></div>` +
-      (said.text ? `<div class="bk-text">${esc(said.text)}</div>` : "") +
-      (said.notes.length ? `<div class="bk-notes">${said.notes.map(esc).join(" · ")}</div>` : "")
-    : "";
   const skipNote = skipping
     ? `<div class="bk-skip">Cykeln stannar hemma idag. Vägar utan cykel visas först.</div>`
     : "";
 
   host.className = `bike-outlook bk-${level}`;
-  host.innerHTML = head + skipNote + button;
+  host.innerHTML = rows.map(outlookRow).join("") + skipNote + button;
   host.style.display = "";
 }
 
@@ -673,12 +694,23 @@ function render(se) {
     console.warn(`väder: bedömningen misslyckades (${e.message})`);
   }
 
-  let outlook = null;
+  // Both rides, read where you would be standing for each: home in the
+  // morning, the office in the afternoon. The morning row drops out by itself
+  // once the forecast no longer reaches 07-10.
+  const outlooks = [];
   if (direction === TO_WORK) {
-    try {
-      outlook = wxScore.bikeOutlook(forecasts.work, se.iso, data.weights.weather);
-    } catch (e) {
-      console.warn(`väder: hemresans bedömning misslyckades (${e.message})`);
+    const w = data.weights.weather;
+    const legs = [
+      ["to_work", forecasts.home, w.outgoing_window_hours],
+      ["to_home", forecasts.work, w.return_window_hours],
+    ];
+    for (const [leg, forecast, win] of legs) {
+      try {
+        const outlook = wxScore.bikeOutlook(forecast, se.iso, w, win);
+        if (outlook) outlooks.push({ leg, outlook });
+      } catch (e) {
+        console.warn(`väder: cykelbedömningen (${leg}) misslyckades (${e.message})`);
+      }
     }
   }
   // His choice, not the weather's: only the button reorders.
@@ -688,7 +720,7 @@ function render(se) {
   renderAlerts(best);
   renderBoats(se, direction);
   renderWeather(se);
-  renderOutlook(se, direction, ranked, outlook);
+  renderOutlook(se, direction, ranked, outlooks);
   renderBest(se, ranked, direction, best ? nextLike(best, destination, planCtx) : null);
   renderRank(se, ranked);
 

@@ -298,20 +298,24 @@ export function verdictForPlan(plan, { weather, isoDate, forecast, returnForecas
  * "rain all afternoon" does not. Found by grading each hour on its own with
  * verdictOf, rather than with a second set of rules that could drift.
  *
+ * The same function grades the ride there, with the morning window and the
+ * forecast at home passed in instead. Once that window has passed the forecast
+ * no longer reaches it, and the result is null.
+ *
  * Returns null when the forecast does not reach the window.
  */
-export function bikeOutlook(returnForecast, isoDate, weather) {
-  const back = weather.return_window_hours;
-  if (!back || !returnForecast) return null;
-  const fromMin = back.from * 60;
-  const toMin = back.to * 60;
-  const whole = verdictOf(summariseWindow(returnForecast, isoDate, fromMin, toMin), weather);
+export function bikeOutlook(forecast, isoDate, weather, hoursWindow = weather.return_window_hours) {
+  const win = hoursWindow;
+  if (!win || !forecast) return null;
+  const fromMin = win.from * 60;
+  const toMin = win.to * 60;
+  const whole = verdictOf(summariseWindow(forecast, isoDate, fromMin, toMin), weather);
   if (!whole) return null;
 
   let turnsAtMin = null;
   if (whole.level !== CLEAR) {
     for (let m = fromMin; m < toMin; m += 60) {
-      const hour = verdictOf(summariseWindow(returnForecast, isoDate, m, m + 60), weather);
+      const hour = verdictOf(summariseWindow(forecast, isoDate, m, m + 60), weather);
       if (hour && hour.level !== CLEAR) {
         turnsAtMin = m;
         break;
